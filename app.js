@@ -59,3 +59,31 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
 });
+
+// ========================================
+// PWA SERVICE WORKER
+// ========================================
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", function() {
+
+        navigator.serviceWorker
+            .register("./service-worker.js")
+            .then(function() {
+
+                console.log("SAIER INTERN: Service Worker aktiv");
+
+            })
+            .catch(function(error) {
+
+                console.error(
+                    "SAIER INTERN: Service Worker konnte nicht geladen werden.",
+                    error
+                );
+
+            });
+
+    });
+
+}
