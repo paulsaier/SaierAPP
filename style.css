@@ -636,3 +636,31 @@ body {
     }
 
 }
+
+/* ========================================
+   IPHONE NAVIGATION - EXTRA HOCH
+   ======================================== */
+
+@media (max-width: 600px) {
+
+    #app {
+        padding-bottom: 120px !important;
+    }
+
+    .navigation {
+        height: 105px !important;
+        padding-top: 10px !important;
+        padding-bottom: env(safe-area-inset-bottom) !important;
+    }
+
+    .nav-button {
+        justify-content: flex-start !important;
+        padding-top: 8px !important;
+    }
+
+    .nav-icon {
+        width: 28px !important;
+        height: 28px !important;
+    }
+
+}
