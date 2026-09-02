@@ -614,6 +614,164 @@ body {
 
 }
 
+/* ========================================
+   AUSHÄNGE
+   ======================================== */
+
+.aushang {
+
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 22px;
+
+    margin-bottom: 15px;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.04);
+
+}
+
+
+.aushang-kopf {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+
+.aushang-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(149, 193, 31, 0.12);
+
+    color:
+        var(--saier-gruen);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.aushang-icon svg {
+
+    width: 24px;
+
+}
+
+
+.neu-label {
+
+    background:
+        var(--saier-gruen);
+
+    color: white;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    padding: 5px 9px;
+
+    border-radius: 8px;
+
+    letter-spacing: 0.5px;
+
+}
+
+
+.aushang-inhalt {
+
+    margin-top: 18px;
+
+}
+
+
+.aushang-datum {
+
+    color: var(--grau);
+
+    font-size: 12px;
+
+}
+
+
+.aushang h2 {
+
+    margin: 5px 0 8px;
+
+    font-size: 21px;
+
+    font-weight: 600;
+
+}
+
+
+.aushang p {
+
+    margin: 0;
+
+    color: var(--grau);
+
+    line-height: 1.5;
+
+}
+
+
+.aushang-button {
+
+    margin-top: 20px;
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--saier-gruen);
+
+    font-family:
+        "Fira Sans",
+        Arial,
+        sans-serif;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    padding: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    cursor: pointer;
+
+}
+
+
+.aushang-button svg {
+
+    width: 17px;
+
+    height: 17px;
+
+}
 
 /* ----------------------------------------
    DESKTOP
