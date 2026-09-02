@@ -1,4 +1,9 @@
-const CACHE_NAME = "saier-intern-v1";
+// ========================================
+// SAIER INTERN
+// Service Worker
+// ========================================
+
+const CACHE_NAME = "saier-intern-v2";
 
 const DATEIEN = [
     "./",
@@ -8,12 +13,18 @@ const DATEIEN = [
     "./logo.png",
     "./manifest.json",
     "./icon-192.png",
-    "./icon-512.png"
+    "./icon-512.png",
+    "./apple-touch-icon.png"
 ];
 
 
-// App-Dateien speichern
+// ========================================
+// INSTALLATION
+// ========================================
+
 self.addEventListener("install", function(event) {
+
+    console.log("SAIER INTERN: Neue Version wird installiert.");
 
     event.waitUntil(
 
@@ -26,18 +37,72 @@ self.addEventListener("install", function(event) {
 
     );
 
+    // Neue Version sofort aktivieren
+    self.skipWaiting();
+
 });
 
 
-// Gespeicherte Dateien verwenden
+// ========================================
+// AKTIVIERUNG
+// ========================================
+
+self.addEventListener("activate", function(event) {
+
+    console.log("SAIER INTERN: Neue Version aktiviert.");
+
+    event.waitUntil(
+
+        caches.keys()
+            .then(function(cacheNames) {
+
+                return Promise.all(
+
+                    cacheNames
+                        .filter(function(cacheName) {
+
+                            return cacheName !== CACHE_NAME;
+
+                        })
+                        .map(function(cacheName) {
+
+                            return caches.delete(cacheName);
+
+                        })
+
+                );
+
+            })
+
+    );
+
+    // Neue Version für alle Seiten übernehmen
+    self.clients.claim();
+
+});
+
+
+// ========================================
+// DATEIEN LADEN
+// ========================================
+
 self.addEventListener("fetch", function(event) {
 
     event.respondWith(
 
-        caches.match(event.request)
+        fetch(event.request)
             .then(function(response) {
 
-                return response || fetch(event.request);
+                // Erfolgreiche aktuelle Datei zurückgeben
+                return response;
+
+            })
+            .catch(function() {
+
+                // Wenn kein Internet vorhanden ist:
+                // gespeicherte Version verwenden
+
+                return caches.match(event.request);
 
             })
 
