@@ -1,0 +1,824 @@
+/* ========================================
+   SAIER INTERN
+   ======================================== */
+
+
+/* ----------------------------------------
+   GRUNDLAGEN
+   ---------------------------------------- */
+
+* {
+    box-sizing: border-box;
+}
+
+
+:root {
+
+    --saier-gruen: #95C11F;
+
+    --saier-blau: #4269A7;
+
+    --hintergrund: #F5F6F3;
+
+    --text: #222222;
+
+    --grau: #737373;
+
+    --weiss: #FFFFFF;
+
+}
+
+
+body {
+
+    margin: 0;
+
+    font-family:
+        "Fira Sans",
+        Arial,
+        sans-serif;
+
+    background:
+        var(--hintergrund);
+
+    color:
+        var(--text);
+
+}
+
+
+/* ----------------------------------------
+   APP
+   ---------------------------------------- */
+
+#app {
+
+    min-height: 100vh;
+
+    padding-bottom: 90px;
+
+}
+
+
+/* ----------------------------------------
+   SEITEN
+   ---------------------------------------- */
+
+.seite {
+
+    display: none;
+
+    max-width: 1000px;
+
+    margin: 0 auto;
+
+    padding: 30px 25px;
+
+}
+
+
+.seite.aktiv {
+
+    display: block;
+
+}
+
+
+/* ----------------------------------------
+   LOGO
+   ---------------------------------------- */
+
+.kopf {
+
+    display: flex;
+
+    justify-content: center;
+
+    padding: 10px 0 30px;
+
+}
+
+
+.logo {
+
+    width: 360px;
+
+    max-width: 85%;
+
+    height: auto;
+
+}
+
+
+/* ----------------------------------------
+   BEGRÜSSUNG
+   ---------------------------------------- */
+
+.begrüssung {
+
+    background: var(--weiss);
+
+    border-radius: 22px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.05);
+
+}
+
+
+.kleine-ueberschrift {
+
+    margin: 0 0 5px;
+
+    color: var(--saier-gruen);
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+}
+
+
+.begrüssung h1 {
+
+    margin: 0;
+
+    font-size: 34px;
+
+    font-weight: 600;
+
+}
+
+
+.begrüssung p:last-child {
+
+    margin-bottom: 0;
+
+    color: var(--grau);
+
+    font-size: 17px;
+
+}
+
+
+/* ----------------------------------------
+   DASHBOARD KARTEN
+   ---------------------------------------- */
+
+.dashboard-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px;
+
+    margin-top: 15px;
+
+}
+
+
+.info-box {
+
+    background: var(--weiss);
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+}
+
+
+.info-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(149, 193, 31, 0.12);
+
+    color:
+        var(--saier-gruen);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.info-icon svg {
+
+    width: 24px;
+
+}
+
+
+.info-label {
+
+    display: block;
+
+    color: var(--grau);
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    letter-spacing: 1px;
+
+}
+
+
+.info-box strong {
+
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 15px;
+
+}
+
+
+/* ----------------------------------------
+   WILLKOMMEN BOX
+   ---------------------------------------- */
+
+.willkommen-box {
+
+    margin-top: 15px;
+
+    background: var(--saier-gruen);
+
+    color: white;
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 18px;
+
+}
+
+
+.willkommen-box svg {
+
+    width: 30px;
+
+    height: 30px;
+
+    flex-shrink: 0;
+
+}
+
+
+.willkommen-box h2 {
+
+    margin: 0 0 5px;
+
+    font-size: 20px;
+
+}
+
+
+.willkommen-box p {
+
+    margin: 0;
+
+    opacity: 0.95;
+
+}
+
+
+/* ----------------------------------------
+   SEITEN-KOPF
+   ---------------------------------------- */
+
+.seiten-kopf {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.seiten-icon {
+
+    width: 55px;
+
+    height: 55px;
+
+    border-radius: 16px;
+
+    background:
+        var(--saier-gruen);
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.seiten-icon svg {
+
+    width: 27px;
+
+}
+
+
+.seiten-kopf span {
+
+    color: var(--saier-gruen);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+}
+
+
+.seiten-kopf h1 {
+
+    margin: 2px 0 0;
+
+    font-size: 30px;
+
+    font-weight: 600;
+
+}
+
+
+/* ----------------------------------------
+   PLATZHALTER
+   ---------------------------------------- */
+
+.platzhalter {
+
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 50px 25px;
+
+    text-align: center;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.04);
+
+}
+
+
+.platzhalter > svg {
+
+    width: 55px;
+
+    height: 55px;
+
+    color: var(--saier-gruen);
+
+}
+
+
+.platzhalter h2 {
+
+    margin-bottom: 5px;
+
+}
+
+
+.platzhalter p {
+
+    margin-top: 0;
+
+    color: var(--grau);
+
+}
+
+
+/* ----------------------------------------
+   UNTERE NAVIGATION
+   ---------------------------------------- */
+
+.navigation {
+
+    position: fixed;
+
+    bottom: 0;
+
+    left: 0;
+
+    right: 0;
+
+    height: 78px;
+
+    background: white;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    border-top:
+        1px solid #E5E5E5;
+
+    box-shadow:
+        0 -4px 15px rgba(0, 0, 0, 0.05);
+
+    z-index: 1000;
+
+}
+
+
+.nav-button {
+
+    border: none;
+
+    background: transparent;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 4px;
+
+    color: #888;
+
+    font-family:
+        "Fira Sans",
+        Arial,
+        sans-serif;
+
+    font-size: 12px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease;
+
+}
+
+
+.nav-icon {
+
+    width: 23px;
+
+    height: 23px;
+
+}
+
+
+.nav-button.aktiv {
+
+    color:
+        var(--saier-gruen);
+
+    font-weight: 600;
+
+}
+
+
+/* ----------------------------------------
+   SMARTPHONE
+   ---------------------------------------- */
+
+@media (max-width: 600px) {
+
+
+    #app {
+
+        padding-bottom: calc(85px + env(safe-area-inset-bottom));
+
+    }
+
+
+    .seite {
+
+        padding: 20px 15px;
+
+    }
+
+
+    .kopf {
+
+        padding:
+            5px 0 20px;
+
+    }
+
+
+    .logo {
+
+        width: 280px;
+
+        max-width: 90%;
+
+    }
+
+
+    .begrüssung {
+
+        padding: 22px;
+
+        border-radius: 18px;
+
+    }
+
+
+    .begrüssung h1 {
+
+        font-size: 28px;
+
+    }
+
+
+    .dashboard-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .willkommen-box {
+
+        padding: 20px;
+
+    }
+
+
+    .seiten-kopf h1 {
+
+        font-size: 25px;
+
+    }
+
+
+    .navigation {
+
+        height: calc(75px + env(safe-area-inset-bottom));
+
+        padding-bottom: env(safe-area-inset-bottom);
+
+    }
+
+
+    .nav-button span {
+
+        display: none;
+
+    }
+
+
+    .nav-icon {
+
+        width: 25px;
+
+        height: 25px;
+
+    }
+
+}
+
+/* ========================================
+   AUSHÄNGE
+   ======================================== */
+
+.aushang {
+
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 22px;
+
+    margin-bottom: 15px;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.04);
+
+}
+
+
+.aushang-kopf {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+
+.aushang-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(149, 193, 31, 0.12);
+
+    color:
+        var(--saier-gruen);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.aushang-icon svg {
+
+    width: 24px;
+
+}
+
+
+.neu-label {
+
+    background:
+        var(--saier-gruen);
+
+    color: white;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    padding: 5px 9px;
+
+    border-radius: 8px;
+
+    letter-spacing: 0.5px;
+
+}
+
+
+.aushang-inhalt {
+
+    margin-top: 18px;
+
+}
+
+
+.aushang-datum {
+
+    color: var(--grau);
+
+    font-size: 12px;
+
+}
+
+
+.aushang h2 {
+
+    margin: 5px 0 8px;
+
+    font-size: 21px;
+
+    font-weight: 600;
+
+}
+
+
+.aushang p {
+
+    margin: 0;
+
+    color: var(--grau);
+
+    line-height: 1.5;
+
+}
+
+
+.aushang-button {
+
+    margin-top: 20px;
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--saier-gruen);
+
+    font-family:
+        "Fira Sans",
+        Arial,
+        sans-serif;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    padding: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    cursor: pointer;
+
+}
+
+
+.aushang-button svg {
+
+    width: 17px;
+
+    height: 17px;
+
+}
+
+/* ----------------------------------------
+   DESKTOP
+   ---------------------------------------- */
+
+@media (min-width: 900px) {
+
+    .navigation {
+
+        max-width: 900px;
+
+        left: 50%;
+
+        right: auto;
+
+        transform: translateX(-50%);
+
+        border-radius: 18px 18px 0 0;
+
+    }
+
+}
+
+/* ========================================
+   IPHONE NAVIGATION - EXTRA HOCH
+   ======================================== */
+
+@media (max-width: 600px) {
+
+    #app {
+        padding-bottom: 120px !important;
+    }
+
+    .navigation {
+        height: 105px !important;
+        padding-top: 10px !important;
+        padding-bottom: env(safe-area-inset-bottom) !important;
+    }
+
+    .nav-button {
+        justify-content: flex-start !important;
+        padding-top: 8px !important;
+    }
+
+    .nav-icon {
+        width: 28px !important;
+        height: 28px !important;
+    }
+
+}
