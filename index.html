@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color"
+          content="#95C11F">
+
+    <title>SAIER INTERN</title>
+
+    <!-- Fira Sans -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- Unser Design -->
+    <link rel="stylesheet"
+          href="style.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- ================================= -->
+    <!-- APP -->
+    <!-- ================================= -->
+
+    <main id="app">
+
+
+        <!-- ============================= -->
+        <!-- DASHBOARD -->
+        <!-- ============================= -->
+
+        <section id="dashboard"
+                 class="seite aktiv">
+
+            <div class="kopf">
+
+                <img src="logo.png"
+                     class="logo"
+                     alt="Saier Heizung Klima Elektro Service">
+
+            </div>
+
+
+            <div class="begrüssung">
+
+                <p class="kleine-ueberschrift">
+                    SAIER INTERN
+                </p>
+
+                <h1>
+                    Willkommen 👋
+                </h1>
+
+                <p>
+                    Schön, dass du da bist.
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-grid">
+
+
+                <div class="info-box">
+
+                    <div class="info-icon">
+                        <i data-lucide="calendar"></i>
+                    </div>
+
+                    <div>
+
+                        <span class="info-label">
+                            HEUTE
+                        </span>
+
+                        <strong id="heutigesDatum">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-icon">
+                        <i data-lucide="bell"></i>
+                    </div>
+
+                    <div>
+
+                        <span class="info-label">
+                            INFORMATIONEN
+                        </span>
+
+                        <strong>
+                            Alles aktuell
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="willkommen-box">
+
+                <i data-lucide="building-2"></i>
+
+                <div>
+
+                    <h2>
+                        Willkommen bei SAIER
+                    </h2>
+
+                    <p>
+                        Hier findest du alle wichtigen Informationen
+                        für deinen Arbeitsalltag.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ============================= -->
+        <!-- MONTEURE -->
+        <!-- ============================= -->
+
+        <section id="monteure"
+                 class="seite">
+
+            <div class="seiten-kopf">
+
+                <div class="seiten-icon">
+                    <i data-lucide="hard-hat"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        SAIER INTERN
+                    </span>
+
+                    <h1>
+                        Monteureinteilung
+                    </h1>
+
+                </div>
+
+            </div>
+
+
+            <div class="platzhalter">
+
+                <i data-lucide="hard-hat"></i>
+
+                <h2>
+                    Monteureinteilung
+                </h2>
+
+                <p>
+                    Hier wird später die aktuelle
+                    Monteureinteilung angezeigt.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ============================= -->
+        <!-- NEUIGKEITEN -->
+        <!-- ============================= -->
+
+        <section id="neuigkeiten"
+                 class="seite">
+
+            <div class="seiten-kopf">
+
+                <div class="seiten-icon">
+                    <i data-lucide="newspaper"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        SAIER INTERN
+                    </span>
+
+                    <h1>
+                        Neuigkeiten
+                    </h1>
+
+                </div>
+
+            </div>
+
+
+            <div class="platzhalter">
+
+                <i data-lucide="newspaper"></i>
+
+                <h2>
+                    Neuigkeiten
+                </h2>
+
+                <p>
+                    Hier erscheinen später die aktuellen
+                    Informationen.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ============================= -->
+        <!-- AUSHÄNGE -->
+        <!-- ============================= -->
+
+        <section id="aushänge"
+                 class="seite">
+
+            <div class="seiten-kopf">
+
+                <div class="seiten-icon">
+                    <i data-lucide="clipboard-list"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        SAIER INTERN
+                    </span>
+
+                    <h1>
+                        Aushänge
+                    </h1>
+
+                </div>
+
+            </div>
+
+
+            <div class="platzhalter">
+
+                <i data-lucide="clipboard-list"></i>
+
+                <h2>
+                    Aushänge
+                </h2>
+
+                <p>
+                    Hier werden später wichtige
+                    Aushänge angezeigt.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- ================================= -->
+    <!-- UNTERE NAVIGATION -->
+    <!-- ================================= -->
+
+    <nav class="navigation">
+
+
+        <button class="nav-button aktiv"
+                onclick="zeigeSeite('dashboard', this)">
+
+            <i data-lucide="house"
+               class="nav-icon"></i>
+
+            <span>
+                Dashboard
+            </span>
+
+        </button>
+
+
+        <button class="nav-button"
+                onclick="zeigeSeite('monteure', this)">
+
+            <i data-lucide="hard-hat"
+               class="nav-icon"></i>
+
+            <span>
+                Monteure
+            </span>
+
+        </button>
+
+
+        <button class="nav-button"
+                onclick="zeigeSeite('neuigkeiten', this)">
+
+            <i data-lucide="newspaper"
+               class="nav-icon"></i>
+
+            <span>
+                News
+            </span>
+
+        </button>
+
+
+        <button class="nav-button"
+                onclick="zeigeSeite('aushänge', this)">
+
+            <i data-lucide="clipboard-list"
+               class="nav-icon"></i>
+
+            <span>
+                Aushänge
+            </span>
+
+        </button>
+
+
+    </nav>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="app.js"></script>
+
+
+    <script>
+
+        lucide.createIcons();
+
+        // Datum anzeigen
+
+        const datum = new Date();
+
+        const datumFormatiert =
+            datum.toLocaleDateString(
+                "de-DE",
+                {
+                    weekday: "long",
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric"
+                }
+            );
+
+        document.getElementById("heutigesDatum").textContent =
+            datumFormatiert;
+
+    </script>
+
+
+</body>
+
+</html>
