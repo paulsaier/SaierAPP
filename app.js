@@ -87,3 +87,7 @@ if ("serviceWorker" in navigator) {
     });
 
 }
+
+console.log("SAIERAPP: Supabase-Verbindung wird getestet.");
+
+console.log("Supabase Client:", supabaseClient);
