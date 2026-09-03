@@ -4,90 +4,823 @@
 // ========================================
 
 
-// ----------------------------------------
-// Seite wechseln
-// ----------------------------------------
+let kalenderDatum = new Date();
+
+
+// ========================================
+// SEITEN-NAVIGATION
+// ========================================
 
 function zeigeSeite(seitenId, button) {
 
-    // Alle Seiten ausblenden
-    const seiten = document.querySelectorAll(".seite");
+    const seiten =
+        document.querySelectorAll(".seite");
 
     seiten.forEach(function(seite) {
         seite.classList.remove("aktiv");
     });
 
 
-    // Gewählte Seite anzeigen
-    const gewaehlteSeite = document.getElementById(seitenId);
+    const gewaehlteSeite =
+        document.getElementById(seitenId);
 
     if (gewaehlteSeite) {
         gewaehlteSeite.classList.add("aktiv");
     }
 
 
-    // Alle Navigationsbuttons deaktivieren
-    const buttons = document.querySelectorAll(".nav-button");
+    const buttons =
+        document.querySelectorAll(".nav-button");
 
     buttons.forEach(function(buttonElement) {
         buttonElement.classList.remove("aktiv");
     });
 
 
-    // Aktuellen Button aktiv setzen
     if (button) {
         button.classList.add("aktiv");
     }
 
 
-    // Seite nach oben scrollen
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
+
+
+    if (seitenId === "kalender") {
+        kalenderAnzeigen();
+        kalenderDatenLaden();
+    }
+
 }
 
 
-// ----------------------------------------
-// Lucide Icons laden
-// ----------------------------------------
+// ========================================
+// DATUM
+// ========================================
 
-document.addEventListener("DOMContentLoaded", function() {
+function heutigesDatumAnzeigen() {
 
-    if (typeof lucide !== "undefined") {
-        lucide.createIcons();
+    const element =
+        document.getElementById("heutigesDatum");
+
+    if (!element) {
+        return;
     }
 
-});
+
+    const datum = new Date();
+
+
+    element.textContent =
+        datum.toLocaleDateString(
+            "de-DE",
+            {
+                weekday: "long",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }
+        );
+
+}
+
 
 // ========================================
-// PWA SERVICE WORKER
+// KALENDER
 // ========================================
 
-if ("serviceWorker" in navigator) {
+function kalenderAnzeigen() {
 
-    window.addEventListener("load", function() {
+    const jahr =
+        kalenderDatum.getFullYear();
 
-        navigator.serviceWorker
-            .register("./service-worker.js")
-            .then(function() {
+    const monat =
+        kalenderDatum.getMonth();
 
-                console.log("SAIER INTERN: Service Worker aktiv");
 
-            })
-            .catch(function(error) {
+    const monate = [
+        "Januar",
+        "Februar",
+        "März",
+        "April",
+        "Mai",
+        "Juni",
+        "Juli",
+        "August",
+        "September",
+        "Oktober",
+        "November",
+        "Dezember"
+    ];
 
-                console.error(
-                    "SAIER INTERN: Service Worker konnte nicht geladen werden.",
-                    error
-                );
 
-            });
+    const monatElement =
+        document.getElementById("kalenderMonat");
+
+    if (monatElement) {
+
+        monatElement.textContent =
+            monate[monat] + " " + jahr;
+
+    }
+
+
+    const ersterTag =
+        new Date(
+            jahr,
+            monat,
+            1
+        );
+
+
+    const letzterTag =
+        new Date(
+            jahr,
+            monat + 1,
+            0
+        );
+
+
+    let startTag =
+        ersterTag.getDay();
+
+
+    if (startTag === 0) {
+        startTag = 6;
+    } else {
+        startTag--;
+    }
+
+
+    const tageImMonat =
+        letzterTag.getDate();
+
+
+    const container =
+        document.getElementById(
+            "kalenderTage"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    for (
+        let i = 0;
+        i < startTag;
+        i++
+    ) {
+
+        const leer =
+            document.createElement("div");
+
+        leer.className =
+            "kalender-tag leer";
+
+        container.appendChild(leer);
+
+    }
+
+
+    const heute =
+        new Date();
+
+
+    for (
+        let tag = 1;
+        tag <= tageImMonat;
+        tag++
+    ) {
+
+        const element =
+            document.createElement("div");
+
+        element.className =
+            "kalender-tag";
+
+
+        const nummer =
+            document.createElement("span");
+
+        nummer.textContent =
+            tag;
+
+
+        element.appendChild(nummer);
+
+
+        if (
+            tag === heute.getDate() &&
+            monat === heute.getMonth() &&
+            jahr === heute.getFullYear()
+        ) {
+
+            element.classList.add("heute");
+
+        }
+
+
+        container.appendChild(element);
+
+    }
+
+
+    if (
+        typeof lucide !== "undefined"
+    ) {
+
+        lucide.createIcons();
+
+    }
+
+}
+
+
+function vorherigerMonat() {
+
+    kalenderDatum.setMonth(
+        kalenderDatum.getMonth() - 1
+    );
+
+    kalenderAnzeigen();
+
+}
+
+
+function naechsterMonat() {
+
+    kalenderDatum.setMonth(
+        kalenderDatum.getMonth() + 1
+    );
+
+    kalenderAnzeigen();
+
+}
+
+
+// ========================================
+// KALENDERTERMINE AUS SUPABASE
+// ========================================
+
+async function kalenderTermineLaden() {
+
+    const liste =
+        document.getElementById(
+            "termineListe"
+        );
+
+    if (!liste) {
+        return;
+    }
+
+
+    if (
+        typeof supabaseClient ===
+        "undefined"
+    ) {
+
+        return;
+
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("calendar_events")
+            .select(
+                "id, title, event_date, description, event_type"
+            )
+            .order(
+                "event_date",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Kalenderfehler:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !data ||
+        data.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    liste.innerHTML = "";
+
+
+    data.forEach(function(termin) {
+
+        const datum =
+            new Date(
+                termin.event_date +
+                "T00:00:00"
+            );
+
+
+        const artikel =
+            document.createElement("article");
+
+        artikel.className =
+            "kalender-termin";
+
+
+        artikel.innerHTML = `
+
+            <div class="kalender-termin-datum">
+
+                <strong>
+                    ${datum.getDate()}
+                </strong>
+
+                <span>
+                    ${datum.toLocaleDateString(
+                        "de-DE",
+                        { month: "short" }
+                    )}
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <h3>
+                    ${escapeHtml(
+                        termin.title || "Termin"
+                    )}
+                </h3>
+
+                ${
+                    termin.description
+                    ? `
+                        <p>
+                            ${escapeHtml(
+                                termin.description
+                            )}
+                        </p>
+                      `
+                    : ""
+                }
+
+            </div>
+
+        `;
+
+
+        liste.appendChild(artikel);
 
     });
 
+
+    lucide.createIcons();
+
 }
 
-console.log("SAIERAPP: Supabase-Verbindung wird getestet.");
 
-console.log("Supabase Client:", supabaseClient);
+// ========================================
+// GEBURTSTAGE
+// ========================================
+
+async function geburtstageLaden() {
+
+    const liste =
+        document.getElementById(
+            "geburtstageListe"
+        );
+
+    if (!liste) {
+        return;
+    }
+
+
+    if (
+        typeof supabaseClient ===
+        "undefined"
+    ) {
+
+        return;
+
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .rpc(
+                "get_visible_birthdays"
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Geburtstagsfehler:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !data ||
+        data.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    liste.innerHTML = "";
+
+
+    data.forEach(function(geburtstag) {
+
+        const datum =
+            new Date(
+                2000,
+                geburtstag.birthday_month - 1,
+                geburtstag.birthday_day
+            );
+
+
+        const datumText =
+            datum.toLocaleDateString(
+                "de-DE",
+                {
+                    day: "2-digit",
+                    month: "long"
+                }
+            );
+
+
+        const artikel =
+            document.createElement("article");
+
+
+        artikel.className =
+            "kalender-geburtstag";
+
+
+        artikel.innerHTML = `
+
+            <div class="kalender-geburtstag-icon">
+
+                <i data-lucide="cake"></i>
+
+            </div>
+
+
+            <div>
+
+                <h3>
+                    ${escapeHtml(
+                        geburtstag.employee_name
+                    )}
+                </h3>
+
+                <p>
+                    ${datumText}
+                    ·
+                    ${geburtstag.age} Jahre
+                </p>
+
+            </div>
+
+        `;
+
+
+        liste.appendChild(artikel);
+
+    });
+
+
+    lucide.createIcons();
+
+}
+
+
+// ========================================
+// KALENDERDATEN
+// ========================================
+
+async function kalenderDatenLaden() {
+
+    await Promise.all([
+        kalenderTermineLaden(),
+        geburtstageLaden()
+    ]);
+
+}
+
+
+// ========================================
+// HTML SICHERN
+// ========================================
+
+function escapeHtml(text) {
+
+    if (
+        text === null ||
+        text === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+// ========================================
+// LOGIN
+// ========================================
+
+async function loginDurchfuehren(event) {
+
+    event.preventDefault();
+
+
+    const email =
+        document.getElementById(
+            "loginEmail"
+        ).value.trim();
+
+
+    const passwort =
+        document.getElementById(
+            "loginPasswort"
+        ).value;
+
+
+    const fehler =
+        document.getElementById(
+            "loginFehler"
+        );
+
+
+    fehler.textContent = "";
+
+
+    if (
+        typeof supabaseClient ===
+        "undefined"
+    ) {
+
+        fehler.textContent =
+            "Die Verbindung zur Anmeldung ist nicht verfügbar.";
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: passwort
+        });
+
+
+    if (error) {
+
+        console.error(
+            "Login fehlgeschlagen:",
+            error
+        );
+
+
+        fehler.textContent =
+            "E-Mail oder Passwort ist nicht korrekt.";
+
+        return;
+
+    }
+
+
+    await appAnzeigen();
+
+}
+
+
+// ========================================
+// APP ANZEIGEN
+// ========================================
+
+async function appAnzeigen() {
+
+    document.getElementById(
+        "loginBereich"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "app"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "hauptNavigation"
+    ).style.display = "grid";
+
+
+    heutigesDatumAnzeigen();
+
+    kalenderAnzeigen();
+
+    kalenderDatenLaden();
+
+
+    if (
+        typeof lucide !== "undefined"
+    ) {
+
+        lucide.createIcons();
+
+    }
+
+}
+
+
+// ========================================
+// AUSLOGGEN
+// ========================================
+
+async function ausloggen() {
+
+    if (
+        typeof supabaseClient ===
+        "undefined"
+    ) {
+
+        return;
+
+    }
+
+
+    await supabaseClient.auth.signOut();
+
+    location.reload();
+
+}
+
+
+// ========================================
+// LOGINSTATUS PRÜFEN
+// ========================================
+
+async function loginStatusPruefen() {
+
+    if (
+        typeof supabaseClient ===
+        "undefined"
+    ) {
+
+        return;
+
+    }
+
+
+    const {
+        data
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
+
+
+    if (
+        data &&
+        data.session
+    ) {
+
+        await appAnzeigen();
+
+    }
+
+}
+
+
+// ========================================
+// START
+// ========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        const loginForm =
+            document.getElementById(
+                "loginForm"
+            );
+
+
+        if (loginForm) {
+
+            loginForm.addEventListener(
+                "submit",
+                loginDurchfuehren
+            );
+
+        }
+
+
+        heutigesDatumAnzeigen();
+
+        kalenderAnzeigen();
+
+
+        if (
+            typeof lucide !== "undefined"
+        ) {
+
+            lucide.createIcons();
+
+        }
+
+
+        loginStatusPruefen();
+
+    }
+);
+
+
+// ========================================
+// SERVICE WORKER
+// ========================================
+
+if (
+    "serviceWorker" in navigator
+) {
+
+    window.addEventListener(
+        "load",
+        function() {
+
+            navigator.serviceWorker
+                .register(
+                    "./service-worker.js"
+                )
+                .then(
+                    function() {
+
+                        console.log(
+                            "SAIER INTERN: Service Worker aktiv"
+                        );
+
+                    }
+                )
+                .catch(
+                    function(error) {
+
+                        console.error(
+                            "Service Worker Fehler:",
+                            error
+                        );
+
+                    }
+                );
+
+        }
+    );
+
+}

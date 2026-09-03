@@ -3,481 +3,799 @@
    ======================================== */
 
 
-/* ----------------------------------------
+/* ========================================
    GRUNDLAGEN
-   ---------------------------------------- */
+   ======================================== */
 
 * {
     box-sizing: border-box;
 }
 
-
 :root {
-
     --saier-gruen: #95C11F;
-
     --saier-blau: #4269A7;
-
     --hintergrund: #F5F6F3;
-
     --text: #222222;
-
     --grau: #737373;
-
     --weiss: #FFFFFF;
-
+    --linie: #E7E9E3;
+    --hellgruen: #F4F8E9;
 }
 
+html {
+    margin: 0;
+    padding: 0;
+}
 
 body {
-
     margin: 0;
-
     font-family:
         "Fira Sans",
         Arial,
         sans-serif;
-
-    background:
-        var(--hintergrund);
-
-    color:
-        var(--text);
-
+    background: var(--hintergrund);
+    color: var(--text);
 }
 
 
-/* ----------------------------------------
+/* ========================================
    APP
-   ---------------------------------------- */
+   ======================================== */
 
 #app {
-
     min-height: 100vh;
-
-    padding-bottom: 90px;
-
+    padding-bottom: 100px;
 }
 
 
-/* ----------------------------------------
+/* ========================================
    SEITEN
-   ---------------------------------------- */
+   ======================================== */
 
 .seite {
-
     display: none;
-
     max-width: 1000px;
-
     margin: 0 auto;
-
     padding: 30px 25px;
-
 }
-
 
 .seite.aktiv {
-
     display: block;
-
 }
 
 
-/* ----------------------------------------
+/* ========================================
    LOGO
-   ---------------------------------------- */
+   ======================================== */
 
 .kopf {
-
     display: flex;
-
     justify-content: center;
-
     padding: 10px 0 30px;
-
 }
-
 
 .logo {
-
     width: 360px;
-
     max-width: 85%;
-
     height: auto;
-
 }
 
 
-/* ----------------------------------------
+/* ========================================
    BEGRÜSSUNG
-   ---------------------------------------- */
+   ======================================== */
 
 .begrüssung {
+    background: var(--weiss);
+    border-radius: 22px;
+    padding: 30px;
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+.kleine-ueberschrift {
+    margin: 0 0 5px;
+    color: var(--saier-gruen);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.begrüssung h1 {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 600;
+}
+
+.begrüssung p:last-child {
+    margin-bottom: 0;
+    color: var(--grau);
+    font-size: 17px;
+}
+
+
+/* ========================================
+   DASHBOARD KARTEN
+   ======================================== */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.info-box {
+    background: var(--weiss);
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+.info-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: rgba(149, 193, 31, 0.12);
+    color: var(--saier-gruen);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.info-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.info-label {
+    display: block;
+    color: var(--grau);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.info-box strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 15px;
+}
+
+
+/* ========================================
+   WILLKOMMEN BOX
+   ======================================== */
+
+.willkommen-box {
+    margin-top: 15px;
+    background: var(--saier-gruen);
+    color: white;
+    border-radius: 20px;
+    padding: 25px;
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.willkommen-box svg {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+}
+
+.willkommen-box h2 {
+    margin: 0 0 5px;
+    font-size: 20px;
+}
+
+.willkommen-box p {
+    margin: 0;
+    opacity: 0.95;
+}
+
+
+/* ========================================
+   SEITEN-KOPF
+   ======================================== */
+
+.seiten-kopf {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.seiten-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 16px;
+    background: var(--saier-gruen);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.seiten-icon svg {
+    width: 27px;
+    height: 27px;
+}
+
+.seiten-kopf span {
+    color: var(--saier-gruen);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.seiten-kopf h1 {
+    margin: 2px 0 0;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+
+/* ========================================
+   PLATZHALTER
+   ======================================== */
+
+.platzhalter {
+    background: white;
+    border-radius: 20px;
+    padding: 50px 25px;
+    text-align: center;
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+.platzhalter > svg {
+    width: 55px;
+    height: 55px;
+    color: var(--saier-gruen);
+}
+
+.platzhalter h2 {
+    margin-bottom: 5px;
+}
+
+.platzhalter p {
+    margin-top: 0;
+    color: var(--grau);
+}
+
+
+/* ========================================
+   AUSHÄNGE
+   ======================================== */
+
+.aushang {
+    background: white;
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 15px;
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+.aushang-kopf {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.aushang-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: rgba(149, 193, 31, 0.12);
+    color: var(--saier-gruen);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.aushang-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.neu-label {
+    background: var(--saier-gruen);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 5px 9px;
+    border-radius: 8px;
+    letter-spacing: 0.5px;
+}
+
+.aushang-inhalt {
+    margin-top: 18px;
+}
+
+.aushang-datum {
+    color: var(--grau);
+    font-size: 12px;
+}
+
+.aushang h2 {
+    margin: 5px 0 8px;
+    font-size: 21px;
+    font-weight: 600;
+}
+
+.aushang p {
+    margin: 0;
+    color: var(--grau);
+    line-height: 1.5;
+}
+
+.aushang-button {
+    margin-top: 20px;
+    border: none;
+    background: transparent;
+    color: var(--saier-gruen);
+    font-family:
+        "Fira Sans",
+        Arial,
+        sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+}
+
+.aushang-button svg {
+    width: 17px;
+    height: 17px;
+}
+
+
+/* ========================================
+   KALENDER
+   ======================================== */
+
+.kalender-navigation {
+    display: grid;
+    grid-template-columns: 48px 1fr 48px;
+    align-items: center;
+    gap: 10px;
 
     background: var(--weiss);
-
-    border-radius: 22px;
-
-    padding: 30px;
+    border-radius: 18px;
+    padding: 12px;
 
     box-shadow:
         0 4px 18px rgba(0, 0, 0, 0.05);
 
+    margin-bottom: 14px;
 }
 
-
-.kleine-ueberschrift {
-
-    margin: 0 0 5px;
-
-    color: var(--saier-gruen);
-
-    font-size: 13px;
-
-    font-weight: 700;
-
-    letter-spacing: 1.5px;
-
-}
-
-
-.begrüssung h1 {
-
-    margin: 0;
-
-    font-size: 34px;
-
+.kalender-monat {
+    text-align: center;
+    font-size: 22px;
     font-weight: 600;
-
+    color: var(--text);
 }
 
-
-.begrüssung p:last-child {
-
-    margin-bottom: 0;
-
-    color: var(--grau);
-
-    font-size: 17px;
-
-}
-
-
-/* ----------------------------------------
-   DASHBOARD KARTEN
-   ---------------------------------------- */
-
-.dashboard-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
-    gap: 15px;
-
-    margin-top: 15px;
-
-}
-
-
-.info-box {
-
-    background: var(--weiss);
-
-    border-radius: 18px;
-
-    padding: 20px;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 15px;
-
-}
-
-
-.info-icon {
-
+.kalender-pfeil {
     width: 48px;
-
     height: 48px;
 
+    border: none;
     border-radius: 14px;
 
-    background:
-        rgba(149, 193, 31, 0.12);
-
-    color:
-        var(--saier-gruen);
+    background: #F1F2EF;
+    color: var(--text);
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease;
+}
+
+.kalender-pfeil:hover {
+    background: #E8EAE5;
+}
+
+.kalender-pfeil:active {
+    transform: scale(0.94);
+}
+
+.kalender-pfeil svg {
+    width: 23px;
+    height: 23px;
 }
 
 
-.info-icon svg {
+/* ========================================
+   KALENDERFLÄCHE
+   ======================================== */
 
-    width: 24px;
+.kalender {
+    background: var(--weiss);
+    border-radius: 20px;
 
+    overflow: hidden;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.05);
+
+    margin-bottom: 20px;
 }
 
 
-.info-label {
+/* Wochentage */
 
-    display: block;
+.kalender-wochentage {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
 
-    color: var(--grau);
+    border-bottom:
+        1px solid var(--linie);
 
-    font-size: 11px;
+    background: #FAFBF9;
+}
 
+.kalender-wochentage span {
+    text-align: center;
+
+    padding: 14px 4px;
+
+    font-size: 13px;
     font-weight: 600;
 
-    letter-spacing: 1px;
-
+    color: var(--grau);
 }
 
 
-.info-box strong {
+/* Tage */
 
-    display: block;
+.kalender-tage {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
 
-    margin-top: 3px;
+.kalender-tag {
+    min-height: 70px;
 
-    font-size: 15px;
+    border-right:
+        1px solid var(--linie);
 
+    border-bottom:
+        1px solid var(--linie);
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    padding-top: 12px;
+
+    font-size: 16px;
+    color: var(--text);
+
+    position: relative;
+}
+
+.kalender-tag:nth-child(7n) {
+    border-right: none;
 }
 
 
-/* ----------------------------------------
-   WILLKOMMEN BOX
-   ---------------------------------------- */
+/* Wochenenden */
 
-.willkommen-box {
+.kalender-tag:nth-child(7n + 6) {
+    color: var(--saier-blau);
+}
 
-    margin-top: 15px;
+.kalender-tag:nth-child(7n) {
+    color: #C92C2C;
+}
+
+
+/* Leere Felder */
+
+.kalender-tag.leer {
+    background: #FBFBFA;
+    color: transparent;
+}
+
+
+/* Heutiger Tag */
+
+.kalender-tag.heute {
+    color: white !important;
+    font-weight: 700;
+}
+
+.kalender-tag.heute span {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
 
     background: var(--saier-gruen);
 
-    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: -6px;
+}
+
+
+/* ========================================
+   TERMINE & GEBURTSTAGE
+   ======================================== */
+
+.kalender-termine {
+    background: var(--weiss);
 
     border-radius: 20px;
 
-    padding: 25px;
+    padding: 20px;
 
+    margin-bottom: 18px;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+.kalender-bereich-kopf {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-    align-items: flex-start;
+    margin-bottom: 18px;
+}
 
-    gap: 18px;
+.kalender-bereich-kopf h2 {
+    margin: 3px 0 0;
 
+    font-size: 22px;
+    font-weight: 600;
+
+    color: var(--text);
+}
+
+.kalender-bereich-kopf > svg {
+    width: 28px;
+    height: 28px;
+
+    color: var(--saier-gruen);
 }
 
 
-.willkommen-box svg {
+/* Leerer Bereich */
 
-    width: 30px;
+.kalender-leer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
 
-    height: 30px;
+    padding: 18px;
+
+    border-radius: 15px;
+
+    background: var(--hellgruen);
+
+    border:
+        1px solid rgba(149, 193, 31, 0.18);
+}
+
+.kalender-leer svg {
+    width: 28px;
+    height: 28px;
 
     flex-shrink: 0;
 
+    color: var(--saier-gruen);
 }
 
-
-.willkommen-box h2 {
-
-    margin: 0 0 5px;
-
-    font-size: 20px;
-
-}
-
-
-.willkommen-box p {
-
+.kalender-leer p {
     margin: 0;
 
-    opacity: 0.95;
+    font-size: 15px;
+    line-height: 1.4;
 
+    color: var(--grau);
 }
 
 
-/* ----------------------------------------
-   SEITEN-KOPF
-   ---------------------------------------- */
+/* ========================================
+   NORMALE KALENDERTERMINE
+   ======================================== */
 
-.seiten-kopf {
-
+.kalender-termin {
     display: flex;
-
     align-items: center;
 
     gap: 15px;
 
-    margin-bottom: 25px;
+    padding: 15px;
 
+    border-radius: 14px;
+
+    background: #FAFBF9;
+
+    border:
+        1px solid var(--linie);
+
+    margin-bottom: 10px;
 }
 
+.kalender-termin:last-child {
+    margin-bottom: 0;
+}
 
-.seiten-icon {
+.kalender-termin-datum {
+    width: 52px;
+    height: 52px;
 
-    width: 55px;
+    border-radius: 14px;
 
-    height: 55px;
-
-    border-radius: 16px;
-
-    background:
-        var(--saier-gruen);
-
+    background: var(--saier-gruen);
     color: white;
 
     display: flex;
+    flex-direction: column;
 
     align-items: center;
-
     justify-content: center;
 
+    flex-shrink: 0;
 }
 
-
-.seiten-icon svg {
-
-    width: 27px;
-
+.kalender-termin-datum strong {
+    font-size: 19px;
+    line-height: 1;
 }
 
-
-.seiten-kopf span {
-
-    color: var(--saier-gruen);
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    letter-spacing: 1px;
-
+.kalender-termin-datum span {
+    font-size: 10px;
+    text-transform: uppercase;
+    margin-top: 2px;
 }
 
+.kalender-termin h3 {
+    margin: 0 0 3px;
 
-.seiten-kopf h1 {
-
-    margin: 2px 0 0;
-
-    font-size: 30px;
-
+    font-size: 16px;
     font-weight: 600;
-
 }
 
-
-/* ----------------------------------------
-   PLATZHALTER
-   ---------------------------------------- */
-
-.platzhalter {
-
-    background: white;
-
-    border-radius: 20px;
-
-    padding: 50px 25px;
-
-    text-align: center;
-
-    box-shadow:
-        0 4px 18px rgba(0, 0, 0, 0.04);
-
-}
-
-
-.platzhalter > svg {
-
-    width: 55px;
-
-    height: 55px;
-
-    color: var(--saier-gruen);
-
-}
-
-
-.platzhalter h2 {
-
-    margin-bottom: 5px;
-
-}
-
-
-.platzhalter p {
-
-    margin-top: 0;
+.kalender-termin p {
+    margin: 0;
 
     color: var(--grau);
 
+    font-size: 13px;
 }
 
 
-/* ----------------------------------------
+/* ========================================
+   GEBURTSTAGE
+   ======================================== */
+
+.kalender-geburtstag {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 15px;
+
+    border-radius: 14px;
+
+    background: #FAFBF9;
+
+    border:
+        1px solid var(--linie);
+
+    margin-bottom: 10px;
+}
+
+.kalender-geburtstag:last-child {
+    margin-bottom: 0;
+}
+
+.kalender-geburtstag-icon {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 14px;
+
+    background: rgba(149, 193, 31, 0.12);
+
+    color: var(--saier-gruen);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+.kalender-geburtstag-icon svg {
+    width: 27px;
+    height: 27px;
+}
+
+.kalender-geburtstag h3 {
+    margin: 0 0 3px;
+
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.kalender-geburtstag p {
+    margin: 0;
+
+    color: var(--grau);
+
+    font-size: 13px;
+}
+
+
+/* ========================================
    UNTERE NAVIGATION
-   ---------------------------------------- */
+   ======================================== */
 
 .navigation {
-
     position: fixed;
 
     bottom: 0;
-
     left: 0;
-
     right: 0;
 
-    height: 78px;
+    height: 82px;
 
-    background: white;
+    background: rgba(255, 255, 255, 0.97);
 
     display: grid;
 
-    grid-template-columns:
-        repeat(4, 1fr);
+    /* WICHTIG: 5 Navigationselemente */
+    grid-template-columns: repeat(5, 1fr);
 
     border-top:
         1px solid #E5E5E5;
 
     box-shadow:
-        0 -4px 15px rgba(0, 0, 0, 0.05);
+        0 -4px 20px rgba(0, 0, 0, 0.06);
 
     z-index: 1000;
-
 }
 
-
 .nav-button {
+    position: relative;
 
     border: none;
-
     background: transparent;
 
     display: flex;
-
     flex-direction: column;
 
     align-items: center;
-
     justify-content: center;
 
-    gap: 4px;
+    gap: 5px;
 
-    color: #888;
+    color: #888888;
 
     font-family:
         "Fira Sans",
@@ -490,335 +808,499 @@ body {
 
     transition:
         color 0.2s ease;
-
 }
-
 
 .nav-icon {
+    width: 24px;
+    height: 24px;
 
-    width: 23px;
-
-    height: 23px;
-
+    stroke-width: 1.9;
 }
 
+.nav-button span {
+    white-space: nowrap;
+}
 
 .nav-button.aktiv {
-
-    color:
-        var(--saier-gruen);
-
+    color: var(--saier-gruen);
     font-weight: 600;
-
 }
 
 
-/* ----------------------------------------
+/* Grüner Balken über aktivem Punkt */
+
+.nav-button.aktiv::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 22%;
+    right: 22%;
+
+    height: 3px;
+
+    background: var(--saier-gruen);
+
+    border-radius:
+        0 0 5px 5px;
+}
+
+
+/* ========================================
+   DESKTOP
+   ======================================== */
+
+@media (min-width: 900px) {
+
+    .navigation {
+        max-width: 900px;
+
+        left: 50%;
+        right: auto;
+
+        transform: translateX(-50%);
+
+        border-radius:
+            18px 18px 0 0;
+    }
+
+    .kalender-bereiche {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+}
+
+
+/* ========================================
    SMARTPHONE
-   ---------------------------------------- */
+   ======================================== */
 
 @media (max-width: 600px) {
 
-
     #app {
-
-        padding-bottom: calc(85px + env(safe-area-inset-bottom));
-
+        padding-bottom:
+            calc(110px + env(safe-area-inset-bottom));
     }
-
 
     .seite {
-
-        padding: 20px 15px;
-
+        padding:
+            20px 15px;
     }
 
+
+    /* Logo */
 
     .kopf {
-
         padding:
             5px 0 20px;
-
     }
-
 
     .logo {
-
         width: 280px;
-
         max-width: 90%;
-
     }
 
+
+    /* Begrüßung */
 
     .begrüssung {
-
         padding: 22px;
-
         border-radius: 18px;
-
     }
-
 
     .begrüssung h1 {
-
         font-size: 28px;
-
     }
 
+
+    /* Dashboard */
 
     .dashboard-grid {
-
         grid-template-columns: 1fr;
-
     }
-
 
     .willkommen-box {
-
         padding: 20px;
-
     }
 
+
+    /* Seitenkopf */
+
+    .seiten-kopf {
+        margin-bottom: 20px;
+    }
 
     .seiten-kopf h1 {
-
         font-size: 25px;
-
     }
 
+    .seiten-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+
+    /* Navigation */
 
     .navigation {
+        height:
+            calc(100px + env(safe-area-inset-bottom));
 
-        height: calc(75px + env(safe-area-inset-bottom));
+        padding-top: 8px;
 
-        padding-bottom: env(safe-area-inset-bottom);
-
+        padding-bottom:
+            env(safe-area-inset-bottom);
     }
 
+    .nav-button {
+        justify-content: flex-start;
+
+        padding-top: 7px;
+    }
 
     .nav-button span {
-
         display: none;
+    }
 
+    .nav-icon {
+        width: 27px;
+        height: 27px;
+    }
+
+    .nav-button.aktiv::before {
+        left: 18%;
+        right: 18%;
     }
 
 
-    .nav-icon {
+    /* Kalender */
 
+    .kalender-navigation {
+        grid-template-columns:
+            42px 1fr 42px;
+
+        padding: 9px;
+
+        border-radius: 16px;
+    }
+
+    .kalender-monat {
+        font-size: 18px;
+    }
+
+    .kalender-pfeil {
+        width: 42px;
+        height: 42px;
+
+        border-radius: 12px;
+    }
+
+    .kalender-pfeil svg {
+        width: 21px;
+        height: 21px;
+    }
+
+
+    /* Kalenderfläche */
+
+    .kalender {
+        border-radius: 17px;
+    }
+
+    .kalender-wochentage span {
+        padding:
+            11px 2px;
+
+        font-size: 11px;
+    }
+
+    .kalender-tag {
+        min-height: 52px;
+
+        padding-top: 10px;
+
+        font-size: 14px;
+    }
+
+    .kalender-tag.heute span {
+        width: 34px;
+        height: 34px;
+
+        margin-top: -6px;
+    }
+
+
+    /* Termine */
+
+    .kalender-termine {
+        padding: 16px;
+
+        border-radius: 17px;
+    }
+
+    .kalender-bereich-kopf h2 {
+        font-size: 20px;
+    }
+
+    .kalender-bereich-kopf > svg {
         width: 25px;
-
         height: 25px;
+    }
 
+    .kalender-leer {
+        padding: 15px;
+    }
+
+    .kalender-leer p {
+        font-size: 14px;
+    }
+
+}
+
+
+/* ========================================
+   SEHR KLEINE SMARTPHONES
+   ======================================== */
+
+@media (max-width: 380px) {
+
+    .kalender-tag {
+        min-height: 47px;
+        font-size: 13px;
+    }
+
+    .kalender-tag.heute span {
+        width: 31px;
+        height: 31px;
+    }
+
+    .kalender-wochentage span {
+        font-size: 10px;
+    }
+
+    .kalender-monat {
+        font-size: 17px;
     }
 
 }
 
 /* ========================================
-   AUSHÄNGE
+   LOGIN
    ======================================== */
 
-.aushang {
+.login-bereich {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 25px;
+
+    background: var(--hintergrund);
+}
+
+.login-box {
+    width: 100%;
+    max-width: 430px;
 
     background: white;
 
-    border-radius: 20px;
+    border-radius: 24px;
 
-    padding: 22px;
-
-    margin-bottom: 15px;
+    padding: 38px;
 
     box-shadow:
-        0 4px 18px rgba(0, 0, 0, 0.04);
-
+        0 8px 30px rgba(0, 0, 0, 0.07);
 }
 
+.login-logo {
+    display: block;
 
-.aushang-kopf {
+    width: 260px;
+    max-width: 90%;
 
-    display: flex;
+    height: auto;
 
-    align-items: center;
-
-    justify-content: space-between;
-
+    margin:
+        0 auto 30px;
 }
 
+.login-text {
+    text-align: center;
 
-.aushang-icon {
-
-    width: 48px;
-
-    height: 48px;
-
-    border-radius: 14px;
-
-    background:
-        rgba(149, 193, 31, 0.12);
-
-    color:
-        var(--saier-gruen);
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
+    margin-bottom: 28px;
 }
 
+.login-text h1 {
+    margin:
+        5px 0 8px;
 
-.aushang-icon svg {
-
-    width: 24px;
-
-}
-
-
-.neu-label {
-
-    background:
-        var(--saier-gruen);
-
-    color: white;
-
-    font-size: 10px;
-
-    font-weight: 700;
-
-    padding: 5px 9px;
-
-    border-radius: 8px;
-
-    letter-spacing: 0.5px;
-
-}
-
-
-.aushang-inhalt {
-
-    margin-top: 18px;
-
-}
-
-
-.aushang-datum {
-
-    color: var(--grau);
-
-    font-size: 12px;
-
-}
-
-
-.aushang h2 {
-
-    margin: 5px 0 8px;
-
-    font-size: 21px;
-
+    font-size: 30px;
     font-weight: 600;
-
 }
 
-
-.aushang p {
-
+.login-text p {
     margin: 0;
 
     color: var(--grau);
 
     line-height: 1.5;
-
 }
 
+.login-feld {
+    margin-bottom: 18px;
+}
 
-.aushang-button {
+.login-feld label {
+    display: block;
 
-    margin-top: 20px;
+    margin-bottom: 7px;
 
-    border: none;
+    font-size: 13px;
+    font-weight: 600;
+}
 
-    background: transparent;
+.login-feld input {
+    width: 100%;
 
-    color: var(--saier-gruen);
+    padding:
+        14px 15px;
+
+    border:
+        1px solid #DADDD5;
+
+    border-radius: 12px;
+
+    background: #FAFBF9;
 
     font-family:
         "Fira Sans",
         Arial,
         sans-serif;
 
-    font-size: 14px;
+    font-size: 15px;
 
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.login-feld input:focus {
+    border-color:
+        var(--saier-gruen);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(149, 193, 31, 0.12);
+
+    background: white;
+}
+
+.login-button {
+    width: 100%;
+
+    margin-top: 5px;
+
+    padding:
+        14px 18px;
+
+    border: none;
+
+    border-radius: 13px;
+
+    background:
+        var(--saier-gruen);
+
+    color: white;
+
+    font-family:
+        "Fira Sans",
+        Arial,
+        sans-serif;
+
+    font-size: 16px;
     font-weight: 600;
 
-    padding: 0;
-
     display: flex;
-
     align-items: center;
+    justify-content: center;
 
-    gap: 7px;
+    gap: 9px;
 
     cursor: pointer;
 
+    transition:
+        transform 0.15s ease,
+        opacity 0.2s ease;
 }
 
-
-.aushang-button svg {
-
-    width: 17px;
-
-    height: 17px;
-
+.login-button:hover {
+    opacity: 0.92;
 }
 
-/* ----------------------------------------
-   DESKTOP
-   ---------------------------------------- */
-
-@media (min-width: 900px) {
-
-    .navigation {
-
-        max-width: 900px;
-
-        left: 50%;
-
-        right: auto;
-
-        transform: translateX(-50%);
-
-        border-radius: 18px 18px 0 0;
-
-    }
-
+.login-button:active {
+    transform: scale(0.98);
 }
+
+.login-button svg {
+    width: 19px;
+    height: 19px;
+}
+
+.login-fehler {
+    min-height: 20px;
+
+    margin:
+        14px 0 0;
+
+    text-align: center;
+
+    color: #C62828;
+
+    font-size: 13px;
+}
+
+.login-hinweis {
+    margin:
+        25px 0 0;
+
+    text-align: center;
+
+    color: #999999;
+
+    font-size: 12px;
+}
+
 
 /* ========================================
-   IPHONE NAVIGATION - EXTRA HOCH
+   LOGIN SMARTPHONE
    ======================================== */
 
 @media (max-width: 600px) {
 
-    #app {
-        padding-bottom: 120px !important;
+    .login-bereich {
+        padding: 15px;
     }
 
-    .navigation {
-        height: 105px !important;
-        padding-top: 10px !important;
-        padding-bottom: env(safe-area-inset-bottom) !important;
+    .login-box {
+        padding: 28px 22px;
+
+        border-radius: 20px;
     }
 
-    .nav-button {
-        justify-content: flex-start !important;
-        padding-top: 8px !important;
+    .login-logo {
+        width: 230px;
+
+        margin-bottom: 25px;
     }
 
-    .nav-icon {
-        width: 28px !important;
-        height: 28px !important;
+    .login-text h1 {
+        font-size: 27px;
     }
 
 }

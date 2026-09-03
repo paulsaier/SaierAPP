@@ -24,27 +24,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600;700&display=swap"
           rel="stylesheet">
 
-    <!-- Unser Design -->
-   <link rel="stylesheet"
-      href="style.css">
+    <!-- Design -->
+    <link rel="stylesheet"
+          href="style.css">
 
+    <!-- PWA -->
     <link rel="manifest"
-      href="manifest.json">
+          href="manifest.json">
 
-<meta name="apple-mobile-web-app-capable"
-      content="yes">
-
-<meta name="apple-mobile-web-app-status-bar-style"
-      content="default">
-
-<link rel="apple-touch-icon"
-      href="apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable"
+          content="yes">
 
     <meta name="apple-mobile-web-app-status-bar-style"
-      content="default">    
+          content="default">
 
-    <!-- Lucide Icons -->
+    <link rel="apple-touch-icon"
+          href="apple-touch-icon.png">
+
+    <!-- Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
 
@@ -55,10 +55,106 @@
 
 
     <!-- ================================= -->
+    <!-- LOGIN -->
+    <!-- ================================= -->
+
+    <div id="loginBereich"
+         class="login-bereich">
+
+        <div class="login-box">
+
+            <img src="logo.png"
+                 class="login-logo"
+                 alt="SAIER">
+
+            <div class="login-text">
+
+                <span class="kleine-ueberschrift">
+                    SAIER INTERN
+                </span>
+
+                <h1>
+                    Willkommen
+                </h1>
+
+                <p>
+                    Bitte melde dich mit deinem
+                    Mitarbeiterkonto an.
+                </p>
+
+            </div>
+
+
+            <form id="loginForm">
+
+                <div class="login-feld">
+
+                    <label for="loginEmail">
+                        E-Mail-Adresse
+                    </label>
+
+                    <input
+                        type="email"
+                        id="loginEmail"
+                        placeholder="name@saier.de"
+                        autocomplete="email"
+                        required>
+
+                </div>
+
+
+                <div class="login-feld">
+
+                    <label for="loginPasswort">
+                        Passwort
+                    </label>
+
+                    <input
+                        type="password"
+                        id="loginPasswort"
+                        placeholder="Passwort"
+                        autocomplete="current-password"
+                        required>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="login-button">
+
+                    <span>
+                        Anmelden
+                    </span>
+
+                    <i data-lucide="arrow-right"></i>
+
+                </button>
+
+
+                <p id="loginFehler"
+                   class="login-fehler">
+                </p>
+
+            </form>
+
+
+            <p class="login-hinweis">
+                Dein Zugang wird von SAIER verwaltet.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================================= -->
     <!-- APP -->
     <!-- ================================= -->
 
-    <main id="app">
+    <main id="app"
+          style="display: none;">
 
 
         <!-- ============================= -->
@@ -95,7 +191,6 @@
 
 
             <div class="dashboard-grid">
-
 
                 <div class="info-box">
 
@@ -137,7 +232,6 @@
                     </div>
 
                 </div>
-
 
             </div>
 
@@ -214,6 +308,172 @@
 
 
         <!-- ============================= -->
+        <!-- KALENDER -->
+        <!-- ============================= -->
+
+        <section id="kalender"
+                 class="seite">
+
+            <div class="seiten-kopf">
+
+                <div class="seiten-icon">
+                    <i data-lucide="calendar-days"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        SAIER INTERN
+                    </span>
+
+                    <h1>
+                        Kalender
+                    </h1>
+
+                </div>
+
+            </div>
+
+
+            <div class="kalender-navigation">
+
+                <button
+                    class="kalender-pfeil"
+                    type="button"
+                    onclick="vorherigerMonat()"
+                    aria-label="Vorheriger Monat">
+
+                    <i data-lucide="chevron-left"></i>
+
+                </button>
+
+
+                <div
+                    class="kalender-monat"
+                    id="kalenderMonat">
+
+                    September 2026
+
+                </div>
+
+
+                <button
+                    class="kalender-pfeil"
+                    type="button"
+                    onclick="naechsterMonat()"
+                    aria-label="Nächster Monat">
+
+                    <i data-lucide="chevron-right"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="kalender">
+
+                <div class="kalender-wochentage">
+
+                    <span>Mo</span>
+                    <span>Di</span>
+                    <span>Mi</span>
+                    <span>Do</span>
+                    <span>Fr</span>
+                    <span>Sa</span>
+                    <span>So</span>
+
+                </div>
+
+
+                <div
+                    class="kalender-tage"
+                    id="kalenderTage">
+
+                </div>
+
+            </div>
+
+
+            <div class="kalender-termine">
+
+                <div class="kalender-bereich-kopf">
+
+                    <div>
+
+                        <span class="kleine-ueberschrift">
+                            TERMINE
+                        </span>
+
+                        <h2>
+                            Anstehende Termine
+                        </h2>
+
+                    </div>
+
+                    <i data-lucide="calendar-check"></i>
+
+                </div>
+
+
+                <div id="termineListe">
+
+                    <div class="kalender-leer">
+
+                        <i data-lucide="calendar-x"></i>
+
+                        <p>
+                            Aktuell sind keine Termine eingetragen.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="kalender-termine">
+
+                <div class="kalender-bereich-kopf">
+
+                    <div>
+
+                        <span class="kleine-ueberschrift">
+                            GEBURTSTAGE
+                        </span>
+
+                        <h2>
+                            Geburtstage
+                        </h2>
+
+                    </div>
+
+                    <i data-lucide="cake"></i>
+
+                </div>
+
+
+                <div id="geburtstageListe">
+
+                    <div class="kalender-leer">
+
+                        <i data-lucide="cake"></i>
+
+                        <p>
+                            Noch keine sichtbaren Geburtstage.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ============================= -->
         <!-- NEUIGKEITEN -->
         <!-- ============================= -->
 
@@ -260,169 +520,183 @@
 
 
 
-     <!-- ============================= -->
-<!-- AUSHÄNGE -->
-<!-- ============================= -->
+        <!-- ============================= -->
+        <!-- AUSHÄNGE -->
+        <!-- ============================= -->
 
-<section id="aushänge"
-         class="seite">
+        <section id="aushänge"
+                 class="seite">
 
-    <div class="seiten-kopf">
+            <div class="seiten-kopf">
 
-        <div class="seiten-icon">
-            <i data-lucide="clipboard-list"></i>
-        </div>
+                <div class="seiten-icon">
+                    <i data-lucide="clipboard-list"></i>
+                </div>
 
-        <div>
+                <div>
 
-            <span>
-                SAIER INTERN
-            </span>
+                    <span>
+                        SAIER INTERN
+                    </span>
 
-            <h1>
-                Aushänge
-            </h1>
+                    <h1>
+                        Aushänge
+                    </h1>
 
-        </div>
+                </div>
 
-    </div>
-
-
-    <!-- Aushang 1 -->
-
-    <article class="aushang neu">
-
-        <div class="aushang-kopf">
-
-            <div class="aushang-icon">
-                <i data-lucide="megaphone"></i>
             </div>
 
-            <span class="neu-label">
-                NEU
-            </span>
 
-        </div>
+            <article class="aushang neu">
 
+                <div class="aushang-kopf">
 
-        <div class="aushang-inhalt">
+                    <div class="aushang-icon">
+                        <i data-lucide="megaphone"></i>
+                    </div>
 
-            <span class="aushang-datum">
-                02. September 2026
-            </span>
+                    <span class="neu-label">
+                        NEU
+                    </span>
 
-            <h2>
-                Wichtige Information
-            </h2>
-
-            <p>
-                Hier könnte später der Inhalt des
-                aktuellen Aushangs stehen.
-            </p>
-
-        </div>
+                </div>
 
 
-        <button class="aushang-button">
-            Weiterlesen
-            <i data-lucide="arrow-right"></i>
-        </button>
+                <div class="aushang-inhalt">
 
-    </article>
+                    <span class="aushang-datum">
+                        02. September 2026
+                    </span>
 
+                    <h2>
+                        Wichtige Information
+                    </h2>
 
-    <!-- Aushang 2 -->
+                    <p>
+                        Hier könnte später der Inhalt des
+                        aktuellen Aushangs stehen.
+                    </p>
 
-    <article class="aushang">
-
-        <div class="aushang-kopf">
-
-            <div class="aushang-icon">
-                <i data-lucide="calendar-days"></i>
-            </div>
-
-        </div>
+                </div>
 
 
-        <div class="aushang-inhalt">
+                <button
+                    class="aushang-button"
+                    type="button">
 
-            <span class="aushang-datum">
-                28. August 2026
-            </span>
+                    Weiterlesen
 
-            <h2>
-                Betriebsveranstaltung
-            </h2>
+                    <i data-lucide="arrow-right"></i>
 
-            <p>
-                Weitere Informationen zu unserer
-                nächsten Veranstaltung.
-            </p>
+                </button>
 
-        </div>
+            </article>
 
 
-        <button class="aushang-button">
-            Weiterlesen
-            <i data-lucide="arrow-right"></i>
-        </button>
+            <article class="aushang">
 
-    </article>
+                <div class="aushang-kopf">
 
+                    <div class="aushang-icon">
+                        <i data-lucide="calendar-days"></i>
+                    </div>
 
-    <!-- Aushang 3 -->
-
-    <article class="aushang">
-
-        <div class="aushang-kopf">
-
-            <div class="aushang-icon">
-                <i data-lucide="info"></i>
-            </div>
-
-        </div>
+                </div>
 
 
-        <div class="aushang-inhalt">
+                <div class="aushang-inhalt">
 
-            <span class="aushang-datum">
-                20. August 2026
-            </span>
+                    <span class="aushang-datum">
+                        28. August 2026
+                    </span>
 
-            <h2>
-                Neue Informationen
-            </h2>
+                    <h2>
+                        Betriebsveranstaltung
+                    </h2>
 
-            <p>
-                Hier stehen zukünftig wichtige
-                Informationen für alle Mitarbeiter.
-            </p>
+                    <p>
+                        Weitere Informationen zu unserer
+                        nächsten Veranstaltung.
+                    </p>
 
-        </div>
+                </div>
 
 
-        <button class="aushang-button">
-            Weiterlesen
-            <i data-lucide="arrow-right"></i>
-        </button>
+                <button
+                    class="aushang-button"
+                    type="button">
 
-    </article>
+                    Weiterlesen
 
-</section>
+                    <i data-lucide="arrow-right"></i>
+
+                </button>
+
+            </article>
+
+
+            <article class="aushang">
+
+                <div class="aushang-kopf">
+
+                    <div class="aushang-icon">
+                        <i data-lucide="info"></i>
+                    </div>
+
+                </div>
+
+
+                <div class="aushang-inhalt">
+
+                    <span class="aushang-datum">
+                        20. August 2026
+                    </span>
+
+                    <h2>
+                        Neue Informationen
+                    </h2>
+
+                    <p>
+                        Hier stehen zukünftig wichtige
+                        Informationen für alle Mitarbeiter.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="aushang-button"
+                    type="button">
+
+                    Weiterlesen
+
+                    <i data-lucide="arrow-right"></i>
+
+                </button>
+
+            </article>
+
+        </section>
+
 
     </main>
 
 
 
     <!-- ================================= -->
-    <!-- UNTERE NAVIGATION -->
+    <!-- NAVIGATION -->
     <!-- ================================= -->
 
-    <nav class="navigation">
+    <nav class="navigation"
+         id="hauptNavigation"
+         style="display: none;">
 
 
-        <button class="nav-button aktiv"
-                onclick="zeigeSeite('dashboard', this)">
+        <button
+            class="nav-button aktiv"
+            type="button"
+            onclick="zeigeSeite('dashboard', this)">
 
             <i data-lucide="house"
                class="nav-icon"></i>
@@ -434,8 +708,10 @@
         </button>
 
 
-        <button class="nav-button"
-                onclick="zeigeSeite('monteure', this)">
+        <button
+            class="nav-button"
+            type="button"
+            onclick="zeigeSeite('monteure', this)">
 
             <i data-lucide="hard-hat"
                class="nav-icon"></i>
@@ -447,8 +723,25 @@
         </button>
 
 
-        <button class="nav-button"
-                onclick="zeigeSeite('neuigkeiten', this)">
+        <button
+            class="nav-button"
+            type="button"
+            onclick="zeigeSeite('kalender', this)">
+
+            <i data-lucide="calendar-days"
+               class="nav-icon"></i>
+
+            <span>
+                Kalender
+            </span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            type="button"
+            onclick="zeigeSeite('neuigkeiten', this)">
 
             <i data-lucide="newspaper"
                class="nav-icon"></i>
@@ -460,8 +753,10 @@
         </button>
 
 
-        <button class="nav-button"
-                onclick="zeigeSeite('aushänge', this)">
+        <button
+            class="nav-button"
+            type="button"
+            onclick="zeigeSeite('aushänge', this)">
 
             <i data-lucide="clipboard-list"
                class="nav-icon"></i>
@@ -472,39 +767,15 @@
 
         </button>
 
-
     </nav>
 
 
 
-    <!-- JavaScript -->
+    <!-- ================================= -->
+    <!-- APP JAVASCRIPT -->
+    <!-- ================================= -->
 
     <script src="app.js"></script>
-
-
-    <script>
-
-        lucide.createIcons();
-
-        // Datum anzeigen
-
-        const datum = new Date();
-
-        const datumFormatiert =
-            datum.toLocaleDateString(
-                "de-DE",
-                {
-                    weekday: "long",
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric"
-                }
-            );
-
-        document.getElementById("heutigesDatum").textContent =
-            datumFormatiert;
-
-    </script>
 
 
 </body>
