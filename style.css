@@ -1186,7 +1186,7 @@ background 0.2s ease,
 
     /* WICHTIG: 5 Navigationselemente */
 
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
 
     border-top:
 
