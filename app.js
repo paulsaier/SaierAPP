@@ -669,12 +669,330 @@ async function appAnzeigen() {
 
     kalenderDatenLaden();
 
+    benutzerDatenLaden();  
+    
+    // ========================================
+// PASSWORT ÄNDERN
+// ========================================
+
+function passwortAendernOeffnen() {
+
+    const modal =
+        document.getElementById(
+            "passwortModal"
+        );
+
+    const form =
+        document.getElementById(
+            "passwortForm"
+        );
+
+    const fehler =
+        document.getElementById(
+            "passwortFehler"
+        );
+
+    const erfolg =
+        document.getElementById(
+            "passwortErfolg"
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    if (form) {
+        form.reset();
+    }
+
+
+    if (fehler) {
+        fehler.textContent = "";
+    }
+
+
+    if (erfolg) {
+        erfolg.textContent = "";
+    }
+
+
+    modal.style.display = "flex";
+
 
     if (
         typeof lucide !== "undefined"
     ) {
 
         lucide.createIcons();
+
+    }
+
+
+    const erstesFeld =
+        document.getElementById(
+            "neuesPasswort"
+        );
+
+
+    if (erstesFeld) {
+
+        setTimeout(function() {
+
+            erstesFeld.focus();
+
+        }, 100);
+
+    }
+
+}
+
+async function passwortAendern(event) {
+
+    event.preventDefault();
+
+
+    const neuesPasswort =
+        document.getElementById(
+            "neuesPasswort"
+        ).value;
+
+
+    const bestaetigung =
+        document.getElementById(
+            "neuesPasswortBestaetigung"
+        ).value;
+
+
+    const fehler =
+        document.getElementById(
+            "passwortFehler"
+        );
+
+
+    const erfolg =
+        document.getElementById(
+            "passwortErfolg"
+        );
+
+
+    fehler.textContent = "";
+    erfolg.textContent = "";
+
+
+    // ----------------------------------------
+    // Passwörter vergleichen
+    // ----------------------------------------
+
+    if (
+        neuesPasswort !==
+        bestaetigung
+    ) {
+
+        fehler.textContent =
+            "Die Passwörter stimmen nicht überein.";
+
+        return;
+
+    }
+
+
+    // ----------------------------------------
+    // Mindestlänge
+    // ----------------------------------------
+
+    if (
+        neuesPasswort.length < 8
+    ) {
+
+        fehler.textContent =
+            "Das neue Passwort muss mindestens 8 Zeichen lang sein.";
+
+        return;
+
+    }
+
+
+    // ----------------------------------------
+    // Passwort ändern
+    // ----------------------------------------
+
+    const {
+        error
+    } =
+        await supabaseClient.auth.updateUser({
+            password: neuesPasswort
+        });
+
+
+    if (error) {
+
+        console.error(
+            "Passwortänderung fehlgeschlagen:",
+            error
+        );
+
+
+        fehler.textContent =
+            "Das Passwort konnte nicht geändert werden.";
+
+        return;
+
+    }
+
+
+    // ----------------------------------------
+    // Erfolg
+    // ----------------------------------------
+
+    erfolg.textContent =
+        "Dein Passwort wurde erfolgreich geändert.";
+
+
+    document.getElementById(
+        "passwortForm"
+    ).reset();
+
+
+    setTimeout(function() {
+
+        passwortAendernSchliessen();
+
+    }, 1800);
+
+}
+
+
+function passwortAendernSchliessen() {
+
+    const modal =
+        document.getElementById(
+            "passwortModal"
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    modal.style.display = "none";
+
+}
+
+
+    if (
+        typeof lucide !== "undefined"
+    ) {
+
+        lucide.createIcons();
+
+    }
+
+}
+
+// ========================================
+// BENUTZERDATEN
+// ========================================
+
+async function benutzerDatenLaden() {
+
+    const nameElement =
+        document.getElementById("benutzerName");
+
+    const emailElement =
+        document.getElementById("benutzerEmail");
+
+
+    if (
+        typeof supabaseClient ===
+        "undefined"
+    ) {
+
+        return;
+
+    }
+
+
+    // ----------------------------------------
+    // Angemeldeten Benutzer laden
+    // ----------------------------------------
+
+    const {
+        data: userData,
+        error: userError
+    } =
+        await supabaseClient.auth.getUser();
+
+
+    if (
+        userError ||
+        !userData ||
+        !userData.user
+    ) {
+
+        console.error(
+            "Benutzerdaten konnten nicht geladen werden:",
+            userError
+        );
+
+        return;
+
+    }
+
+
+    const user =
+        userData.user;
+
+
+    // ----------------------------------------
+    // E-Mail-Adresse
+    // ----------------------------------------
+
+    if (emailElement) {
+
+        emailElement.textContent =
+            user.email || "-";
+
+    }
+
+
+    // ----------------------------------------
+    // Mitarbeiterdaten laden
+    // ----------------------------------------
+
+    const {
+        data: mitarbeiter,
+        error: mitarbeiterError
+    } =
+        await supabaseClient
+            .from("employees")
+            .select("name")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+
+    if (mitarbeiterError) {
+
+        console.error(
+            "Mitarbeiterdaten konnten nicht geladen werden:",
+            mitarbeiterError
+        );
+
+        return;
+
+    }
+
+
+    // ----------------------------------------
+    // Name
+    // ----------------------------------------
+
+    if (nameElement) {
+
+        nameElement.textContent =
+            mitarbeiter?.name || "Mitarbeiter";
 
     }
 
@@ -780,7 +1098,25 @@ document.addEventListener(
 
         loginStatusPruefen();
 
+
+        const passwortForm =
+    document.getElementById(
+        "passwortForm"
+    );
+
+
+if (passwortForm) {
+
+    passwortForm.addEventListener(
+        "submit",
+        passwortAendern
+    );
+
+}
+
     }
+
+    
 );
 
 

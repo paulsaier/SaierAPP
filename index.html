@@ -680,6 +680,247 @@
 
         </section>
 
+<!-- ============================= -->
+<!-- BENUTZER -->
+<!-- ============================= -->
+
+<section id="benutzer"
+         class="seite">
+
+    <div class="seiten-kopf">
+
+        <div class="seiten-icon">
+            <i data-lucide="circle-user-round"></i>
+        </div>
+
+        <div>
+
+            <span>
+                SaierAPP
+            </span>
+
+            <h1>
+                Benutzer
+            </h1>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- PROFIL -->
+    <!-- ============================= -->
+
+    <div class="benutzer-profil">
+
+        <div class="benutzer-profil-kopf">
+
+            <div class="benutzer-profil-icon">
+                <i data-lucide="user-round"></i>
+            </div>
+
+        </div>
+
+
+        <div class="benutzer-profil-inhalt">
+
+            <h2 id="benutzerName">
+                Paul Saier
+            </h2>
+
+            <span class="benutzer-rolle">
+                Mitarbeiter
+            </span>
+
+            <div class="benutzer-email">
+
+                <i data-lucide="mail"></i>
+
+                <span id="benutzerEmail">
+                    -
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- KONTO -->
+    <!-- ============================= -->
+
+    <div class="benutzer-sektion">
+
+        <div class="benutzer-sektion-kopf">
+
+            <span class="kleine-ueberschrift">
+                MEIN KONTO
+            </span>
+
+            <h2>
+                Konto
+            </h2>
+
+        </div>
+
+
+        <div class="benutzer-optionen">
+
+            <button
+                    class="benutzer-option"
+                    type="button"
+                    onclick="passwortAendernOeffnen()">
+
+                <div class="benutzer-option-icon">
+                    <i data-lucide="lock-keyhole"></i>
+                </div>
+
+                <div class="benutzer-option-text">
+
+                    <strong>
+                        Passwort ändern
+                    </strong>
+
+                    <span>
+                        Neues Passwort festlegen
+                    </span>
+
+                </div>
+
+                <i
+                    data-lucide="chevron-right"
+                    class="benutzer-option-pfeil">
+                </i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- PERSÖNLICHE DATEN -->
+    <!-- ============================= -->
+
+    <div class="benutzer-sektion">
+
+        <div class="benutzer-sektion-kopf">
+
+            <span class="kleine-ueberschrift">
+                PERSÖNLICHE DATEN
+            </span>
+
+            <h2>
+                Geburtstag
+            </h2>
+
+        </div>
+
+
+        <div class="benutzer-optionen">
+
+            <button
+                class="benutzer-option"
+                type="button">
+
+                <div class="benutzer-option-icon">
+                    <i data-lucide="cake"></i>
+                </div>
+
+                <div class="benutzer-option-text">
+
+                    <strong>
+                        Geburtstag
+                    </strong>
+
+                    <span id="benutzerGeburtstag">
+                        Noch nicht hinterlegt
+                    </span>
+
+                </div>
+
+                <i
+                    data-lucide="chevron-right"
+                    class="benutzer-option-pfeil">
+                </i>
+
+            </button>
+
+
+            <div class="benutzer-option benutzer-option-schalter">
+
+                <div class="benutzer-option-icon">
+                    <i data-lucide="eye"></i>
+                </div>
+
+                <div class="benutzer-option-text">
+
+                    <strong>
+                        Geburtstag anzeigen
+                    </strong>
+
+                    <span>
+                        Für andere Mitarbeiter sichtbar
+                    </span>
+
+                </div>
+
+
+                <label class="schalter">
+
+                    <input
+                        type="checkbox"
+                        id="geburtstagSichtbar">
+
+                    <span class="schalter-slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="benutzer-hinweis">
+
+            <i data-lucide="info"></i>
+
+            <p>
+                Du entscheidest selbst, ob dein Geburtstag
+                für andere Mitarbeiter sichtbar sein soll.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- AUSLOGGEN -->
+    <!-- ============================= -->
+
+    <div class="benutzer-ausloggen">
+
+        <button
+            class="ausloggen-button"
+            type="button"
+            onclick="ausloggen()">
+
+            <i data-lucide="log-out"></i>
+
+            <span>
+                Ausloggen
+            </span>
+
+        </button>
+
+    </div>
+
+</section>
 
     </main>
 
@@ -789,6 +1030,147 @@
     <!-- ================================= -->
     <!-- APP JAVASCRIPT -->
     <!-- ================================= -->
+
+
+    <!-- ================================= -->
+<!-- PASSWORT ÄNDERN -->
+<!-- ================================= -->
+
+<div
+    id="passwortModal"
+    class="passwort-modal"
+    style="display: none;">
+
+    <div
+        class="passwort-modal-hintergrund"
+        onclick="passwortAendernSchliessen()">
+    </div>
+
+
+    <div
+        class="passwort-modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="passwortModalTitel">
+
+        <div class="passwort-modal-kopf">
+
+            <div class="passwort-modal-icon">
+
+                <i data-lucide="lock-keyhole"></i>
+
+            </div>
+
+            <button
+                type="button"
+                class="passwort-modal-schliessen"
+                onclick="passwortAendernSchliessen()"
+                aria-label="Fenster schließen">
+
+                <i data-lucide="x"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="passwort-modal-inhalt">
+
+            <span class="kleine-ueberschrift">
+                SICHERHEIT
+            </span>
+
+            <h2 id="passwortModalTitel">
+                Passwort ändern
+            </h2>
+
+            <p>
+                Vergib ein neues Passwort für dein
+                SAIER-Konto.
+            </p>
+
+
+            <form id="passwortForm">
+
+
+                <div class="passwort-feld">
+
+                    <label for="neuesPasswort">
+                        Neues Passwort
+                    </label>
+
+                    <input
+                        type="password"
+                        id="neuesPasswort"
+                        autocomplete="new-password"
+                        placeholder="Neues Passwort"
+                        required>
+
+                </div>
+
+
+                <div class="passwort-feld">
+
+                    <label for="neuesPasswortBestaetigung">
+                        Passwort wiederholen
+                    </label>
+
+                    <input
+                        type="password"
+                        id="neuesPasswortBestaetigung"
+                        autocomplete="new-password"
+                        placeholder="Passwort wiederholen"
+                        required>
+
+                </div>
+
+
+                <p
+                    id="passwortFehler"
+                    class="passwort-fehler">
+                </p>
+
+
+                <p
+                    id="passwortErfolg"
+                    class="passwort-erfolg">
+                </p>
+
+
+                <div class="passwort-modal-buttons">
+
+                    <button
+                        type="button"
+                        class="passwort-abbrechen"
+                        onclick="passwortAendernSchliessen()">
+
+                        Abbrechen
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="passwort-speichern">
+
+                        <span>
+                            Passwort ändern
+                        </span>
+
+                        <i data-lucide="check"></i>
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
 
     <script src="app.js"></script>
 

@@ -1157,3 +1157,853 @@ body {
     }
 
 }
+
+/* ========================================
+   BENUTZER
+   ======================================== */
+
+.benutzer-profil {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+
+/* Grüner Profilbereich */
+
+.benutzer-profil-kopf {
+    height: 95px;
+    background: #95C11F;
+    position: relative;
+}
+
+
+/* Benutzer-Icon */
+
+.benutzer-profil-icon {
+    position: absolute;
+    left: 32px;
+    bottom: -42px;
+
+    width: 84px;
+    height: 84px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+}
+
+.benutzer-profil-icon svg {
+    width: 42px;
+    height: 42px;
+    color: #95C11F;
+    stroke-width: 2;
+}
+
+
+/* Profilinformationen */
+
+.benutzer-profil-inhalt {
+    padding: 58px 32px 28px;
+}
+
+.benutzer-profil-inhalt h2 {
+    margin: 0 0 4px;
+    font-size: 30px;
+    font-weight: 700;
+    color: #222222;
+}
+
+.benutzer-rolle {
+    display: block;
+    margin-bottom: 18px;
+
+    font-size: 16px;
+    color: #666666;
+}
+
+.benutzer-email {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    font-size: 16px;
+    color: #444444;
+}
+
+.benutzer-email svg {
+    width: 19px;
+    height: 19px;
+    color: #95C11F;
+}
+
+
+/* ========================================
+   BENUTZER SEKTIONEN
+   ======================================== */
+
+.benutzer-sektion {
+    margin-bottom: 32px;
+}
+
+.benutzer-sektion-kopf {
+    margin-bottom: 12px;
+}
+
+.benutzer-sektion-kopf .kleine-ueberschrift {
+    display: block;
+    margin-bottom: 3px;
+}
+
+.benutzer-sektion-kopf h2 {
+    margin: 0;
+
+    font-size: 26px;
+    font-weight: 700;
+    color: #222222;
+}
+
+
+/* ========================================
+   OPTIONEN
+   ======================================== */
+
+.benutzer-optionen {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.04);
+}
+
+
+/* Einzelne Option */
+
+.benutzer-option {
+    width: 100%;
+    min-height: 78px;
+
+    border: none;
+    border-bottom: 1px solid #eeeeee;
+
+    background: #ffffff;
+
+    display: flex;
+    align-items: center;
+
+    padding: 16px 22px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    transition:
+        background 0.2s ease,
+        transform 0.1s ease;
+}
+
+.benutzer-option:last-child {
+    border-bottom: none;
+}
+
+.benutzer-option:hover {
+    background: #fafbf8;
+}
+
+.benutzer-option:active {
+    transform: scale(0.99);
+}
+
+
+/* Icon links */
+
+.benutzer-option-icon {
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    background: #f0f5e7;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 16px;
+}
+
+.benutzer-option-icon svg {
+    width: 21px;
+    height: 21px;
+
+    color: #95C11F;
+
+    stroke-width: 2;
+}
+
+
+/* Text */
+
+.benutzer-option-text {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+
+    flex: 1;
+}
+
+.benutzer-option-text strong {
+    font-size: 17px;
+    font-weight: 600;
+    color: #222222;
+}
+
+.benutzer-option-text span {
+    font-size: 14px;
+    color: #777777;
+}
+
+
+/* Pfeil */
+
+.benutzer-option-pfeil {
+    width: 20px;
+    height: 20px;
+
+    flex-shrink: 0;
+
+    color: #999999;
+
+    margin-left: 12px;
+}
+
+
+/* ========================================
+   SCHALTER
+   ======================================== */
+
+.benutzer-option-schalter {
+    cursor: default;
+}
+
+.benutzer-option-schalter:hover {
+    background: #ffffff;
+}
+
+
+/* Switch */
+
+.schalter {
+    position: relative;
+
+    display: inline-block;
+
+    width: 48px;
+    height: 28px;
+
+    flex-shrink: 0;
+
+    margin-left: 12px;
+}
+
+.schalter input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.schalter-slider {
+    position: absolute;
+    inset: 0;
+
+    background: #d6d6d6;
+
+    border-radius: 30px;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.schalter-slider::before {
+    content: "";
+
+    position: absolute;
+
+    width: 22px;
+    height: 22px;
+
+    left: 3px;
+    top: 3px;
+
+    background: #ffffff;
+
+    border-radius: 50%;
+
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+
+    transition: 0.2s ease;
+}
+
+.schalter input:checked + .schalter-slider {
+    background: #95C11F;
+}
+
+.schalter input:checked + .schalter-slider::before {
+    transform: translateX(20px);
+}
+
+
+/* ========================================
+   HINWEIS
+   ======================================== */
+
+.benutzer-hinweis {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 10px;
+
+    margin-top: 12px;
+    padding: 0 4px;
+}
+
+.benutzer-hinweis svg {
+    width: 18px;
+    height: 18px;
+
+    flex-shrink: 0;
+
+    color: #777777;
+
+    margin-top: 2px;
+}
+
+.benutzer-hinweis p {
+    margin: 0;
+
+    font-size: 14px;
+    line-height: 1.5;
+
+    color: #777777;
+}
+
+
+/* ========================================
+   AUSLOGGEN
+   ======================================== */
+
+.benutzer-ausloggen {
+    margin-top: 45px;
+    padding-bottom: 30px;
+
+    display: flex;
+    justify-content: center;
+}
+
+.benutzer-ausloggen .ausloggen-button {
+    min-height: 48px;
+
+    padding: 0 22px;
+
+    border: 1px solid #e1bcbc;
+    border-radius: 12px;
+
+    background: #fff8f8;
+
+    color: #b42323;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.benutzer-ausloggen .ausloggen-button:hover {
+    background: #fff0f0;
+    border-color: #d99b9b;
+}
+
+.benutzer-ausloggen .ausloggen-button svg {
+    width: 19px;
+    height: 19px;
+}
+
+
+/* ========================================
+   MOBILE
+   ======================================== */
+
+@media (max-width: 600px) {
+
+    .benutzer-profil {
+        border-radius: 16px;
+        margin-bottom: 26px;
+    }
+
+    .benutzer-profil-kopf {
+        height: 78px;
+    }
+
+    .benutzer-profil-icon {
+        left: 20px;
+        bottom: -36px;
+
+        width: 72px;
+        height: 72px;
+    }
+
+    .benutzer-profil-icon svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    .benutzer-profil-inhalt {
+        padding: 50px 20px 22px;
+    }
+
+    .benutzer-profil-inhalt h2 {
+        font-size: 25px;
+    }
+
+    .benutzer-email {
+        font-size: 15px;
+    }
+
+
+    .benutzer-sektion {
+        margin-bottom: 26px;
+    }
+
+    .benutzer-sektion-kopf {
+        margin-bottom: 10px;
+    }
+
+    .benutzer-sektion-kopf h2 {
+        font-size: 23px;
+    }
+
+
+    .benutzer-option {
+        min-height: 72px;
+        padding: 13px 16px;
+    }
+
+    .benutzer-option-icon {
+        width: 38px;
+        height: 38px;
+
+        margin-right: 12px;
+
+        border-radius: 10px;
+    }
+
+    .benutzer-option-icon svg {
+        width: 19px;
+        height: 19px;
+    }
+
+    .benutzer-option-text strong {
+        font-size: 15px;
+    }
+
+    .benutzer-option-text span {
+        font-size: 13px;
+    }
+
+
+    .schalter {
+        width: 44px;
+        height: 26px;
+    }
+
+    .schalter-slider::before {
+        width: 20px;
+        height: 20px;
+
+        left: 3px;
+        top: 3px;
+    }
+
+    .schalter input:checked + .schalter-slider::before {
+        transform: translateX(18px);
+    }
+
+
+    .benutzer-hinweis p {
+        font-size: 13px;
+    }
+
+
+    .benutzer-ausloggen {
+        margin-top: 38px;
+        padding-bottom: 25px;
+    }
+
+}
+
+/* ========================================
+   PASSWORT MODAL
+   ======================================== */
+
+.passwort-modal {
+    position: fixed;
+    inset: 0;
+
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+
+/* Hintergrund */
+
+.passwort-modal-hintergrund {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    backdrop-filter: blur(3px);
+}
+
+
+/* Fenster */
+
+.passwort-modal-box {
+    position: relative;
+
+    width: 100%;
+    max-width: 480px;
+
+    background: #ffffff;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.20);
+}
+
+
+/* Kopf */
+
+.passwort-modal-kopf {
+    min-height: 90px;
+
+    padding: 20px 24px;
+
+    background: #95C11F;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+/* Icon */
+
+.passwort-modal-icon {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 15px;
+
+    background: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.passwort-modal-icon svg {
+    width: 25px;
+    height: 25px;
+
+    color: #95C11F;
+}
+
+
+/* Schließen */
+
+.passwort-modal-schliessen {
+    width: 40px;
+    height: 40px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.20);
+
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+.passwort-modal-schliessen:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.passwort-modal-schliessen svg {
+    width: 21px;
+    height: 21px;
+}
+
+
+/* Inhalt */
+
+.passwort-modal-inhalt {
+    padding: 28px;
+}
+
+.passwort-modal-inhalt .kleine-ueberschrift {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.passwort-modal-inhalt h2 {
+    margin: 0 0 8px;
+
+    font-size: 28px;
+    font-weight: 700;
+
+    color: #222222;
+}
+
+.passwort-modal-inhalt > p {
+    margin: 0 0 24px;
+
+    color: #666666;
+
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+
+/* Felder */
+
+.passwort-feld {
+    margin-bottom: 18px;
+}
+
+.passwort-feld label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #333333;
+}
+
+.passwort-feld input {
+    width: 100%;
+    box-sizing: border-box;
+
+    height: 50px;
+
+    padding: 0 14px;
+
+    border: 1px solid #d8d8d8;
+    border-radius: 10px;
+
+    background: #fafafa;
+
+    font-family: inherit;
+    font-size: 16px;
+
+    color: #222222;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.passwort-feld input:focus {
+    border-color: #95C11F;
+    background: #ffffff;
+}
+
+
+/* Fehlermeldung */
+
+.passwort-fehler {
+    color: #b42323 !important;
+
+    font-size: 14px !important;
+
+    margin: 4px 0 12px !important;
+}
+
+
+/* Erfolg */
+
+.passwort-erfolg {
+    color: #3d7c16 !important;
+
+    font-size: 14px !important;
+
+    margin: 4px 0 12px !important;
+}
+
+
+/* Buttons */
+
+.passwort-modal-buttons {
+    display: flex;
+    gap: 10px;
+
+    margin-top: 24px;
+}
+
+.passwort-abbrechen,
+.passwort-speichern {
+    min-height: 48px;
+
+    border-radius: 10px;
+
+    padding: 0 18px;
+
+    font-family: inherit;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.passwort-abbrechen {
+    flex: 1;
+
+    border: 1px solid #dddddd;
+
+    background: #ffffff;
+
+    color: #555555;
+}
+
+.passwort-speichern {
+    flex: 1.4;
+
+    border: none;
+
+    background: #95C11F;
+
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+}
+
+.passwort-speichern:hover {
+    filter: brightness(0.95);
+}
+
+.passwort-speichern svg {
+    width: 18px;
+    height: 18px;
+}
+
+
+/* ========================================
+   PASSWORT MODAL – MOBILE
+   ======================================== */
+
+@media (max-width: 600px) {
+
+    .passwort-modal {
+        align-items: flex-end;
+
+        padding: 0;
+    }
+
+    .passwort-modal-box {
+        max-width: none;
+
+        border-radius: 20px 20px 0 0;
+
+        max-height: 90vh;
+
+        overflow-y: auto;
+    }
+
+    .passwort-modal-kopf {
+        min-height: 76px;
+
+        padding: 16px 20px;
+    }
+
+    .passwort-modal-icon {
+        width: 46px;
+        height: 46px;
+
+        border-radius: 13px;
+    }
+
+    .passwort-modal-inhalt {
+        padding: 24px 20px;
+
+        padding-bottom:
+            calc(
+                24px +
+                env(safe-area-inset-bottom)
+            );
+    }
+
+    .passwort-modal-inhalt h2 {
+        font-size: 25px;
+    }
+
+    .passwort-modal-buttons {
+        flex-direction: column-reverse;
+    }
+
+    .passwort-abbrechen,
+    .passwort-speichern {
+        width: 100%;
+    }
+
+}
