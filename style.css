@@ -501,7 +501,7 @@ body {
     font-weight: 700;
 }
 
-.kalender-tag.heute span {
+.kalender-tag.heute > span:first-child {
     width: 38px;
     height: 38px;
     border-radius: 50%;
@@ -925,7 +925,7 @@ body {
         font-size: 14px;
     }
 
-    .kalender-tag.heute span {
+    .kalender-tag.heute > span:first-child {
         width: 34px;
         height: 34px;
         margin-top: -6px;
@@ -970,7 +970,7 @@ body {
         font-size: 13px;
     }
 
-    .kalender-tag.heute span {
+    .kalender-tag.heute > span:first-child {
         width: 31px;
         height: 31px;
     }
@@ -2007,3 +2007,29 @@ body {
     }
 
 }
+
+/* ========================================
+   KALENDER – BLAUER PUNKT
+   ======================================== */
+.kalender-punkt { position:absolute; left:50%; bottom:7px; width:6px; height:6px; border-radius:50%; background:var(--saier-blau); transform:translateX(-50%); pointer-events:none; }
+
+/* ========================================
+   KALENDER – POPUP
+   ======================================== */
+.kalender-popup { position:fixed; inset:0; display:none; align-items:center; justify-content:center; padding:20px; z-index:3000; }
+.kalender-popup-hintergrund { position:absolute; inset:0; background:rgba(0,0,0,.38); }
+.kalender-popup-box { position:relative; width:100%; max-width:480px; max-height:min(80vh,650px); overflow:hidden; background:var(--weiss); border-radius:22px; box-shadow:0 18px 55px rgba(0,0,0,.20); z-index:1; }
+.kalender-popup-kopf { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:22px 22px 18px; border-bottom:1px solid var(--linie); }
+.kalender-popup-kopf h2 { margin:0; padding-right:5px; font-size:21px; line-height:1.25; font-weight:600; color:var(--text); }
+.kalender-popup-schliessen { width:36px; height:36px; flex-shrink:0; border:none; border-radius:10px; background:#F1F2EF; color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .2s ease,transform .15s ease; }
+.kalender-popup-schliessen:hover { background:#E8EAE5; }
+.kalender-popup-schliessen:active { transform:scale(.94); }
+.kalender-popup-schliessen svg { width:19px; height:19px; }
+.kalender-popup-inhalt { padding:20px 22px 22px; max-height:calc(min(80vh,650px) - 90px); overflow-y:auto; }
+.kalender-popup-leer { padding:18px; border-radius:14px; background:var(--hellgruen); color:var(--grau); font-size:15px; line-height:1.4; text-align:center; }
+.kalender-popup-termin { padding:16px; border-radius:14px; background:#FAFBF9; border:1px solid var(--linie); }
+.kalender-popup-termin + .kalender-popup-termin { margin-top:10px; }
+.kalender-popup-termin h3 { margin:0; font-size:16px; font-weight:600; }
+.kalender-popup-termin p { margin:6px 0 0; color:var(--grau); font-size:14px; line-height:1.45; }
+body.kalender-popup-offen { overflow:hidden; }
+@media (max-width:600px) { .kalender-punkt { bottom:5px; width:5px; height:5px; } .kalender-popup { padding:15px; } .kalender-popup-box { max-height:82vh; border-radius:19px; } .kalender-popup-kopf { padding:18px 18px 15px; } .kalender-popup-kopf h2 { font-size:18px; } .kalender-popup-inhalt { padding:16px 18px 18px; max-height:calc(82vh - 80px); } }

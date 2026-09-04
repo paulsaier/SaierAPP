@@ -1092,6 +1092,21 @@
 
             <form id="passwortForm">
 
+                <div class="passwort-feld">
+
+                    <label for="altesPasswort">
+                        Aktuelles Passwort
+                    </label>
+
+                    <input
+                        type="password"
+                        id="altesPasswort"
+                        autocomplete="current-password"
+                        placeholder="Aktuelles Passwort"
+                        required>
+
+                </div>
+
 
                 <div class="passwort-feld">
 
@@ -1165,6 +1180,144 @@
 
 
             </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================================= -->
+<!-- GEBURTSTAG – ERSTLOGIN -->
+<!-- ================================= -->
+
+<div
+    id="geburtstagErstloginModal"
+    class="passwort-modal"
+    style="display: none;">
+
+    <div
+        class="passwort-modal-hintergrund">
+    </div>
+
+
+    <div
+        class="passwort-modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="geburtstagErstloginTitel">
+
+
+        <div class="passwort-modal-kopf">
+
+            <div class="passwort-modal-icon">
+                <i data-lucide="cake"></i>
+            </div>
+
+        </div>
+
+
+        <div class="passwort-modal-inhalt">
+
+            <span class="kleine-ueberschrift">
+                PERSÖNLICHE DATEN
+            </span>
+
+
+            <h2 id="geburtstagErstloginTitel">
+                Geburtstag
+            </h2>
+
+
+            <p>
+                Möchtest du deinen Geburtstag für deine
+                Kolleginnen und Kollegen sichtbar machen?
+            </p>
+
+
+            <p>
+                Dein Geburtstag wird dann im Kalender
+                der SAIER INTERN App angezeigt.
+            </p>
+
+
+            <div
+                id="geburtstagErstloginAuswahl"
+                class="passwort-modal-buttons">
+
+                <button
+                    type="button"
+                    class="passwort-abbrechen"
+                    onclick="geburtstagNichtAnzeigen()">
+
+                    Nicht anzeigen
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="passwort-speichern"
+                    onclick="geburtstagAnzeigen()">
+
+                    Geburtstag anzeigen
+
+                </button>
+
+            </div>
+
+
+            <div
+                id="geburtstagErstloginFormular"
+                style="display: none;">
+
+                <div class="passwort-feld">
+
+                    <label for="geburtstagDatum">
+                        Dein Geburtsdatum
+                    </label>
+
+                    <input
+                        type="date"
+                        id="geburtstagDatum"
+                        autocomplete="bday">
+
+                </div>
+
+
+                <p
+                    id="geburtstagFehler"
+                    class="passwort-fehler">
+                </p>
+
+
+                <div class="passwort-modal-buttons">
+
+                    <button
+                        type="button"
+                        class="passwort-abbrechen"
+                        onclick="geburtstagFormularZurueck()">
+
+                        Zurück
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="passwort-speichern"
+                        onclick="geburtstagSpeichern()">
+
+                        Speichern
+
+                        <i data-lucide="check"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
 
         </div>
 
