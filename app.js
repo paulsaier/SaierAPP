@@ -548,10 +548,17 @@ function kalenderPopupOeffnen(jahr, monat, tag, termine) {
             <section class="kalender-popup-geburtstage">
                 <h3>Geburtstage</h3>
                 ${geburtstageAnDiesemTag.map(function(geburtstag) {
-                    const alterText =
-                        Number.isInteger(geburtstag.age) && geburtstag.age >= 0
-                            ? ` wird ${geburtstag.age} Jahre alt`
-                            : "";
+                   const geburtsjahr = Number(geburtstag.birth_year);
+
+const alter =
+    Number.isInteger(geburtsjahr)
+        ? jahr - geburtsjahr
+        : null;
+
+const alterText =
+    Number.isInteger(alter) && alter >= 0
+        ? ` wird ${alter} Jahre alt`
+        : "";
 
                     return `
                         <div class="kalender-popup-geburtstag">
