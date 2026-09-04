@@ -3625,3 +3625,260 @@ body.admin-benutzer-modal-offen {
     }
 
 }
+
+/* ========================================
+   BENUTZERVERWALTUNG – ERGÄNZUNGEN
+   Nur für die separate Admin-Benutzerverwaltung
+======================================== */
+
+.admin-form-feld {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 14px;
+}
+
+.admin-form-feld label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.admin-form-feld input[type="text"],
+.admin-form-feld input[type="email"],
+.admin-form-feld input[type="date"] {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--linie);
+    border-radius: 10px;
+    background: var(--weiss);
+    color: var(--text);
+    font: inherit;
+    outline: none;
+}
+
+.admin-form-feld input:focus {
+    border-color: var(--saier-gruen);
+    box-shadow: 0 0 0 3px rgba(149, 193, 31, 0.12);
+}
+
+.admin-benutzer-karte {
+    padding: 14px;
+    border: 1px solid var(--linie);
+    border-radius: 14px;
+    background: var(--weiss);
+}
+
+.admin-benutzer-karte button {
+    min-height: 42px;
+    padding: 10px 14px;
+    border: 1px solid var(--linie);
+    border-radius: 10px;
+    background: var(--weiss);
+    color: var(--text);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.admin-benutzer-karte button:hover {
+    border-color: var(--saier-gruen);
+}
+
+@media (max-width: 600px) {
+    .admin-benutzer-karte {
+        padding: 12px;
+    }
+}
+
+
+/* ========================================
+   BENUTZERVERWALTUNG – BUTTONS
+   Dezente SAIER-Optik für die neuen Admin-Buttons
+======================================== */
+
+.admin-benutzer-footer {
+    display: flex;
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.admin-benutzer-footer .button,
+.admin-benutzer-karte .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 44px;
+    height: 44px;
+    padding: 0 18px;
+    border: 1.5px solid var(--saier-gruen);
+    border-radius: 10px;
+    background: var(--weiss);
+    color: var(--text);
+    font-family: "Fira Sans", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1;
+    box-shadow: none;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.admin-benutzer-footer .button:hover,
+.admin-benutzer-karte .button:hover {
+    background: var(--hellgruen);
+    border-color: var(--saier-gruen);
+    color: var(--text);
+}
+
+.admin-benutzer-footer .button:active,
+.admin-benutzer-karte .button:active {
+    transform: translateY(1px);
+}
+
+.admin-benutzer-footer .button svg,
+.admin-benutzer-karte .button svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2.2;
+    flex: 0 0 auto;
+}
+
+.admin-benutzer-footer .button {
+    flex: 1;
+}
+
+@media (max-width: 600px) {
+    .admin-benutzer-footer {
+        gap: 10px;
+    }
+
+    .admin-benutzer-footer .button,
+    .admin-benutzer-karte .button {
+        min-height: 42px;
+        height: 42px;
+        padding: 0 14px;
+        font-size: 15px;
+    }
+}
+
+
+/* ========================================
+   BENUTZERVERWALTUNG – BEARBEITEN
+   Feine SAIER-Buttons im Bearbeitungsfenster
+======================================== */
+
+#adminBenutzerBearbeitenModal .admin-benutzer-bearbeiten-footer {
+    display: flex;
+    gap: 14px;
+    margin-top: 20px;
+}
+
+#adminBenutzerBearbeitenModal .admin-benutzer-bearbeiten-footer .button {
+    flex: 1;
+    min-height: 44px;
+    height: 44px;
+    padding: 0 18px;
+    border: 1.5px solid var(--saier-gruen);
+    border-radius: 10px;
+    background: var(--weiss);
+    color: var(--text);
+    font-family: "Fira Sans", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1;
+    box-shadow: none;
+}
+
+#adminBenutzerBearbeitenModal .admin-benutzer-bearbeiten-footer .button:hover {
+    background: var(--hellgruen);
+    color: var(--text);
+}
+
+#adminBenutzerBearbeitenModal .admin-benutzer-bearbeiten-footer .button:active {
+    transform: translateY(1px);
+}
+
+#adminBenutzerBearbeitenModal .admin-benutzer-bearbeiten-footer .button svg {
+    width: 20px;
+    height: 20px;
+}
+
+@media (max-width: 600px) {
+    #adminBenutzerBearbeitenModal .admin-benutzer-bearbeiten-footer {
+        gap: 10px;
+    }
+
+    #adminBenutzerBearbeitenModal .admin-benutzer-bearbeiten-footer .button {
+        min-height: 42px;
+        height: 42px;
+        padding: 0 14px;
+        font-size: 15px;
+    }
+}
+
+
+/* ========================================
+   BENUTZERVERWALTUNG – LÖSCHEN
+   Feine SAIER-Buttons im Löschfenster
+======================================== */
+
+#adminBenutzerLoeschModal .admin-benutzer-loesch-footer {
+    display: flex;
+    gap: 14px;
+    margin-top: 24px;
+}
+
+#adminBenutzerLoeschModal .admin-benutzer-loesch-footer .button {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 44px;
+    height: 44px;
+    padding: 0 18px;
+    border: 1.5px solid var(--saier-gruen);
+    border-radius: 10px;
+    background: var(--weiss);
+    color: var(--text);
+    font-family: "Fira Sans", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1;
+    box-shadow: none;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+#adminBenutzerLoeschModal .admin-benutzer-loesch-footer .button:hover {
+    background: var(--hellgruen);
+    border-color: var(--saier-gruen);
+    color: var(--text);
+}
+
+#adminBenutzerLoeschModal .admin-benutzer-loesch-footer .button:active {
+    transform: translateY(1px);
+}
+
+#adminBenutzerLoeschModal .admin-benutzer-loesch-footer .button svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2.2;
+    flex: 0 0 auto;
+}
+
+@media (max-width: 600px) {
+    #adminBenutzerLoeschModal .admin-benutzer-loesch-footer {
+        gap: 10px;
+    }
+
+    #adminBenutzerLoeschModal .admin-benutzer-loesch-footer .button {
+        min-height: 42px;
+        height: 42px;
+        padding: 0 14px;
+        font-size: 15px;
+    }
+}
