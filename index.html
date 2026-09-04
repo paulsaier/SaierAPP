@@ -729,7 +729,7 @@
                 Paul Saier
             </h2>
 
-            <span class="benutzer-rolle">
+            <span class="benutzer-rolle" id="benutzerRolle">
                 Mitarbeiter
             </span>
 
@@ -897,6 +897,272 @@
         </div>
 
     </div>
+
+
+<!-- ============================= -->
+<!-- ADMINISTRATION -->
+<!-- ============================= -->
+
+<div
+    class="benutzer-sektion admin-benutzer-bereich"
+    id="adminBenutzerBereich"
+    style="display: none;">
+
+    <div class="benutzer-sektion-kopf">
+
+        <span class="kleine-ueberschrift">
+            ADMINISTRATION
+        </span>
+
+        <h2>
+            Mitarbeiter verwalten
+        </h2>
+
+    </div>
+
+
+
+    <div class="benutzer-optionen">
+
+        <!-- ============================= -->
+        <!-- MITARBEITER ANLEGEN -->
+        <!-- ============================= -->
+
+        <button
+            class="benutzer-option"
+            type="button"
+            onclick="adminBenutzerModalOeffnen()">
+
+            <div class="benutzer-option-icon">
+                <i data-lucide="user-plus"></i>
+            </div>
+
+            <div class="benutzer-option-text">
+
+                <strong>
+                    Neuen Mitarbeiter anlegen
+                </strong>
+
+                <span>
+                    Benutzer und Mitarbeiterprofil erstellen
+                </span>
+
+            </div>
+
+            <i
+                data-lucide="chevron-right"
+                class="benutzer-option-pfeil">
+            </i>
+
+        </button>
+
+
+
+        <!-- ============================= -->
+        <!-- MITARBEITER VERWALTEN -->
+        <!-- ============================= -->
+
+        <button
+            class="benutzer-option"
+            type="button"
+            onclick="adminBenutzerVerwaltenOeffnen()">
+
+            <div class="benutzer-option-icon">
+                <i data-lucide="users-round"></i>
+            </div>
+
+            <div class="benutzer-option-text">
+
+                <strong>
+                    Mitarbeiter verwalten
+                </strong>
+
+                <span>
+                    Benutzer anzeigen, bearbeiten und löschen
+                </span>
+
+            </div>
+
+            <i
+                data-lucide="chevron-right"
+                class="benutzer-option-pfeil">
+            </i>
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- ============================= -->
+<!-- MITARBEITER ANLEGEN -->
+<!-- ============================= -->
+
+<div
+    id="adminBenutzerModal"
+    class="passwort-modal"
+    style="display: none;">
+
+    <div
+        class="passwort-modal-hintergrund"
+        onclick="adminBenutzerModalSchliessen()">
+    </div>
+
+
+
+    <div
+        class="passwort-modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="adminBenutzerModalTitel">
+
+        <div class="passwort-modal-kopf">
+
+            <div class="passwort-modal-icon">
+
+                <i data-lucide="user-plus"></i>
+
+            </div>
+
+
+
+            <button
+                type="button"
+                class="passwort-modal-schliessen"
+                onclick="adminBenutzerModalSchliessen()"
+                aria-label="Fenster schließen">
+
+                <i data-lucide="x"></i>
+
+            </button>
+
+        </div>
+
+
+
+        <div class="passwort-modal-inhalt">
+
+            <span class="kleine-ueberschrift">
+                ADMINISTRATION
+            </span>
+
+            <h2 id="adminBenutzerModalTitel">
+                Neuen Mitarbeiter anlegen
+            </h2>
+
+            <p>
+                Erstelle einen neuen Zugang für einen Mitarbeiter.
+            </p>
+
+
+
+            <form id="adminBenutzerForm">
+
+                <div class="passwort-feld">
+
+                    <label for="adminBenutzerName">
+                        Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="adminBenutzerName"
+                        placeholder="Vorname Nachname"
+                        autocomplete="name"
+                        required>
+
+                </div>
+
+
+
+                <div class="passwort-feld">
+
+                    <label for="adminBenutzerEmail">
+                        E-Mail-Adresse
+                    </label>
+
+                    <input
+                        type="email"
+                        id="adminBenutzerEmail"
+                        placeholder="name@saier.de"
+                        autocomplete="email"
+                        required>
+
+                </div>
+
+
+
+                <div class="passwort-feld">
+
+                    <label for="adminBenutzerPasswort">
+                        Startpasswort
+                    </label>
+
+                    <input
+                        type="password"
+                        id="adminBenutzerPasswort"
+                        placeholder="Mindestens 8 Zeichen"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required>
+
+                </div>
+
+
+
+                <p
+                    id="adminBenutzerFehler"
+                    class="passwort-fehler">
+                </p>
+
+
+
+                <p
+                    id="adminBenutzerErfolg"
+                    class="passwort-erfolg">
+                </p>
+
+
+
+                <div class="passwort-modal-buttons">
+
+                    <button
+                        type="button"
+                        class="passwort-abbrechen"
+                        onclick="adminBenutzerModalSchliessen()">
+
+                        Abbrechen
+
+                    </button>
+
+
+
+                    <button
+                        type="submit"
+                        class="passwort-speichern"
+                        id="adminBenutzerAnlegenButton">
+
+                        <span>
+                            Mitarbeiter anlegen
+                        </span>
+
+                        <i data-lucide="user-plus"></i>
+
+                    </button>
+
+                </div>
+
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
 
 
     <!-- ============================= -->
@@ -1092,21 +1358,6 @@
 
             <form id="passwortForm">
 
-                <div class="passwort-feld">
-
-                    <label for="altesPasswort">
-                        Aktuelles Passwort
-                    </label>
-
-                    <input
-                        type="password"
-                        id="altesPasswort"
-                        autocomplete="current-password"
-                        placeholder="Aktuelles Passwort"
-                        required>
-
-                </div>
-
 
                 <div class="passwort-feld">
 
@@ -1180,144 +1431,6 @@
 
 
             </form>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- ================================= -->
-<!-- GEBURTSTAG – ERSTLOGIN -->
-<!-- ================================= -->
-
-<div
-    id="geburtstagErstloginModal"
-    class="passwort-modal"
-    style="display: none;">
-
-    <div
-        class="passwort-modal-hintergrund">
-    </div>
-
-
-    <div
-        class="passwort-modal-box"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="geburtstagErstloginTitel">
-
-
-        <div class="passwort-modal-kopf">
-
-            <div class="passwort-modal-icon">
-                <i data-lucide="cake"></i>
-            </div>
-
-        </div>
-
-
-        <div class="passwort-modal-inhalt">
-
-            <span class="kleine-ueberschrift">
-                PERSÖNLICHE DATEN
-            </span>
-
-
-            <h2 id="geburtstagErstloginTitel">
-                Geburtstag
-            </h2>
-
-
-            <p>
-                Möchtest du deinen Geburtstag für deine
-                Kolleginnen und Kollegen sichtbar machen?
-            </p>
-
-
-            <p>
-                Dein Geburtstag wird dann im Kalender
-                der SAIER INTERN App angezeigt.
-            </p>
-
-
-            <div
-                id="geburtstagErstloginAuswahl"
-                class="passwort-modal-buttons">
-
-                <button
-                    type="button"
-                    class="passwort-abbrechen"
-                    onclick="geburtstagNichtAnzeigen()">
-
-                    Nicht anzeigen
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="passwort-speichern"
-                    onclick="geburtstagAnzeigen()">
-
-                    Geburtstag anzeigen
-
-                </button>
-
-            </div>
-
-
-            <div
-                id="geburtstagErstloginFormular"
-                style="display: none;">
-
-                <div class="passwort-feld">
-
-                    <label for="geburtstagDatum">
-                        Dein Geburtsdatum
-                    </label>
-
-                    <input
-                        type="date"
-                        id="geburtstagDatum"
-                        autocomplete="bday">
-
-                </div>
-
-
-                <p
-                    id="geburtstagFehler"
-                    class="passwort-fehler">
-                </p>
-
-
-                <div class="passwort-modal-buttons">
-
-                    <button
-                        type="button"
-                        class="passwort-abbrechen"
-                        onclick="geburtstagFormularZurueck()">
-
-                        Zurück
-
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="passwort-speichern"
-                        onclick="geburtstagSpeichern()">
-
-                        Speichern
-
-                        <i data-lucide="check"></i>
-
-                    </button>
-
-                </div>
-
-            </div>
-
 
         </div>
 
