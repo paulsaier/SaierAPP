@@ -2084,3 +2084,199 @@ body {
     color: #999999;
     margin-left: 12px;
 }
+
+/* ========================================
+   KALENDER – BLAUER PUNKT
+======================================== */
+
+.kalender-punkt {
+    position: absolute;
+    bottom: 9px;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: var(--saier-blau);
+}
+
+
+/* ========================================
+   KALENDER – POPUP
+======================================== */
+
+.kalender-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.kalender-popup-hintergrund {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(3px);
+}
+
+.kalender-popup-box {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.20);
+}
+
+.kalender-popup-kopf {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 20px 24px;
+    background: var(--saier-blau);
+    color: white;
+}
+
+.kalender-popup-kopf h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.kalender-popup-schliessen {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.kalender-popup-schliessen:hover {
+    background: rgba(255, 255, 255, 0.30);
+}
+
+.kalender-popup-schliessen svg {
+    width: 21px;
+    height: 21px;
+}
+
+.kalender-popup-inhalt {
+    padding: 24px;
+}
+
+.kalender-popup-geburtstage {
+    margin-bottom: 20px;
+}
+
+.kalender-popup-geburtstage h3 {
+    margin: 0 0 12px;
+    color: var(--saier-gruen);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.kalender-popup-geburtstag {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 13px 15px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    background: var(--hellgruen);
+}
+
+.kalender-popup-geburtstag-name {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.kalender-popup-geburtstag-alter {
+    color: var(--grau);
+    font-size: 13px;
+}
+
+.kalender-popup-termin {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    background: #FAFBF9;
+    border: 1px solid var(--linie);
+}
+
+.kalender-popup-termin:last-child {
+    margin-bottom: 0;
+}
+
+.kalender-popup-termin h3 {
+    margin: 0 0 5px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.kalender-popup-termin p {
+    margin: 0;
+    color: var(--grau);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.kalender-popup-leer {
+    padding: 18px;
+    border-radius: 14px;
+    background: var(--hellgruen);
+    color: var(--grau);
+    text-align: center;
+    font-size: 15px;
+}
+
+
+/* ========================================
+   KALENDER – POPUP SMARTPHONE
+======================================== */
+
+@media (max-width: 600px) {
+
+    .kalender-punkt {
+        bottom: 6px;
+        width: 5px;
+        height: 5px;
+    }
+
+    .kalender-popup {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .kalender-popup-box {
+        max-width: none;
+        max-height: 88vh;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .kalender-popup-kopf {
+        padding: 16px 20px;
+    }
+
+    .kalender-popup-kopf h2 {
+        font-size: 18px;
+    }
+
+    .kalender-popup-inhalt {
+        padding: 20px;
+    }
+
+}
