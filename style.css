@@ -2249,7 +2249,6 @@ body {
 ======================================== */
 
 @media (max-width: 600px) {
-
     .kalender-punkt {
         bottom: 6px;
         width: 5px;
@@ -2257,14 +2256,15 @@ body {
     }
 
     .kalender-popup {
-        align-items: flex-end;
-        padding: 0;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 12vh 16px 0;
     }
 
     .kalender-popup-box {
         max-width: none;
-        max-height: 88vh;
-        border-radius: 20px 20px 0 0;
+        max-height: 75vh;
+        border-radius: 20px;
     }
 
     .kalender-popup-kopf {
@@ -2278,5 +2278,4 @@ body {
     .kalender-popup-inhalt {
         padding: 20px;
     }
-
 }
