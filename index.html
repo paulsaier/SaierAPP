@@ -825,7 +825,8 @@
 
             <button
                 class="benutzer-option"
-                type="button">
+                type="button"
+                onclick="geburtstagBearbeitenOeffnen()">
 
                 <div class="benutzer-option-icon">
                     <i data-lucide="cake"></i>
@@ -1258,6 +1259,256 @@
 
 
     <!-- ================================= -->
+<!-- GEBURTSTAG – ERSTLOGIN -->
+<!-- ================================= -->
+
+<div
+    id="geburtstagErstloginModal"
+    class="passwort-modal"
+    style="display: none;">
+
+    <div
+        class="passwort-modal-hintergrund"
+        onclick="geburtstagErstloginSchliessen()">
+    </div>
+
+    <div
+        class="passwort-modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="geburtstagErstloginTitel">
+
+        <div class="passwort-modal-kopf">
+
+            <div class="passwort-modal-icon">
+                <i data-lucide="cake"></i>
+            </div>
+
+            <button
+                type="button"
+                class="passwort-modal-schliessen"
+                onclick="geburtstagErstloginSchliessen()"
+                aria-label="Fenster schließen">
+
+                <i data-lucide="x"></i>
+
+            </button>
+
+        </div>
+
+        <div class="passwort-modal-inhalt">
+
+            <span class="kleine-ueberschrift">
+                PERSÖNLICHE DATEN
+            </span>
+
+            <h2 id="geburtstagErstloginTitel">
+                Dein Geburtstag
+            </h2>
+
+            <div
+                id="geburtstagErstloginAuswahl">
+
+                <p>
+                    Möchtest du deinen Geburtstag für andere Mitarbeiter sichtbar machen?
+                </p>
+
+                <div class="passwort-modal-buttons">
+
+                    <button
+                        type="button"
+                        class="passwort-abbrechen"
+                        onclick="geburtstagNichtAnzeigen()">
+
+                        Nicht anzeigen
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="passwort-speichern"
+                        onclick="geburtstagAnzeigen()">
+
+                        <span>
+                            Ja, anzeigen
+                        </span>
+
+                        <i data-lucide="arrow-right"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="geburtstagErstloginFormular"
+                style="display: none;">
+
+                <p>
+                    Gib bitte dein Geburtsdatum ein.
+                </p>
+
+                <div class="passwort-feld">
+
+                    <label for="geburtstagDatum">
+                        Geburtsdatum
+                    </label>
+
+                    <input
+                        type="date"
+                        id="geburtstagDatum"
+                        autocomplete="bday"
+                        required>
+
+                </div>
+
+                <p
+                    id="geburtstagFehler"
+                    class="passwort-fehler">
+                </p>
+
+                <div class="passwort-modal-buttons">
+
+                    <button
+                        type="button"
+                        class="passwort-abbrechen"
+                        onclick="geburtstagFormularZurueck()">
+
+                        Zurück
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="passwort-speichern"
+                        onclick="geburtstagSpeichern()">
+
+                        <span>
+                            Speichern
+                        </span>
+
+                        <i data-lucide="check"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- GEBURTSTAG ÄNDERN -->
+<!-- ================================= -->
+
+<div
+    id="geburtstagBearbeitenModal"
+    class="passwort-modal"
+    style="display: none;">
+
+    <div
+        class="passwort-modal-hintergrund"
+        onclick="geburtstagBearbeitenSchliessen()">
+    </div>
+
+    <div
+        class="passwort-modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="geburtstagBearbeitenTitel">
+
+        <div class="passwort-modal-kopf">
+
+            <div class="passwort-modal-icon">
+                <i data-lucide="cake"></i>
+            </div>
+
+            <button
+                type="button"
+                class="passwort-modal-schliessen"
+                onclick="geburtstagBearbeitenSchliessen()"
+                aria-label="Fenster schließen">
+
+                <i data-lucide="x"></i>
+
+            </button>
+
+        </div>
+
+        <div class="passwort-modal-inhalt">
+
+            <span class="kleine-ueberschrift">
+                PERSÖNLICHE DATEN
+            </span>
+
+            <h2 id="geburtstagBearbeitenTitel">
+                Geburtstag ändern
+            </h2>
+
+            <p>
+                Hier kannst du dein Geburtsdatum ändern.
+            </p>
+
+            <div class="passwort-feld">
+
+                <label for="geburtstagBearbeitenDatum">
+                    Geburtsdatum
+                </label>
+
+                <input
+                    type="date"
+                    id="geburtstagBearbeitenDatum"
+                    autocomplete="bday"
+                    required>
+
+            </div>
+
+            <p
+                id="geburtstagBearbeitenFehler"
+                class="passwort-fehler">
+            </p>
+
+            <div class="passwort-modal-buttons">
+
+                <button
+                    type="button"
+                    class="passwort-abbrechen"
+                    onclick="geburtstagBearbeitenSchliessen()">
+
+                    Abbrechen
+
+                </button>
+
+                <button
+                    type="button"
+                    class="passwort-speichern"
+                    onclick="geburtstagBearbeitenSpeichern()">
+
+                    <span>
+                        Speichern
+                    </span>
+
+                    <i data-lucide="check"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================= -->
 <!-- PASSWORT ÄNDERN -->
 <!-- ================================= -->
 
@@ -1317,77 +1568,153 @@
 
             <form id="passwortForm">
 
+                <div
+                    id="passwortStufeAltes"
+                    class="passwort-stufe">
 
-                <div class="passwort-feld">
+                    <div class="passwort-feld">
 
-                    <label for="neuesPasswort">
-                        Neues Passwort
-                    </label>
+                        <label for="altesPasswort">
+                            Aktuelles Passwort
+                        </label>
 
-                    <input
-                        type="password"
-                        id="neuesPasswort"
-                        autocomplete="new-password"
-                        placeholder="Neues Passwort"
-                        required>
+                        <input
+                            type="password"
+                            id="altesPasswort"
+                            autocomplete="current-password"
+                            placeholder="Aktuelles Passwort"
+                            required>
+
+                    </div>
+
+                    <p
+                        id="passwortFehler"
+                        class="passwort-fehler">
+                    </p>
+
+                    <div class="passwort-modal-buttons">
+
+                        <button
+                            type="button"
+                            class="passwort-abbrechen"
+                            onclick="passwortAendernSchliessen()">
+
+                            Abbrechen
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="passwort-speichern"
+                            id="passwortPruefenButton"
+                            onclick="passwortAltesPruefen()">
+
+                            <span>
+                                Überprüfen
+                            </span>
+
+                            <i data-lucide="arrow-right"></i>
+
+                        </button>
+
+                    </div>
 
                 </div>
 
 
-                <div class="passwort-feld">
+                <div
+                    id="passwortStufeNeu"
+                    class="passwort-stufe"
+                    style="display: none;">
 
-                    <label for="neuesPasswortBestaetigung">
-                        Passwort wiederholen
-                    </label>
+                    <div class="passwort-feld">
 
-                    <input
-                        type="password"
-                        id="neuesPasswortBestaetigung"
-                        autocomplete="new-password"
-                        placeholder="Passwort wiederholen"
-                        required>
+                        <label for="neuesPasswort">
+                            Neues Passwort
+                        </label>
+
+                        <input
+                            type="password"
+                            id="neuesPasswort"
+                            autocomplete="new-password"
+                            placeholder="Neues Passwort"
+                            minlength="8"
+                            required>
+
+                    </div>
+
+
+                    <div class="passwort-feld">
+
+                        <label for="neuesPasswortBestaetigung">
+                            Passwort wiederholen
+                        </label>
+
+                        <input
+                            type="password"
+                            id="neuesPasswortBestaetigung"
+                            autocomplete="new-password"
+                            placeholder="Passwort wiederholen"
+                            minlength="8"
+                            required>
+
+                    </div>
+
+
+                    <p
+                        id="passwortFehlerNeu"
+                        class="passwort-fehler">
+                    </p>
+
+
+                    <div class="passwort-modal-buttons">
+
+                        <button
+                            type="button"
+                            class="passwort-abbrechen"
+                            onclick="passwortAendernSchliessen()">
+
+                            Abbrechen
+
+                        </button>
+
+
+                        <button
+                            type="submit"
+                            class="passwort-speichern"
+                            id="passwortSpeichernButton">
+
+                            <span>
+                                Passwort ändern
+                            </span>
+
+                            <i data-lucide="check"></i>
+
+                        </button>
+
+                    </div>
 
                 </div>
 
 
-                <p
-                    id="passwortFehler"
-                    class="passwort-fehler">
-                </p>
+                <div
+                    id="passwortErfolgBox"
+                    class="passwort-erfolg-box"
+                    style="display: none;">
 
-
-                <p
-                    id="passwortErfolg"
-                    class="passwort-erfolg">
-                </p>
-
-
-                <div class="passwort-modal-buttons">
-
-                    <button
-                        type="button"
-                        class="passwort-abbrechen"
-                        onclick="passwortAendernSchliessen()">
-
-                        Abbrechen
-
-                    </button>
-
-
-                    <button
-                        type="submit"
-                        class="passwort-speichern">
-
-                        <span>
-                            Passwort ändern
-                        </span>
-
+                    <div class="passwort-erfolg-icon">
                         <i data-lucide="check"></i>
+                    </div>
 
-                    </button>
+                    <strong>
+                        Passwort erfolgreich geändert.
+                    </strong>
+
+                    <span>
+                        Dein neues Passwort ist ab sofort gültig.
+                    </span>
 
                 </div>
-
 
             </form>
 

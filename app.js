@@ -280,7 +280,24 @@ async function geburtstageLaden() {
         return;
     }
 
-    sichtbareGeburtstage = data || [];
+    sichtbareGeburtstage = (data || []).map(function(geburtstag) {
+
+        if (
+            Number.isInteger(geburtstag.birth_year)
+        ) {
+
+            return {
+                ...geburtstag,
+                age:
+                    new Date().getFullYear() -
+                    geburtstag.birth_year
+            };
+
+        }
+
+        return geburtstag;
+
+    });
 
     geburtstageNaechsteSiebenTageAnzeigen();
     kalenderAnzeigen();
@@ -548,9 +565,14 @@ function kalenderPopupOeffnen(jahr, monat, tag, termine) {
             <section class="kalender-popup-geburtstage">
                 <h3>Geburtstage</h3>
                 ${geburtstageAnDiesemTag.map(function(geburtstag) {
+                    const alter =
+                        Number.isInteger(geburtstag.birth_year)
+                            ? jahr - geburtstag.birth_year
+                            : geburtstag.age;
+
                     const alterText =
-                        Number.isInteger(geburtstag.age) && geburtstag.age >= 0
-                            ? ` wird ${geburtstag.age} Jahre alt`
+                        Number.isInteger(alter) && alter >= 0
+                            ? ` wird ${alter} Jahre alt`
                             : "";
 
                     return `
@@ -808,126 +830,48 @@ async function appAnzeigen() {
 // PASSWORT ÄNDERN
 // ========================================
 
-async function passwortAendern(event) {
-
-    event.preventDefault();
-
+async function passwortAltesPruefen() {
 
     const altesPasswort =
         document.getElementById(
             "altesPasswort"
-        ).value;
-
-
-    const neuesPasswort =
-        document.getElementById(
-            "neuesPasswort"
-        ).value;
-
-
-    const bestaetigung =
-        document.getElementById(
-            "neuesPasswortBestaetigung"
-        ).value;
-
+        )?.value || "";
 
     const fehler =
         document.getElementById(
             "passwortFehler"
         );
 
-
-    const erfolg =
+    const pruefenButton =
         document.getElementById(
-            "passwortErfolg"
+            "passwortPruefenButton"
         );
 
-
-    fehler.textContent = "";
-
-    erfolg.textContent = "";
-
+    if (fehler) {
+        fehler.textContent = "";
+    }
 
     if (!altesPasswort) {
 
-        fehler.textContent =
-            "Bitte gib dein aktuelles Passwort ein.";
+        if (fehler) {
+            fehler.textContent =
+                "Bitte gib dein aktuelles Passwort ein.";
+        }
 
         return;
 
     }
 
+    if (typeof supabaseClient === "undefined") {
 
-    if (!neuesPasswort) {
-
-        fehler.textContent =
-            "Bitte gib ein neues Passwort ein.";
-
-        return;
-
-    }
-
-
-    if (!bestaetigung) {
-
-        fehler.textContent =
-            "Bitte wiederhole dein neues Passwort.";
+        if (fehler) {
+            fehler.textContent =
+                "Die Verbindung zu deinem Konto ist nicht verfügbar.";
+        }
 
         return;
 
     }
-
-
-    if (
-        neuesPasswort !==
-        bestaetigung
-    ) {
-
-        fehler.textContent =
-            "Die neuen Passwörter stimmen nicht überein.";
-
-        return;
-
-    }
-
-
-    if (
-        neuesPasswort.length < 8
-    ) {
-
-        fehler.textContent =
-            "Das neue Passwort muss mindestens 8 Zeichen lang sein.";
-
-        return;
-
-    }
-
-
-    if (
-        neuesPasswort ===
-        altesPasswort
-    ) {
-
-        fehler.textContent =
-            "Das neue Passwort muss sich vom aktuellen Passwort unterscheiden.";
-
-        return;
-
-    }
-
-
-    if (
-        typeof supabaseClient ===
-        "undefined"
-    ) {
-
-        fehler.textContent =
-            "Die Verbindung zu deinem Konto ist nicht verfügbar.";
-
-        return;
-
-    }
-
 
     const {
         data: userData,
@@ -943,27 +887,31 @@ async function passwortAendern(event) {
         !userData.user.email
     ) {
 
-        fehler.textContent =
-            "Dein Benutzerkonto konnte nicht ermittelt werden.";
+        if (fehler) {
+            fehler.textContent =
+                "Dein Benutzerkonto konnte nicht ermittelt werden.";
+        }
 
         return;
 
     }
 
 
-    const email =
-        userData.user.email;
+    if (pruefenButton) {
+        pruefenButton.disabled = true;
+        const span = pruefenButton.querySelector("span");
+        if (span) {
+            span.textContent = "Wird geprüft …";
+        }
+    }
 
 
     const {
         error: aktuellesPasswortFehler
     } =
         await supabaseClient.auth.signInWithPassword({
-
-            email: email,
-
+            email: userData.user.email,
             password: altesPasswort
-
         });
 
 
@@ -974,12 +922,207 @@ async function passwortAendern(event) {
             aktuellesPasswortFehler
         );
 
+        if (fehler) {
+            fehler.textContent =
+                "Das aktuelle Passwort ist nicht korrekt.";
+        }
 
-        fehler.textContent =
-            "Das aktuelle Passwort ist nicht korrekt.";
+        if (pruefenButton) {
+            pruefenButton.disabled = false;
+            const span = pruefenButton.querySelector("span");
+            if (span) {
+                span.textContent = "Überprüfen";
+            }
+        }
 
         return;
 
+    }
+
+
+    const stufeAltes =
+        document.getElementById(
+            "passwortStufeAltes"
+        );
+
+    const stufeNeu =
+        document.getElementById(
+            "passwortStufeNeu"
+        );
+
+    if (stufeAltes) {
+        stufeAltes.style.display = "none";
+    }
+
+    if (stufeNeu) {
+        stufeNeu.style.display = "block";
+    }
+
+    const fehlerNeu =
+        document.getElementById(
+            "passwortFehlerNeu"
+        );
+
+    if (fehlerNeu) {
+        fehlerNeu.textContent = "";
+    }
+
+    const neuesPasswort =
+        document.getElementById(
+            "neuesPasswort"
+        );
+
+    if (neuesPasswort) {
+        setTimeout(function() {
+            neuesPasswort.focus();
+        }, 100);
+    }
+
+}
+
+
+// ========================================
+// NEUES PASSWORT SPEICHERN
+// ========================================
+
+async function passwortAendern(event) {
+
+    event.preventDefault();
+
+
+    const altesPasswort =
+        document.getElementById(
+            "altesPasswort"
+        )?.value || "";
+
+
+    const neuesPasswort =
+        document.getElementById(
+            "neuesPasswort"
+        )?.value || "";
+
+
+    const bestaetigung =
+        document.getElementById(
+            "neuesPasswortBestaetigung"
+        )?.value || "";
+
+
+    const fehler =
+        document.getElementById(
+            "passwortFehlerNeu"
+        ) ||
+        document.getElementById(
+            "passwortFehler"
+        );
+
+
+    const erfolgBox =
+        document.getElementById(
+            "passwortErfolgBox"
+        );
+
+
+    if (fehler) {
+        fehler.textContent = "";
+    }
+
+
+    if (!altesPasswort) {
+
+        if (fehler) {
+            fehler.textContent =
+                "Bitte prüfe zuerst dein aktuelles Passwort.";
+        }
+
+        return;
+
+    }
+
+
+    if (!neuesPasswort) {
+
+        if (fehler) {
+            fehler.textContent =
+                "Bitte gib ein neues Passwort ein.";
+        }
+
+        return;
+
+    }
+
+
+    if (!bestaetigung) {
+
+        if (fehler) {
+            fehler.textContent =
+                "Bitte wiederhole dein neues Passwort.";
+        }
+
+        return;
+
+    }
+
+
+    if (neuesPasswort !== bestaetigung) {
+
+        if (fehler) {
+            fehler.textContent =
+                "Die neuen Passwörter stimmen nicht überein.";
+        }
+
+        return;
+
+    }
+
+
+    if (neuesPasswort.length < 8) {
+
+        if (fehler) {
+            fehler.textContent =
+                "Das neue Passwort muss mindestens 8 Zeichen lang sein.";
+        }
+
+        return;
+
+    }
+
+
+    if (neuesPasswort === altesPasswort) {
+
+        if (fehler) {
+            fehler.textContent =
+                "Das neue Passwort muss sich vom aktuellen Passwort unterscheiden.";
+        }
+
+        return;
+
+    }
+
+
+    if (typeof supabaseClient === "undefined") {
+
+        if (fehler) {
+            fehler.textContent =
+                "Die Verbindung zu deinem Konto ist nicht verfügbar.";
+        }
+
+        return;
+
+    }
+
+
+    const speichernButton =
+        document.getElementById(
+            "passwortSpeichernButton"
+        );
+
+    if (speichernButton) {
+        speichernButton.disabled = true;
+        const span = speichernButton.querySelector("span");
+        if (span) {
+            span.textContent = "Wird gespeichert …";
+        }
     }
 
 
@@ -987,9 +1130,7 @@ async function passwortAendern(event) {
         error: neuesPasswortFehler
     } =
         await supabaseClient.auth.updateUser({
-
             password: neuesPasswort
-
         });
 
 
@@ -1000,22 +1141,41 @@ async function passwortAendern(event) {
             neuesPasswortFehler
         );
 
+        if (fehler) {
+            fehler.textContent =
+                "Das neue Passwort konnte nicht gespeichert werden.";
+        }
 
-        fehler.textContent =
-            "Das neue Passwort konnte nicht gespeichert werden.";
+        if (speichernButton) {
+            speichernButton.disabled = false;
+            const span = speichernButton.querySelector("span");
+            if (span) {
+                span.textContent = "Passwort ändern";
+            }
+        }
 
         return;
 
     }
 
 
-    erfolg.textContent =
-        "Passwort zurücksetzen erfolgreich.";
+    const stufeNeu =
+        document.getElementById(
+            "passwortStufeNeu"
+        );
+
+    if (stufeNeu) {
+        stufeNeu.style.display = "none";
+    }
+
+    if (erfolgBox) {
+        erfolgBox.style.display = "flex";
+    }
 
 
-    document.getElementById(
-        "passwortForm"
-    ).reset();
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
 
 
     setTimeout(function() {
@@ -1047,6 +1207,87 @@ function passwortAendernSchliessen() {
     modal.style.display =
         "none";
 
+
+    const stufeAltes =
+        document.getElementById(
+            "passwortStufeAltes"
+        );
+
+    const stufeNeu =
+        document.getElementById(
+            "passwortStufeNeu"
+        );
+
+    const erfolgBox =
+        document.getElementById(
+            "passwortErfolgBox"
+        );
+
+    const fehler =
+        document.getElementById(
+            "passwortFehler"
+        );
+
+    const fehlerNeu =
+        document.getElementById(
+            "passwortFehlerNeu"
+        );
+
+    if (stufeAltes) {
+        stufeAltes.style.display = "block";
+    }
+
+    if (stufeNeu) {
+        stufeNeu.style.display = "none";
+    }
+
+    if (erfolgBox) {
+        erfolgBox.style.display = "none";
+    }
+
+    if (fehler) {
+        fehler.textContent = "";
+    }
+
+    if (fehlerNeu) {
+        fehlerNeu.textContent = "";
+    }
+
+    const pruefenButton =
+        document.getElementById(
+            "passwortPruefenButton"
+        );
+
+    if (pruefenButton) {
+        pruefenButton.disabled = false;
+        const span = pruefenButton.querySelector("span");
+        if (span) {
+            span.textContent = "Überprüfen";
+        }
+    }
+
+    const speichernButton =
+        document.getElementById(
+            "passwortSpeichernButton"
+        );
+
+    if (speichernButton) {
+        speichernButton.disabled = false;
+        const span = speichernButton.querySelector("span");
+        if (span) {
+            span.textContent = "Passwort ändern";
+        }
+    }
+
+    const form =
+        document.getElementById(
+            "passwortForm"
+        );
+
+    if (form) {
+        form.reset();
+    }
+
 }
 
 
@@ -1066,6 +1307,8 @@ function passwortAendernOeffnen() {
         return;
     }
 
+
+    passwortAendernSchliessen();
 
     modal.style.display =
         "flex";
@@ -1585,6 +1828,240 @@ function geburtstagErstloginSchliessen() {
 
 
 // ========================================
+// GEBURTSTAG IM BENUTZERBEREICH ÄNDERN
+// ========================================
+
+function geburtstagBearbeitenOeffnen() {
+
+    const modal =
+        document.getElementById(
+            "geburtstagBearbeitenModal"
+        );
+
+    if (!modal) {
+        return;
+    }
+
+    const feld =
+        document.getElementById(
+            "geburtstagBearbeitenDatum"
+        );
+
+    const aktuellerWert =
+        document.getElementById(
+            "benutzerGeburtstag"
+        )?.textContent || "";
+
+    // Das Feld wird in benutzerDatenLaden direkt aus
+    // Supabase befüllt. Hier nur öffnen und fokussieren.
+    modal.style.display = "flex";
+
+    if (feld) {
+        setTimeout(function() {
+            feld.focus();
+        }, 100);
+    }
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+
+}
+
+
+function geburtstagBearbeitenSchliessen() {
+
+    const modal =
+        document.getElementById(
+            "geburtstagBearbeitenModal"
+        );
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+
+    const fehler =
+        document.getElementById(
+            "geburtstagBearbeitenFehler"
+        );
+
+    if (fehler) {
+        fehler.textContent = "";
+    }
+
+}
+
+
+async function geburtstagBearbeitenSpeichern() {
+
+    const feld =
+        document.getElementById(
+            "geburtstagBearbeitenDatum"
+        );
+
+    const fehler =
+        document.getElementById(
+            "geburtstagBearbeitenFehler"
+        );
+
+    if (!feld || !feld.value) {
+
+        if (fehler) {
+            fehler.textContent =
+                "Bitte gib dein Geburtsdatum ein.";
+        }
+
+        return;
+
+    }
+
+    const datum =
+        new Date(
+            feld.value +
+            "T00:00:00"
+        );
+
+    const heute =
+        new Date();
+
+    if (datum > heute) {
+
+        if (fehler) {
+            fehler.textContent =
+                "Das Geburtsdatum darf nicht in der Zukunft liegen.";
+        }
+
+        return;
+
+    }
+
+    if (datum.getFullYear() < 1900) {
+
+        if (fehler) {
+            fehler.textContent =
+                "Bitte gib ein gültiges Geburtsdatum ein.";
+        }
+
+        return;
+
+    }
+
+    const {
+        data: userData,
+        error: userError
+    } =
+        await supabaseClient.auth.getUser();
+
+    if (
+        userError ||
+        !userData ||
+        !userData.user
+    ) {
+
+        if (fehler) {
+            fehler.textContent =
+                "Dein Benutzerkonto konnte nicht ermittelt werden.";
+        }
+
+        return;
+
+    }
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("employees")
+            .update({
+                birthdate: feld.value
+            })
+            .eq(
+                "user_id",
+                userData.user.id
+            );
+
+    if (error) {
+
+        console.error(
+            "Geburtstag konnte nicht geändert werden:",
+            error
+        );
+
+        if (fehler) {
+            fehler.textContent =
+                "Dein Geburtstag konnte nicht gespeichert werden.";
+        }
+
+        return;
+
+    }
+
+    geburtstagBearbeitenSchliessen();
+
+    await benutzerDatenLaden();
+    await geburtstageLaden();
+
+}
+
+
+async function geburtstagSichtbarkeitAendern() {
+
+    const schalter =
+        document.getElementById(
+            "geburtstagSichtbar"
+        );
+
+    if (!schalter) {
+        return;
+    }
+
+    const {
+        data: userData,
+        error: userError
+    } =
+        await supabaseClient.auth.getUser();
+
+    if (
+        userError ||
+        !userData ||
+        !userData.user
+    ) {
+        schalter.checked = !schalter.checked;
+        return;
+    }
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("employees")
+            .update({
+                birthday_visible:
+                    schalter.checked
+            })
+            .eq(
+                "user_id",
+                userData.user.id
+            );
+
+    if (error) {
+
+        console.error(
+            "Geburtstagssichtbarkeit konnte nicht geändert werden:",
+            error
+        );
+
+        schalter.checked = !schalter.checked;
+        return;
+
+    }
+
+    await geburtstageLaden();
+
+}
+
+
+// ========================================
 // BENUTZERDATEN
 // ========================================
 
@@ -1774,6 +2251,16 @@ async function benutzerDatenLaden() {
 
         }
 
+    }
+
+    const geburtstagBearbeitenFeld =
+        document.getElementById(
+            "geburtstagBearbeitenDatum"
+        );
+
+    if (geburtstagBearbeitenFeld) {
+        geburtstagBearbeitenFeld.value =
+            mitarbeiter?.birthdate || "";
     }
 
 
@@ -2001,7 +2488,7 @@ if (responseData.error) {
 
         if (erfolg) {
             erfolg.textContent =
-                `Benutzer „${data?.name || name}“ wurde erfolgreich angelegt.`;
+                `Benutzer „${name}“ wurde erfolgreich angelegt.`;
         }
 
         const form =
@@ -2111,6 +2598,21 @@ window.passwortAendernOeffnen =
 window.passwortAendernSchliessen =
     passwortAendernSchliessen;
 
+window.passwortAltesPruefen =
+    passwortAltesPruefen;
+
+window.geburtstagBearbeitenOeffnen =
+    geburtstagBearbeitenOeffnen;
+
+window.geburtstagBearbeitenSchliessen =
+    geburtstagBearbeitenSchliessen;
+
+window.geburtstagBearbeitenSpeichern =
+    geburtstagBearbeitenSpeichern;
+
+window.geburtstagSichtbarkeitAendern =
+    geburtstagSichtbarkeitAendern;
+
 window.geburtstagNichtAnzeigen =
     geburtstagNichtAnzeigen;
 
@@ -2211,6 +2713,19 @@ document.addEventListener(
                 passwortAendern
             );
 
+        }
+
+
+        const geburtstagSichtbar =
+            document.getElementById(
+                "geburtstagSichtbar"
+            );
+
+        if (geburtstagSichtbar) {
+            geburtstagSichtbar.addEventListener(
+                "change",
+                geburtstagSichtbarkeitAendern
+            );
         }
 
 

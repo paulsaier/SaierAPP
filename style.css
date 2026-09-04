@@ -1,1193 +1,1993 @@
 /* ========================================
+
    SAIER INTERN
+
 ======================================== */
 
 
+
 /* ========================================
+
    GRUNDLAGEN
+
 ======================================== */
 
 * {
+
     box-sizing: border-box;
+
 }
 
 :root {
+
     --saier-gruen: #95C11F;
+
     --saier-blau: #4269A7;
+
     --hintergrund: #F5F6F3;
+
     --text: #222222;
+
     --grau: #737373;
+
     --weiss: #FFFFFF;
+
     --linie: #E7E9E3;
+
     --hellgruen: #F4F8E9;
+
 }
 
 html {
+
     margin: 0;
+
     padding: 0;
+
 }
 
 body {
+
     margin: 0;
+
     font-family:
+
         "Fira Sans",
+
         Arial,
+
         sans-serif;
+
     background: var(--hintergrund);
+
     color: var(--text);
+
 }
 
 
+
 /* ========================================
+
    APP
+
 ======================================== */
 
 #app {
+
     min-height: 100vh;
+
     padding-bottom: 100px;
+
 }
 
 
+
 /* ========================================
+
    SEITEN
+
 ======================================== */
 
 .seite {
+
     display: none;
+
     max-width: 1000px;
+
     margin: 0 auto;
+
     padding: 30px 25px;
+
 }
 
 .seite.aktiv {
+
     display: block;
+
 }
 
 
+
 /* ========================================
+
    LOGO
+
 ======================================== */
 
 .kopf {
+
     display: flex;
+
     justify-content: center;
+
     padding: 10px 0 30px;
+
 }
 
 .logo {
+
     width: 360px;
+
     max-width: 85%;
+
     height: auto;
+
 }
 
 
+
 /* ========================================
+
    BEGRÜSSUNG
+
 ======================================== */
 
 .begrüssung {
+
     background: var(--weiss);
+
     border-radius: 22px;
+
     padding: 30px;
+
     box-shadow:
+
         0 4px 18px rgba(0, 0, 0, 0.05);
+
 }
 
 .kleine-ueberschrift {
+
     margin: 0 0 5px;
+
     color: var(--saier-gruen);
+
     font-size: 13px;
+
     font-weight: 700;
+
     letter-spacing: 1.5px;
+
 }
 
 .begrüssung h1 {
+
     margin: 0;
+
     font-size: 34px;
+
     font-weight: 600;
+
 }
 
 .begrüssung p:last-child {
+
     margin-bottom: 0;
+
     color: var(--grau);
+
     font-size: 17px;
+
 }
 
 
+
 /* ========================================
+
    DASHBOARD KARTEN
+
 ======================================== */
 
 .dashboard-grid {
+
     display: grid;
+
     grid-template-columns: repeat(2, 1fr);
+
     gap: 15px;
+
     margin-top: 15px;
+
 }
 
 .info-box {
+
     background: var(--weiss);
+
     border-radius: 18px;
+
     padding: 20px;
+
     display: flex;
+
     align-items: center;
+
     gap: 15px;
+
     box-shadow:
+
         0 4px 18px rgba(0, 0, 0, 0.04);
+
 }
 
 .info-icon {
+
     width: 48px;
+
     height: 48px;
+
     border-radius: 14px;
+
     background: rgba(149, 193, 31, 0.12);
+
     color: var(--saier-gruen);
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     flex-shrink: 0;
+
 }
 
 .info-icon svg {
+
     width: 24px;
+
     height: 24px;
+
 }
 
 .info-label {
+
     display: block;
+
     color: var(--grau);
+
     font-size: 11px;
+
     font-weight: 600;
+
     letter-spacing: 1px;
+
 }
 
 .info-box strong {
+
     display: block;
+
     margin-top: 3px;
+
     font-size: 15px;
+
 }
 
 
+
 /* ========================================
+
    WILLKOMMEN BOX
+
 ======================================== */
 
 .willkommen-box {
+
     margin-top: 15px;
+
     background: var(--saier-gruen);
+
     color: white;
+
     border-radius: 20px;
+
     padding: 25px;
+
     display: flex;
+
     align-items: flex-start;
+
     gap: 18px;
+
 }
 
 .willkommen-box svg {
+
     width: 30px;
+
     height: 30px;
+
     flex-shrink: 0;
+
 }
 
 .willkommen-box h2 {
+
     margin: 0 0 5px;
+
     font-size: 20px;
+
 }
 
 .willkommen-box p {
+
     margin: 0;
+
     opacity: 0.95;
+
 }
 
 
+
 /* ========================================
+
    SEITEN-KOPF
+
 ======================================== */
 
 .seiten-kopf {
+
     display: flex;
+
     align-items: center;
+
     gap: 15px;
+
     margin-bottom: 25px;
+
 }
 
 .seiten-icon {
+
     width: 55px;
+
     height: 55px;
+
     border-radius: 16px;
+
     background: var(--saier-gruen);
+
     color: white;
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     flex-shrink: 0;
+
 }
 
 .seiten-icon svg {
+
     width: 27px;
+
     height: 27px;
+
 }
 
 .seiten-kopf span {
+
     color: var(--saier-gruen);
+
     font-size: 12px;
+
     font-weight: 700;
+
     letter-spacing: 1px;
+
 }
 
 .seiten-kopf h1 {
+
     margin: 2px 0 0;
+
     font-size: 30px;
+
     font-weight: 600;
+
 }
 
 
+
 /* ========================================
+
    PLATZHALTER
+
 ======================================== */
 
 .platzhalter {
+
     background: white;
+
     border-radius: 20px;
+
     padding: 50px 25px;
+
     text-align: center;
+
     box-shadow:
+
         0 4px 18px rgba(0, 0, 0, 0.04);
+
 }
 
 .platzhalter > svg {
+
     width: 55px;
+
     height: 55px;
+
     color: var(--saier-gruen);
+
 }
 
 .platzhalter h2 {
+
     margin-bottom: 5px;
+
 }
 
 .platzhalter p {
+
     margin-top: 0;
+
     color: var(--grau);
+
 }
 
 
+
 /* ========================================
+
    AUSHÄNGE
+
 ======================================== */
 
 .aushang {
+
     background: white;
+
     border-radius: 20px;
+
     padding: 22px;
+
     margin-bottom: 15px;
+
     box-shadow:
+
         0 4px 18px rgba(0, 0, 0, 0.04);
+
 }
 
 .aushang-kopf {
+
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
+
 }
 
 .aushang-icon {
+
     width: 48px;
+
     height: 48px;
+
     border-radius: 14px;
+
     background: rgba(149, 193, 31, 0.12);
+
     color: var(--saier-gruen);
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
 }
 
 .aushang-icon svg {
+
     width: 24px;
+
     height: 24px;
+
 }
 
 .neu-label {
+
     background: var(--saier-gruen);
+
     color: white;
+
     font-size: 10px;
+
     font-weight: 700;
+
     padding: 5px 9px;
+
     border-radius: 8px;
+
     letter-spacing: 0.5px;
+
 }
 
 .aushang-inhalt {
+
     margin-top: 18px;
+
 }
 
 .aushang-datum {
+
     color: var(--grau);
+
     font-size: 12px;
+
 }
 
 .aushang h2 {
+
     margin: 5px 0 8px;
+
     font-size: 21px;
+
     font-weight: 600;
+
 }
 
 .aushang p {
+
     margin: 0;
+
     color: var(--grau);
+
     line-height: 1.5;
+
 }
 
 .aushang-button {
+
     margin-top: 20px;
+
     border: none;
+
     background: transparent;
+
     color: var(--saier-gruen);
+
     font-family:
+
         "Fira Sans",
+
         Arial,
+
         sans-serif;
+
     font-size: 14px;
+
     font-weight: 600;
+
     padding: 0;
+
     display: flex;
+
     align-items: center;
+
     gap: 7px;
+
     cursor: pointer;
+
 }
 
 .aushang-button svg {
+
     width: 17px;
+
     height: 17px;
+
 }
 
 
+
 /* ========================================
+
    KALENDER
+
 ======================================== */
 
 .kalender-navigation {
+
     display: grid;
+
     grid-template-columns: 48px 1fr 48px;
+
     align-items: center;
+
     gap: 10px;
+
     background: var(--weiss);
+
     border-radius: 18px;
+
     padding: 12px;
+
     box-shadow:
+
         0 4px 18px rgba(0, 0, 0, 0.05);
+
     margin-bottom: 14px;
+
 }
 
 .kalender-monat {
+
     text-align: center;
+
     font-size: 22px;
+
     font-weight: 600;
+
     color: var(--text);
+
 }
 
 .kalender-pfeil {
+
     width: 48px;
+
     height: 48px;
+
     border: none;
+
     border-radius: 14px;
+
     background: #F1F2EF;
+
     color: var(--text);
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     cursor: pointer;
+
     transition:
-        background 0.2s ease,
+
+background 0.2s ease,
+
         transform 0.15s ease;
+
 }
 
 .kalender-pfeil:hover {
+
     background: #E8EAE5;
+
 }
 
 .kalender-pfeil:active {
+
     transform: scale(0.94);
+
 }
 
 .kalender-pfeil svg {
+
     width: 23px;
+
     height: 23px;
+
 }
+
 
 
 /* ========================================
+
    KALENDERFLÄCHE
+
 ======================================== */
 
 .kalender {
+
     background: var(--weiss);
+
     border-radius: 20px;
+
     overflow: hidden;
+
     box-shadow:
+
         0 4px 18px rgba(0, 0, 0, 0.05);
+
     margin-bottom: 20px;
+
 }
+
 
 
 /* Wochentage */
 
 .kalender-wochentage {
+
     display: grid;
+
     grid-template-columns: repeat(7, 1fr);
+
     border-bottom:
+
         1px solid var(--linie);
+
     background: #FAFBF9;
+
 }
 
 .kalender-wochentage span {
+
     text-align: center;
+
     padding: 14px 4px;
+
     font-size: 13px;
+
     font-weight: 600;
+
     color: var(--grau);
+
 }
+
 
 
 /* Tage */
 
 .kalender-tage {
+
     display: grid;
+
     grid-template-columns: repeat(7, 1fr);
+
 }
 
 .kalender-tag {
+
     min-height: 70px;
+
     border-right:
+
         1px solid var(--linie);
+
     border-bottom:
+
         1px solid var(--linie);
+
     display: flex;
+
     align-items: flex-start;
+
     justify-content: center;
+
     padding-top: 12px;
+
     font-size: 16px;
+
     color: var(--text);
+
     position: relative;
+
 }
 
 .kalender-tag:nth-child(7n) {
+
     border-right: none;
+
 }
+
 
 
 /* Wochenenden */
 
 .kalender-tag:nth-child(7n + 6) {
+
     color: var(--saier-blau);
+
 }
 
 .kalender-tag:nth-child(7n) {
+
     color: #C92C2C;
+
 }
+
 
 
 /* Leere Felder */
 
 .kalender-tag.leer {
+
     background: #FBFBFA;
+
     color: transparent;
+
 }
+
 
 
 /* Heutiger Tag */
 
 .kalender-tag.heute {
+
     color: white !important;
+
     font-weight: 700;
+
 }
 
 .kalender-tag.heute > span:first-child {
+
     width: 38px;
+
     height: 38px;
+
     border-radius: 50%;
+
     background: var(--saier-gruen);
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     margin-top: -6px;
+
 }
+
 
 
 /* ========================================
+
    TERMINE & GEBURTSTAGE
+
 ======================================== */
 
 .kalender-termine {
+
     background: var(--weiss);
+
     border-radius: 20px;
+
     padding: 20px;
+
     margin-bottom: 18px;
+
     box-shadow:
+
         0 4px 18px rgba(0, 0, 0, 0.04);
+
 }
 
 .kalender-bereich-kopf {
+
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
+
     margin-bottom: 18px;
+
 }
 
 .kalender-bereich-kopf h2 {
+
     margin: 3px 0 0;
+
     font-size: 22px;
+
     font-weight: 600;
+
     color: var(--text);
+
 }
 
 .kalender-bereich-kopf > svg {
+
     width: 28px;
+
     height: 28px;
+
     color: var(--saier-gruen);
+
 }
+
 
 
 /* Leerer Bereich */
 
 .kalender-leer {
+
     display: flex;
+
     align-items: center;
+
     gap: 14px;
+
     padding: 18px;
+
     border-radius: 15px;
+
     background: var(--hellgruen);
+
     border:
+
         1px solid rgba(149, 193, 31, 0.18);
+
 }
 
 .kalender-leer svg {
+
     width: 28px;
+
     height: 28px;
+
     flex-shrink: 0;
+
     color: var(--saier-gruen);
+
 }
 
 .kalender-leer p {
+
     margin: 0;
+
     font-size: 15px;
+
     line-height: 1.4;
+
     color: var(--grau);
+
 }
 
 
+
 /* ========================================
+
    NORMALE KALENDERTERMINE
+
 ======================================== */
 
 .kalender-termin {
+
     display: flex;
+
     align-items: center;
+
     gap: 15px;
+
     padding: 15px;
+
     border-radius: 14px;
+
     background: #FAFBF9;
+
     border:
+
         1px solid var(--linie);
+
     margin-bottom: 10px;
+
 }
 
 .kalender-termin:last-child {
+
     margin-bottom: 0;
+
 }
 
 .kalender-termin-datum {
+
     width: 52px;
+
     height: 52px;
+
     border-radius: 14px;
+
     background: var(--saier-gruen);
+
     color: white;
+
     display: flex;
+
     flex-direction: column;
+
     align-items: center;
+
     justify-content: center;
+
     flex-shrink: 0;
+
 }
 
 .kalender-termin-datum strong {
+
     font-size: 19px;
+
     line-height: 1;
+
 }
 
 .kalender-termin-datum span {
+
     font-size: 10px;
+
     text-transform: uppercase;
+
     margin-top: 2px;
+
 }
 
 .kalender-termin h3 {
+
     margin: 0 0 3px;
+
     font-size: 16px;
+
     font-weight: 600;
+
 }
 
 .kalender-termin p {
+
     margin: 0;
+
     color: var(--grau);
+
     font-size: 13px;
+
 }
 
 
+
 /* ========================================
+
    GEBURTSTAGE
+
 ======================================== */
 
 .kalender-geburtstag {
+
     display: flex;
+
     align-items: center;
+
     gap: 15px;
+
     padding: 15px;
+
     border-radius: 14px;
+
     background: #FAFBF9;
+
     border:
+
         1px solid var(--linie);
+
     margin-bottom: 10px;
+
 }
 
 .kalender-geburtstag:last-child {
+
     margin-bottom: 0;
+
 }
 
 .kalender-geburtstag-icon {
+
     width: 52px;
+
     height: 52px;
+
     border-radius: 14px;
+
     background: rgba(149, 193, 31, 0.12);
+
     color: var(--saier-gruen);
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     flex-shrink: 0;
+
 }
 
 .kalender-geburtstag-icon svg {
+
     width: 27px;
+
     height: 27px;
+
 }
 
 .kalender-geburtstag h3 {
+
     margin: 0 0 3px;
+
     font-size: 16px;
+
     font-weight: 600;
+
 }
 
 .kalender-geburtstag p {
+
     margin: 0;
+
     color: var(--grau);
+
     font-size: 13px;
+
 }
+
 
 
 /* ========================================
+
    UNTERE NAVIGATION
+
 ======================================== */
 
 .navigation {
+
     position: fixed;
+
     bottom: 0;
+
     left: 0;
+
     right: 0;
+
     height: 82px;
+
     background: rgba(255, 255, 255, 0.97);
+
     display: grid;
+
     grid-template-columns: repeat(6, 1fr);
+
     border-top:
+
         1px solid #E5E5E5;
+
     box-shadow:
+
         0 -4px 20px rgba(0, 0, 0, 0.06);
+
     z-index: 1000;
+
 }
 
 .nav-button {
+
     position: relative;
+
     border: none;
+
     background: transparent;
+
     display: flex;
+
     flex-direction: column;
+
     align-items: center;
+
     justify-content: center;
+
     gap: 5px;
+
     color: #888888;
+
     font-family:
+
         "Fira Sans",
+
         Arial,
+
         sans-serif;
+
     font-size: 12px;
+
     cursor: pointer;
+
     transition:
+
         color 0.2s ease;
+
 }
 
 .nav-icon {
+
     width: 24px;
+
     height: 24px;
+
     stroke-width: 1.9;
+
 }
 
 .nav-button span {
+
     white-space: nowrap;
+
 }
 
 .nav-button.aktiv {
+
     color: var(--saier-gruen);
+
     font-weight: 600;
+
 }
+
 
 
 /* Grüner Balken über aktivem Punkt */
 
 .nav-button.aktiv::before {
+
     content: "";
+
     position: absolute;
+
     top: 0;
+
     left: 22%;
+
     right: 22%;
+
     height: 3px;
+
     background: var(--saier-gruen);
+
     border-radius:
+
         0 0 5px 5px;
+
 }
 
 
+
 /* ========================================
+
    DESKTOP
+
 ======================================== */
 
 @media (min-width: 900px) {
 
     .navigation {
+
         max-width: 900px;
+
         left: 50%;
+
         right: auto;
+
         transform: translateX(-50%);
+
         border-radius:
+
             18px 18px 0 0;
+
     }
 
     .kalender-bereiche {
+
         display: grid;
+
         grid-template-columns: 1fr 1fr;
+
         gap: 18px;
+
     }
 
 }
 
 
+
 /* ========================================
+
    SMARTPHONE
+
 ======================================== */
 
 @media (max-width: 600px) {
 
     #app {
+
         padding-bottom:
+
             calc(115px + env(safe-area-inset-bottom));
+
     }
 
     .seite {
+
         padding:
+
             20px 15px;
+
     }
+
 
 
     /* Logo */
 
     .kopf {
+
         padding:
+
             5px 0 20px;
+
     }
 
     .logo {
+
         width: 280px;
+
         max-width: 90%;
+
     }
+
 
 
     /* Begrüßung */
 
     .begrüssung {
+
         padding: 22px;
+
         border-radius: 18px;
+
     }
 
     .begrüssung h1 {
+
         font-size: 28px;
+
     }
+
 
 
     /* Dashboard */
 
     .dashboard-grid {
+
         grid-template-columns: 1fr;
+
     }
 
     .willkommen-box {
+
         padding: 20px;
+
     }
+
 
 
     /* Seitenkopf */
 
     .seiten-kopf {
+
         margin-bottom: 20px;
+
     }
 
     .seiten-kopf h1 {
+
         font-size: 25px;
+
     }
 
     .seiten-icon {
+
         width: 50px;
+
         height: 50px;
+
     }
+
 
 
     /* Navigation */
 
     .navigation {
+
         height:
+
             calc(100px + env(safe-area-inset-bottom));
 
         padding-top: 10px;
 
         padding-bottom:
+
             env(safe-area-inset-bottom);
+
     }
 
     .nav-button {
+
         min-width: 0;
+
         justify-content: flex-start;
+
         padding-top: 4px;
+
         padding-bottom: 8px;
+
         gap: 0;
+
     }
 
     .nav-button span {
+
         display: none;
+
     }
 
     .nav-icon {
+
         width: 25px;
+
         height: 25px;
+
     }
 
     .nav-button.aktiv::before {
+
         left: 20%;
+
         right: 20%;
+
     }
+
 
 
     /* Kalender */
 
     .kalender-navigation {
+
         grid-template-columns:
+
             42px 1fr 42px;
 
         padding: 9px;
+
         border-radius: 16px;
+
     }
 
     .kalender-monat {
+
         font-size: 18px;
+
     }
 
     .kalender-pfeil {
+
         width: 42px;
+
         height: 42px;
+
         border-radius: 12px;
+
     }
 
     .kalender-pfeil svg {
+
         width: 21px;
+
         height: 21px;
+
     }
+
 
 
     /* Kalenderfläche */
 
     .kalender {
+
         border-radius: 17px;
+
     }
 
     .kalender-wochentage span {
+
         padding:
+
             11px 2px;
+
         font-size: 11px;
+
     }
 
     .kalender-tag {
+
         min-height: 52px;
+
         padding-top: 10px;
+
         font-size: 14px;
+
     }
 
     .kalender-tag.heute > span:first-child {
+
         width: 34px;
+
         height: 34px;
+
         margin-top: -6px;
+
     }
+
 
 
     /* Termine */
 
     .kalender-termine {
+
         padding: 16px;
+
         border-radius: 17px;
+
     }
 
     .kalender-bereich-kopf h2 {
+
         font-size: 20px;
+
     }
 
     .kalender-bereich-kopf > svg {
+
         width: 25px;
+
         height: 25px;
+
     }
 
     .kalender-leer {
+
         padding: 15px;
+
     }
 
     .kalender-leer p {
+
         font-size: 14px;
+
     }
 
 }
 
 
+
 /* ========================================
+
    SEHR KLEINE SMARTPHONES
+
 ======================================== */
 
 @media (max-width: 380px) {
 
     .kalender-tag {
+
         min-height: 47px;
+
         font-size: 13px;
+
     }
 
     .kalender-tag.heute > span:first-child {
+
         width: 31px;
+
         height: 31px;
+
     }
 
     .kalender-wochentage span {
+
         font-size: 10px;
+
     }
 
     .kalender-monat {
+
         font-size: 17px;
+
     }
 
 }
 
 
+
 /* ========================================
+
    LOGIN
+
 ======================================== */
 
 .login-bereich {
+
     min-height: 100vh;
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     padding: 25px;
+
     background: var(--hintergrund);
+
 }
 
 .login-box {
+
     width: 100%;
+
     max-width: 430px;
+
     background: white;
+
     border-radius: 24px;
+
     padding: 38px;
+
     box-shadow:
+
         0 8px 30px rgba(0, 0, 0, 0.07);
+
 }
 
 .login-logo {
+
     display: block;
+
     width: 260px;
+
     max-width: 90%;
+
     height: auto;
+
     margin:
+
         0 auto 30px;
+
 }
 
 .login-text {
+
     text-align: center;
+
     margin-bottom: 28px;
+
 }
 
 .login-text h1 {
+
     margin:
+
         5px 0 8px;
+
     font-size: 30px;
+
     font-weight: 600;
+
 }
 
 .login-text p {
+
     margin: 0;
+
     color: var(--grau);
+
     line-height: 1.5;
+
 }
 
 .login-feld {
+
     margin-bottom: 18px;
+
 }
 
 .login-feld label {
+
     display: block;
+
     margin-bottom: 7px;
+
     font-size: 13px;
+
     font-weight: 600;
+
 }
 
 .login-feld input {
+
     width: 100%;
+
     padding:
+
         14px 15px;
+
     border:
+
         1px solid #DADDD5;
+
     border-radius: 12px;
+
     background: #FAFBF9;
+
     font-family:
+
         "Fira Sans",
+
         Arial,
+
         sans-serif;
+
     font-size: 15px;
+
     outline: none;
+
     transition:
+
         border-color 0.2s ease,
+
         box-shadow 0.2s ease;
+
 }
 
 .login-feld input:focus {
+
     border-color:
+
         var(--saier-gruen);
+
     box-shadow:
+
         0 0 0 3px
+
         rgba(149, 193, 31, 0.12);
+
     background: white;
+
 }
 
 .login-button {
+
     width: 100%;
+
     margin-top: 5px;
+
     padding:
+
         14px 18px;
+
     border: none;
+
     border-radius: 13px;
+
     background:
+
         var(--saier-gruen);
+
     color: white;
+
     font-family:
+
         "Fira Sans",
+
         Arial,
+
         sans-serif;
+
     font-size: 16px;
+
     font-weight: 600;
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     gap: 9px;
+
     cursor: pointer;
+
     transition:
+
         transform 0.15s ease,
+
         opacity 0.2s ease;
+
 }
 
 .login-button:hover {
+
     opacity: 0.92;
+
 }
 
 .login-button:active {
+
     transform: scale(0.98);
+
 }
 
 .login-button svg {
+
     width: 19px;
+
     height: 19px;
+
 }
 
 .login-fehler {
+
     min-height: 20px;
+
     margin:
+
         14px 0 0;
+
     text-align: center;
+
     color: #C62828;
+
     font-size: 13px;
+
 }
 
 .login-hinweis {
+
     margin:
+
         25px 0 0;
+
     text-align: center;
+
     color: #999999;
+
     font-size: 12px;
+
 }
 
 
+
 /* ========================================
+
    LOGIN SMARTPHONE
+
 ======================================== */
 
 @media (max-width: 600px) {
 
     .login-bereich {
+
         padding: 15px;
+
     }
 
     .login-box {
+
         padding: 28px 22px;
+
         border-radius: 20px;
+
     }
 
     .login-logo {
+
         width: 230px;
+
         margin-bottom: 25px;
+
     }
 
     .login-text h1 {
+
         font-size: 27px;
+
     }
 
 }
 
 /* ========================================
+
    BENUTZER
+
    ======================================== */
 
 .benutzer-profil {
+
     background: #ffffff;
+
     border-radius: 20px;
+
     overflow: hidden;
+
     margin-bottom: 32px;
+
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+
 }
+
 
 
 /* Grüner Profilbereich */
 
 .benutzer-profil-kopf {
+
     height: 95px;
+
     background: #95C11F;
+
     position: relative;
+
 }
+
 
 
 /* Benutzer-Icon */
 
 .benutzer-profil-icon {
+
     position: absolute;
+
     left: 32px;
+
     bottom: -42px;
 
     width: 84px;
+
     height: 84px;
 
     border-radius: 50%;
@@ -1195,108 +1995,163 @@ body {
     background: #ffffff;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+
 }
 
 .benutzer-profil-icon svg {
+
     width: 42px;
+
     height: 42px;
+
     color: #95C11F;
+
     stroke-width: 2;
+
 }
+
 
 
 /* Profilinformationen */
 
 .benutzer-profil-inhalt {
+
     padding: 58px 32px 28px;
+
 }
 
 .benutzer-profil-inhalt h2 {
+
     margin: 0 0 4px;
+
     font-size: 30px;
+
     font-weight: 700;
+
     color: #222222;
+
 }
 
 .benutzer-rolle {
+
     display: block;
+
     margin-bottom: 18px;
 
     font-size: 16px;
+
     color: #666666;
+
 }
 
 .benutzer-email {
+
     display: flex;
+
     align-items: center;
+
     gap: 9px;
 
     font-size: 16px;
+
     color: #444444;
+
 }
 
 .benutzer-email svg {
+
     width: 19px;
+
     height: 19px;
+
     color: #95C11F;
+
 }
 
 
+
 /* ========================================
+
    BENUTZER SEKTIONEN
+
    ======================================== */
 
 .benutzer-sektion {
+
     margin-bottom: 32px;
+
 }
 
 .benutzer-sektion-kopf {
+
     margin-bottom: 12px;
+
 }
 
 .benutzer-sektion-kopf .kleine-ueberschrift {
+
     display: block;
+
     margin-bottom: 3px;
+
 }
 
 .benutzer-sektion-kopf h2 {
+
     margin: 0;
 
     font-size: 26px;
+
     font-weight: 700;
+
     color: #222222;
+
 }
+
 
 
 /* ========================================
+
    OPTIONEN
+
    ======================================== */
 
 .benutzer-optionen {
+
     background: #ffffff;
+
     border-radius: 16px;
+
     overflow: hidden;
 
     box-shadow: 0 3px 14px rgba(0, 0, 0, 0.04);
+
 }
+
 
 
 /* Einzelne Option */
 
 .benutzer-option {
+
     width: 100%;
+
     min-height: 78px;
 
     border: none;
+
     border-bottom: 1px solid #eeeeee;
 
     background: #ffffff;
 
     display: flex;
+
     align-items: center;
 
     padding: 16px 22px;
@@ -1308,27 +2163,39 @@ body {
     font-family: inherit;
 
     transition:
-        background 0.2s ease,
+
+background 0.2s ease,
+
         transform 0.1s ease;
+
 }
 
 .benutzer-option:last-child {
+
     border-bottom: none;
+
 }
 
 .benutzer-option:hover {
+
     background: #fafbf8;
+
 }
 
 .benutzer-option:active {
+
     transform: scale(0.99);
+
 }
+
 
 
 /* Icon links */
 
 .benutzer-option-icon {
+
     width: 42px;
+
     height: 42px;
 
     flex-shrink: 0;
@@ -1338,51 +2205,71 @@ body {
     background: #f0f5e7;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     margin-right: 16px;
+
 }
 
 .benutzer-option-icon svg {
+
     width: 21px;
+
     height: 21px;
 
     color: #95C11F;
 
     stroke-width: 2;
+
 }
+
 
 
 /* Text */
 
 .benutzer-option-text {
+
     min-width: 0;
 
     display: flex;
+
     flex-direction: column;
 
     gap: 3px;
 
     flex: 1;
+
 }
 
 .benutzer-option-text strong {
+
     font-size: 17px;
+
     font-weight: 600;
+
     color: #222222;
+
 }
 
 .benutzer-option-text span {
+
     font-size: 14px;
+
     color: #777777;
+
 }
+
 
 
 /* Pfeil */
 
 .benutzer-option-pfeil {
+
     width: 20px;
+
     height: 20px;
 
     flex-shrink: 0;
@@ -1390,45 +2277,63 @@ body {
     color: #999999;
 
     margin-left: 12px;
+
 }
+
 
 
 /* ========================================
+
    SCHALTER
+
    ======================================== */
 
 .benutzer-option-schalter {
+
     cursor: default;
+
 }
 
 .benutzer-option-schalter:hover {
+
     background: #ffffff;
+
 }
+
 
 
 /* Switch */
 
 .schalter {
+
     position: relative;
 
     display: inline-block;
 
     width: 48px;
+
     height: 28px;
 
     flex-shrink: 0;
 
     margin-left: 12px;
+
 }
 
 .schalter input {
+
     opacity: 0;
+
     width: 0;
+
     height: 0;
+
 }
 
 .schalter-slider {
+
     position: absolute;
+
     inset: 0;
 
     background: #d6d6d6;
@@ -1438,17 +2343,21 @@ body {
     cursor: pointer;
 
     transition: 0.2s ease;
+
 }
 
 .schalter-slider::before {
+
     content: "";
 
     position: absolute;
 
     width: 22px;
+
     height: 22px;
 
     left: 3px;
+
     top: 3px;
 
     background: #ffffff;
@@ -1458,33 +2367,47 @@ body {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 
     transition: 0.2s ease;
+
 }
 
 .schalter input:checked + .schalter-slider {
+
     background: #95C11F;
+
 }
 
 .schalter input:checked + .schalter-slider::before {
+
     transform: translateX(20px);
+
 }
 
 
+
 /* ========================================
+
    HINWEIS
+
    ======================================== */
 
 .benutzer-hinweis {
+
     display: flex;
+
     align-items: flex-start;
 
     gap: 10px;
 
     margin-top: 12px;
+
     padding: 0 4px;
+
 }
 
 .benutzer-hinweis svg {
+
     width: 18px;
+
     height: 18px;
 
     flex-shrink: 0;
@@ -1492,36 +2415,49 @@ body {
     color: #777777;
 
     margin-top: 2px;
+
 }
 
 .benutzer-hinweis p {
+
     margin: 0;
 
     font-size: 14px;
+
     line-height: 1.5;
 
     color: #777777;
+
 }
+
 
 
 /* ========================================
+
    AUSLOGGEN
+
    ======================================== */
 
 .benutzer-ausloggen {
+
     margin-top: 45px;
+
     padding-bottom: 30px;
 
     display: flex;
+
     justify-content: center;
+
 }
 
 .benutzer-ausloggen .ausloggen-button {
+
     min-height: 48px;
 
     padding: 0 22px;
 
     border: 1px solid #e1bcbc;
+
     border-radius: 12px;
 
     background: #fff8f8;
@@ -1529,181 +2465,267 @@ body {
     color: #b42323;
 
     display: inline-flex;
+
     align-items: center;
+
     justify-content: center;
 
     gap: 9px;
 
     font-family: inherit;
+
     font-size: 15px;
+
     font-weight: 500;
 
     cursor: pointer;
 
     transition:
-        background 0.2s ease,
+
+background 0.2s ease,
+
         border-color 0.2s ease;
+
 }
 
 .benutzer-ausloggen .ausloggen-button:hover {
+
     background: #fff0f0;
+
     border-color: #d99b9b;
+
 }
 
 .benutzer-ausloggen .ausloggen-button svg {
+
     width: 19px;
+
     height: 19px;
+
 }
 
 
+
 /* ========================================
+
    MOBILE
+
    ======================================== */
 
 @media (max-width: 600px) {
 
     .benutzer-profil {
+
         border-radius: 16px;
+
         margin-bottom: 26px;
+
     }
 
     .benutzer-profil-kopf {
+
         height: 78px;
+
     }
 
     .benutzer-profil-icon {
+
         left: 20px;
+
         bottom: -36px;
 
         width: 72px;
+
         height: 72px;
+
     }
 
     .benutzer-profil-icon svg {
+
         width: 36px;
+
         height: 36px;
+
     }
 
     .benutzer-profil-inhalt {
+
         padding: 50px 20px 22px;
+
     }
 
     .benutzer-profil-inhalt h2 {
+
         font-size: 25px;
+
     }
 
     .benutzer-email {
+
         font-size: 15px;
+
     }
+
 
 
     .benutzer-sektion {
+
         margin-bottom: 26px;
+
     }
 
     .benutzer-sektion-kopf {
+
         margin-bottom: 10px;
+
     }
 
     .benutzer-sektion-kopf h2 {
+
         font-size: 23px;
+
     }
+
 
 
     .benutzer-option {
+
         min-height: 72px;
+
         padding: 13px 16px;
+
     }
 
     .benutzer-option-icon {
+
         width: 38px;
+
         height: 38px;
 
         margin-right: 12px;
 
         border-radius: 10px;
+
     }
 
     .benutzer-option-icon svg {
+
         width: 19px;
+
         height: 19px;
+
     }
 
     .benutzer-option-text strong {
+
         font-size: 15px;
+
     }
 
     .benutzer-option-text span {
+
         font-size: 13px;
+
     }
+
 
 
     .schalter {
+
         width: 44px;
+
         height: 26px;
+
     }
 
     .schalter-slider::before {
+
         width: 20px;
+
         height: 20px;
 
         left: 3px;
+
         top: 3px;
+
     }
 
     .schalter input:checked + .schalter-slider::before {
+
         transform: translateX(18px);
+
     }
+
 
 
     .benutzer-hinweis p {
+
         font-size: 13px;
+
     }
 
 
+
     .benutzer-ausloggen {
+
         margin-top: 38px;
+
         padding-bottom: 25px;
+
     }
 
 }
 
 /* ========================================
+
    PASSWORT MODAL
+
    ======================================== */
 
 .passwort-modal {
+
     position: fixed;
+
     inset: 0;
 
     z-index: 1000;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     padding: 20px;
+
 }
+
 
 
 /* Hintergrund */
 
 .passwort-modal-hintergrund {
+
     position: absolute;
+
     inset: 0;
 
     background: rgba(0, 0, 0, 0.45);
 
     backdrop-filter: blur(3px);
+
 }
+
 
 
 /* Fenster */
 
 .passwort-modal-box {
+
     position: relative;
 
     width: 100%;
+
     max-width: 480px;
 
     background: #ffffff;
@@ -1713,13 +2735,17 @@ body {
     overflow: hidden;
 
     box-shadow:
+
         0 20px 60px rgba(0, 0, 0, 0.20);
+
 }
+
 
 
 /* Kopf */
 
 .passwort-modal-kopf {
+
     min-height: 90px;
 
     padding: 20px 24px;
@@ -1727,15 +2753,21 @@ body {
     background: #95C11F;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
+
 }
+
 
 
 /* Icon */
 
 .passwort-modal-icon {
+
     width: 52px;
+
     height: 52px;
 
     border-radius: 15px;
@@ -1743,25 +2775,35 @@ body {
     background: #ffffff;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
 }
 
 .passwort-modal-icon svg {
+
     width: 25px;
+
     height: 25px;
 
     color: #95C11F;
+
 }
+
 
 
 /* Schließen */
 
 .passwort-modal-schliessen {
+
     width: 40px;
+
     height: 40px;
 
     border: none;
+
     border-radius: 50%;
 
     background: rgba(255, 255, 255, 0.20);
@@ -1769,73 +2811,101 @@ body {
     color: #ffffff;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     cursor: pointer;
 
     transition: background 0.2s ease;
+
 }
 
 .passwort-modal-schliessen:hover {
+
     background: rgba(255, 255, 255, 0.35);
+
 }
 
 .passwort-modal-schliessen svg {
+
     width: 21px;
+
     height: 21px;
+
 }
+
 
 
 /* Inhalt */
 
 .passwort-modal-inhalt {
+
     padding: 28px;
+
 }
 
 .passwort-modal-inhalt .kleine-ueberschrift {
+
     display: block;
+
     margin-bottom: 4px;
+
 }
 
 .passwort-modal-inhalt h2 {
+
     margin: 0 0 8px;
 
     font-size: 28px;
+
     font-weight: 700;
 
     color: #222222;
+
 }
 
 .passwort-modal-inhalt > p {
+
     margin: 0 0 24px;
 
     color: #666666;
 
     font-size: 15px;
+
     line-height: 1.5;
+
 }
+
 
 
 /* Felder */
 
 .passwort-feld {
+
     margin-bottom: 18px;
+
 }
 
 .passwort-feld label {
+
     display: block;
 
     margin-bottom: 7px;
 
     font-size: 14px;
+
     font-weight: 600;
 
     color: #333333;
+
 }
 
 .passwort-feld input {
+
     width: 100%;
+
     box-sizing: border-box;
 
     height: 50px;
@@ -1843,11 +2913,13 @@ body {
     padding: 0 14px;
 
     border: 1px solid #d8d8d8;
+
     border-radius: 10px;
 
     background: #fafafa;
 
     font-family: inherit;
+
     font-size: 16px;
 
     color: #222222;
@@ -1855,49 +2927,67 @@ body {
     outline: none;
 
     transition:
+
         border-color 0.2s ease,
-        background 0.2s ease;
+
+background 0.2s ease;
+
 }
 
 .passwort-feld input:focus {
+
     border-color: #95C11F;
+
     background: #ffffff;
+
 }
+
 
 
 /* Fehlermeldung */
 
 .passwort-fehler {
+
     color: #b42323 !important;
 
     font-size: 14px !important;
 
     margin: 4px 0 12px !important;
+
 }
+
 
 
 /* Erfolg */
 
 .passwort-erfolg {
+
     color: #3d7c16 !important;
 
     font-size: 14px !important;
 
     margin: 4px 0 12px !important;
+
 }
+
 
 
 /* Buttons */
 
 .passwort-modal-buttons {
+
     display: flex;
+
     gap: 10px;
 
     margin-top: 24px;
+
 }
 
 .passwort-abbrechen,
+
 .passwort-speichern {
+
     min-height: 48px;
 
     border-radius: 10px;
@@ -1907,12 +2997,15 @@ body {
     font-family: inherit;
 
     font-size: 15px;
+
     font-weight: 600;
 
     cursor: pointer;
+
 }
 
 .passwort-abbrechen {
+
     flex: 1;
 
     border: 1px solid #dddddd;
@@ -1920,9 +3013,11 @@ body {
     background: #ffffff;
 
     color: #555555;
+
 }
 
 .passwort-speichern {
+
     flex: 1.4;
 
     border: none;
@@ -1932,35 +3027,49 @@ body {
     color: #ffffff;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     gap: 8px;
+
 }
 
 .passwort-speichern:hover {
+
     filter: brightness(0.95);
+
 }
 
 .passwort-speichern svg {
+
     width: 18px;
+
     height: 18px;
+
 }
 
 
+
 /* ========================================
+
    PASSWORT MODAL – MOBILE
+
    ======================================== */
 
 @media (max-width: 600px) {
 
     .passwort-modal {
+
         align-items: flex-end;
 
         padding: 0;
+
     }
 
     .passwort-modal-box {
+
         max-width: none;
 
         border-radius: 20px 20px 0 0;
@@ -1968,331 +3077,551 @@ body {
         max-height: 90vh;
 
         overflow-y: auto;
+
     }
 
     .passwort-modal-kopf {
+
         min-height: 76px;
 
         padding: 16px 20px;
+
     }
 
     .passwort-modal-icon {
+
         width: 46px;
+
         height: 46px;
 
         border-radius: 13px;
+
     }
 
     .passwort-modal-inhalt {
+
         padding: 24px 20px;
 
         padding-bottom:
+
             calc(
+
                 24px +
+
                 env(safe-area-inset-bottom)
+
             );
+
     }
 
     .passwort-modal-inhalt h2 {
+
         font-size: 25px;
+
     }
 
     .passwort-modal-buttons {
+
         flex-direction: column-reverse;
+
     }
 
     .passwort-abbrechen,
+
     .passwort-speichern {
+
         width: 100%;
+
     }
 
 }
 
 /* ========================================
+
    KALENDER – BLAUER PUNKT
+
    ======================================== */
+
 .kalender-punkt { position:absolute; left:50%; bottom:7px; width:6px; height:6px; border-radius:50%; background:var(--saier-blau); transform:translateX(-50%); pointer-events:none; }
 
 /* ========================================
+
    KALENDER – POPUP
+
    ======================================== */
+
 .kalender-popup { position:fixed; inset:0; display:none; align-items:center; justify-content:center; padding:20px; z-index:3000; }
+
 .kalender-popup-hintergrund { position:absolute; inset:0; background:rgba(0,0,0,.38); }
+
 .kalender-popup-box { position:relative; width:100%; max-width:480px; max-height:min(80vh,650px); overflow:hidden; background:var(--weiss); border-radius:22px; box-shadow:0 18px 55px rgba(0,0,0,.20); z-index:1; }
+
 .kalender-popup-kopf { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:22px 22px 18px; border-bottom:1px solid var(--linie); }
+
 .kalender-popup-kopf h2 { margin:0; padding-right:5px; font-size:21px; line-height:1.25; font-weight:600; color:var(--text); }
+
 .kalender-popup-schliessen { width:36px; height:36px; flex-shrink:0; border:none; border-radius:10px; background:#F1F2EF; color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .2s ease,transform .15s ease; }
+
 .kalender-popup-schliessen:hover { background:#E8EAE5; }
+
 .kalender-popup-schliessen:active { transform:scale(.94); }
+
 .kalender-popup-schliessen svg { width:19px; height:19px; }
+
 .kalender-popup-inhalt { padding:20px 22px 22px; max-height:calc(min(80vh,650px) - 90px); overflow-y:auto; }
+
 .kalender-popup-leer { padding:18px; border-radius:14px; background:var(--hellgruen); color:var(--grau); font-size:15px; line-height:1.4; text-align:center; }
+
 .kalender-popup-termin { padding:16px; border-radius:14px; background:#FAFBF9; border:1px solid var(--linie); }
+
 .kalender-popup-termin + .kalender-popup-termin { margin-top:10px; }
+
 .kalender-popup-termin h3 { margin:0; font-size:16px; font-weight:600; }
+
 .kalender-popup-termin p { margin:6px 0 0; color:var(--grau); font-size:14px; line-height:1.45; }
+
 body.kalender-popup-offen { overflow:hidden; }
+
 @media (max-width:600px) { .kalender-punkt { bottom:5px; width:5px; height:5px; } .kalender-popup { padding:15px; } .kalender-popup-box { max-height:82vh; border-radius:19px; } .kalender-popup-kopf { padding:18px 18px 15px; } .kalender-popup-kopf h2 { font-size:18px; } .kalender-popup-inhalt { padding:16px 18px 18px; max-height:calc(82vh - 80px); } }
 
 /* ========================================
+
    ADMINISTRATION
+
    GLEICHES DESIGN WIE DIE ANDEREN BENUTZEROPTIONEN
+
    ======================================== */
 
 .admin-benutzer-bereich {
+
     margin-top: 34px;
+
 }
 
 .admin-benutzer-optionen {
+
     margin-top: 0;
+
 }
 
 .admin-benutzer-option {
+
     width: 100%;
+
     min-height: 78px;
+
     padding: 16px 22px;
+
     border: none;
+
     background: #ffffff;
+
     display: flex;
+
     align-items: center;
+
     text-align: left;
+
     cursor: pointer;
+
     font-family: inherit;
+
     transition:
-        background 0.2s ease,
+
+background 0.2s ease,
+
         transform 0.1s ease;
+
 }
 
 .admin-benutzer-option:hover {
+
     background: #fafbf8;
+
 }
 
 .admin-benutzer-option:active {
+
     transform: scale(0.99);
+
 }
 
 .admin-benutzer-option .benutzer-option-icon {
+
     width: 42px;
+
     height: 42px;
+
     flex-shrink: 0;
+
     border-radius: 12px;
+
     background: #f0f5e7;
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     margin-right: 16px;
+
 }
 
 .admin-benutzer-option .benutzer-option-icon svg {
+
     width: 21px;
+
     height: 21px;
+
     color: #95C11F;
+
     stroke-width: 2;
+
 }
 
 .admin-benutzer-option .benutzer-option-text {
+
     min-width: 0;
+
     display: flex;
+
     flex-direction: column;
+
     gap: 3px;
+
     flex: 1;
+
 }
 
 .admin-benutzer-option .benutzer-option-text strong {
+
     font-size: 17px;
+
     font-weight: 600;
+
     color: #222222;
+
 }
 
 .admin-benutzer-option .benutzer-option-text span {
+
     font-size: 14px;
+
     color: #777777;
+
 }
 
 .admin-benutzer-option .benutzer-option-pfeil {
+
     width: 20px;
+
     height: 20px;
+
     flex-shrink: 0;
+
     color: #999999;
+
     margin-left: 12px;
+
 }
 
 /* ========================================
+
    MODAL – MITARBEITER ANLEGEN
+
    ======================================== */
 
 .admin-benutzer-modal {
+
     position: fixed;
+
     inset: 0;
+
     z-index: 5000;
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     padding: 20px;
+
 }
 
 .admin-benutzer-modal-hintergrund {
+
     position: absolute;
+
     inset: 0;
+
     background: rgba(20, 24, 18, 0.42);
+
     backdrop-filter: blur(3px);
+
 }
 
 .admin-benutzer-modal-box {
+
     position: relative;
+
     width: min(100%, 560px);
+
     max-height: calc(100vh - 40px);
+
     overflow-y: auto;
+
     background: #ffffff;
+
     border-radius: 24px;
+
     padding: 28px;
+
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+
 }
 
 .admin-benutzer-modal-kopf {
+
     margin-bottom: 24px;
+
 }
 
 .admin-benutzer-modal-kopf h2 {
+
     margin-top: 4px;
+
 }
 
 .admin-benutzer-modal-kopf p {
+
     margin: 8px 0 0;
+
     color: #777777;
+
 }
 
 .admin-benutzer-modal-box .formular-gruppe {
+
     margin-bottom: 18px;
+
 }
 
 .admin-benutzer-modal-box input {
+
     width: 100%;
+
     box-sizing: border-box;
+
 }
 
 .admin-benutzer-button {
+
     width: 100%;
+
     margin-top: 8px;
+
 }
 
 .admin-benutzer-erfolg {
+
     min-height: 20px;
+
     margin: 8px 0 0;
+
     color: #3f7f17;
+
     font-size: 14px;
+
 }
 
 body.admin-benutzer-modal-offen {
+
     overflow: hidden;
+
 }
 
 @media (max-width: 600px) {
 
     .admin-benutzer-bereich {
+
         margin-top: 30px;
+
     }
 
     .admin-benutzer-option {
+
         min-height: 78px;
+
         padding: 16px 18px;
+
     }
 
     .admin-benutzer-modal {
+
         align-items: flex-end;
+
         padding: 0;
+
     }
 
     .admin-benutzer-modal-box {
+
         width: 100%;
+
         max-height: 92vh;
+
         border-radius: 24px 24px 0 0;
+
         padding: 24px 20px 28px;
+
     }
+
 }
+
 
 
 /* ========================================
+
    ADMIN – CHECKBOX
+
    ======================================== */
 
 .admin-benutzer-checkbox {
+
     display: flex;
+
     align-items: flex-start;
+
     gap: 12px;
+
     margin: 4px 0 8px;
+
     padding: 14px;
+
     border: 1px solid #dddddd;
+
     border-radius: 12px;
+
     background: #fafafa;
+
     cursor: pointer;
+
 }
 
 .admin-benutzer-checkbox > input {
+
     position: absolute;
+
     opacity: 0;
+
     pointer-events: none;
+
 }
 
 .admin-benutzer-checkbox-box {
+
     width: 22px;
+
     height: 22px;
+
     flex: 0 0 22px;
+
     margin-top: 1px;
+
     border: 1.5px solid #cfcfcf;
+
     border-radius: 6px;
+
     background: #ffffff;
+
     color: #ffffff;
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     transition: background 0.2s ease, border-color 0.2s ease;
+
 }
 
 .admin-benutzer-checkbox-box svg {
+
     width: 14px;
+
     height: 14px;
+
     opacity: 0;
+
 }
 
 .admin-benutzer-checkbox > input:checked + .admin-benutzer-checkbox-box {
+
     background: #95C11F;
+
     border-color: #95C11F;
+
 }
 
 .admin-benutzer-checkbox > input:checked + .admin-benutzer-checkbox-box svg {
+
     opacity: 1;
+
 }
 
 .admin-benutzer-checkbox:focus-within {
+
     border-color: #95C11F;
+
 }
 
 .admin-benutzer-checkbox-text {
+
     min-width: 0;
+
     display: flex;
+
     flex-direction: column;
+
     gap: 3px;
+
 }
 
 .admin-benutzer-checkbox-text strong {
+
     font-size: 15px;
+
     font-weight: 600;
+
     color: #333333;
+
 }
 
 .admin-benutzer-checkbox-text small {
+
     font-size: 13px;
+
     line-height: 1.4;
+
     color: #777777;
+
 }
 
 @media (max-width: 600px) {
+
     .admin-benutzer-checkbox {
+
         padding: 13px;
+
     }
 
     .admin-benutzer-checkbox-text small {
+
         font-size: 12px;
+
     }
+
 }
