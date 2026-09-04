@@ -899,270 +899,229 @@
     </div>
 
 
-<!-- ============================= -->
-<!-- ADMINISTRATION -->
-<!-- ============================= -->
-
-<div
-    class="benutzer-sektion admin-benutzer-bereich"
-    id="adminBenutzerBereich"
-    style="display: none;">
-
-    <div class="benutzer-sektion-kopf">
-
-        <span class="kleine-ueberschrift">
-            ADMINISTRATION
-        </span>
-
-        <h2>
-            Mitarbeiter verwalten
-        </h2>
-
-    </div>
-
-
-
-    <div class="benutzer-optionen">
-
-        <!-- ============================= -->
-        <!-- MITARBEITER ANLEGEN -->
-        <!-- ============================= -->
-
-        <button
-            class="benutzer-option"
-            type="button"
-            onclick="adminBenutzerModalOeffnen()">
-
-            <div class="benutzer-option-icon">
-                <i data-lucide="user-plus"></i>
-            </div>
-
-            <div class="benutzer-option-text">
-
-                <strong>
-                    Neuen Mitarbeiter anlegen
-                </strong>
-
-                <span>
-                    Benutzer und Mitarbeiterprofil erstellen
-                </span>
-
-            </div>
-
-            <i
-                data-lucide="chevron-right"
-                class="benutzer-option-pfeil">
-            </i>
-
-        </button>
-
-
-
-        <!-- ============================= -->
-        <!-- MITARBEITER VERWALTEN -->
-        <!-- ============================= -->
-
-        <button
-            class="benutzer-option"
-            type="button"
-            onclick="adminBenutzerVerwaltenOeffnen()">
-
-            <div class="benutzer-option-icon">
-                <i data-lucide="users-round"></i>
-            </div>
-
-            <div class="benutzer-option-text">
-
-                <strong>
-                    Mitarbeiter verwalten
-                </strong>
-
-                <span>
-                    Benutzer anzeigen, bearbeiten und löschen
-                </span>
-
-            </div>
-
-            <i
-                data-lucide="chevron-right"
-                class="benutzer-option-pfeil">
-            </i>
-
-        </button>
-
-    </div>
-
-</div>
-
-
-
-<!-- ============================= -->
-<!-- MITARBEITER ANLEGEN -->
-<!-- ============================= -->
-
-<div
-    id="adminBenutzerModal"
-    class="passwort-modal"
-    style="display: none;">
+    <!-- ============================= -->
+    <!-- ADMINISTRATION -->
+    <!-- ============================= -->
 
     <div
-        class="passwort-modal-hintergrund"
-        onclick="adminBenutzerModalSchliessen()">
-    </div>
+        class="benutzer-sektion admin-benutzer-bereich"
+        id="adminBenutzerBereich"
+        style="display: none;">
 
-
-
-    <div
-        class="passwort-modal-box"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="adminBenutzerModalTitel">
-
-        <div class="passwort-modal-kopf">
-
-            <div class="passwort-modal-icon">
-
-                <i data-lucide="user-plus"></i>
-
-            </div>
-
-
-
-            <button
-                type="button"
-                class="passwort-modal-schliessen"
-                onclick="adminBenutzerModalSchliessen()"
-                aria-label="Fenster schließen">
-
-                <i data-lucide="x"></i>
-
-            </button>
-
-        </div>
-
-
-
-        <div class="passwort-modal-inhalt">
+        <div class="benutzer-sektion-kopf">
 
             <span class="kleine-ueberschrift">
                 ADMINISTRATION
             </span>
 
-            <h2 id="adminBenutzerModalTitel">
-                Neuen Mitarbeiter anlegen
+            <h2>
+                Mitarbeiter verwalten
             </h2>
 
-            <p>
-                Erstelle einen neuen Zugang für einen Mitarbeiter.
-            </p>
+        </div>
 
+        <div class="benutzer-optionen admin-benutzer-optionen">
 
+            <button
+                class="benutzer-option admin-benutzer-option"
+                type="button"
+                onclick="adminBenutzerModalOeffnen()">
 
-            <form id="adminBenutzerForm">
+                <div class="benutzer-option-icon">
+                    <i data-lucide="user-plus"></i>
+                </div>
 
-                <div class="passwort-feld">
+                <div class="benutzer-option-text">
 
-                    <label for="adminBenutzerName">
-                        Name
-                    </label>
+                    <strong>
+                        Neuen Mitarbeiter anlegen
+                    </strong>
 
-                    <input
-                        type="text"
-                        id="adminBenutzerName"
-                        placeholder="Vorname Nachname"
-                        autocomplete="name"
-                        required>
+                    <span>
+                        Benutzer und Mitarbeiterprofil erstellen
+                    </span>
 
                 </div>
 
+                <i
+                    data-lucide="chevron-right"
+                    class="benutzer-option-pfeil">
+                </i>
 
-
-                <div class="passwort-feld">
-
-                    <label for="adminBenutzerEmail">
-                        E-Mail-Adresse
-                    </label>
-
-                    <input
-                        type="email"
-                        id="adminBenutzerEmail"
-                        placeholder="name@saier.de"
-                        autocomplete="email"
-                        required>
-
-                </div>
-
-
-
-                <div class="passwort-feld">
-
-                    <label for="adminBenutzerPasswort">
-                        Startpasswort
-                    </label>
-
-                    <input
-                        type="password"
-                        id="adminBenutzerPasswort"
-                        placeholder="Mindestens 8 Zeichen"
-                        autocomplete="new-password"
-                        minlength="8"
-                        required>
-
-                </div>
-
-
-
-                <p
-                    id="adminBenutzerFehler"
-                    class="passwort-fehler">
-                </p>
-
-
-
-                <p
-                    id="adminBenutzerErfolg"
-                    class="passwort-erfolg">
-                </p>
-
-
-
-                <div class="passwort-modal-buttons">
-
-                    <button
-                        type="button"
-                        class="passwort-abbrechen"
-                        onclick="adminBenutzerModalSchliessen()">
-
-                        Abbrechen
-
-                    </button>
-
-
-
-                    <button
-                        type="submit"
-                        class="passwort-speichern"
-                        id="adminBenutzerAnlegenButton">
-
-                        <span>
-                            Mitarbeiter anlegen
-                        </span>
-
-                        <i data-lucide="user-plus"></i>
-
-                    </button>
-
-                </div>
-
-
-
-            </form>
+            </button>
 
         </div>
 
     </div>
 
-</div>
+
+    <!-- ============================= -->
+    <!-- ADMIN – MITARBEITER ANLEGEN -->
+    <!-- ============================= -->
+
+    <div
+        id="adminBenutzerModal"
+        class="passwort-modal"
+        style="display: none;">
+
+        <div
+            class="passwort-modal-hintergrund"
+            onclick="adminBenutzerModalSchliessen()">
+        </div>
+
+        <div
+            class="passwort-modal-box"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="adminBenutzerModalTitel">
+
+            <div class="passwort-modal-kopf">
+
+                <div class="passwort-modal-icon">
+                    <i data-lucide="user-plus"></i>
+                </div>
+
+                <button
+                    type="button"
+                    class="passwort-modal-schliessen"
+                    onclick="adminBenutzerModalSchliessen()"
+                    aria-label="Fenster schließen">
+                    <i data-lucide="x"></i>
+                </button>
+
+            </div>
+
+            <div class="passwort-modal-inhalt">
+
+                <span class="kleine-ueberschrift">
+                    ADMINISTRATION
+                </span>
+
+                <h2 id="adminBenutzerModalTitel">
+                    Neuen Mitarbeiter anlegen
+                </h2>
+
+                <p>
+                    Erstelle einen neuen Zugang für einen Mitarbeiter.
+                </p>
+
+                <form id="adminBenutzerForm">
+
+                    <div class="passwort-feld">
+                        <label for="adminBenutzerVorname">
+                            Vorname
+                        </label>
+                        <input
+                            type="text"
+                            id="adminBenutzerVorname"
+                            placeholder="Vorname"
+                            autocomplete="given-name"
+                            required>
+                    </div>
+
+                    <div class="passwort-feld">
+                        <label for="adminBenutzerNachname">
+                            Nachname
+                        </label>
+                        <input
+                            type="text"
+                            id="adminBenutzerNachname"
+                            placeholder="Nachname"
+                            autocomplete="family-name"
+                            required>
+                    </div>
+
+                    <div class="passwort-feld">
+                        <label for="adminBenutzerEmail">
+                            E-Mail-Adresse
+                        </label>
+                        <input
+                            type="email"
+                            id="adminBenutzerEmail"
+                            placeholder="name@saier.de"
+                            autocomplete="email"
+                            required>
+                    </div>
+
+                    <div class="passwort-feld">
+                        <label for="adminBenutzerPasswort">
+                            Vorläufiges Passwort
+                        </label>
+                        <input
+                            type="password"
+                            id="adminBenutzerPasswort"
+                            placeholder="Mindestens 8 Zeichen"
+                            autocomplete="new-password"
+                            minlength="8"
+                            required>
+                    </div>
+
+                    <div class="passwort-feld">
+                        <label for="adminBenutzerPasswortWiederholen">
+                            Vorläufiges Passwort wiederholen
+                        </label>
+                        <input
+                            type="password"
+                            id="adminBenutzerPasswortWiederholen"
+                            placeholder="Passwort erneut eingeben"
+                            autocomplete="new-password"
+                            minlength="8"
+                            required>
+                    </div>
+
+                    <label class="admin-benutzer-checkbox">
+                        <input
+                            type="checkbox"
+                            id="adminBenutzerIstAdmin">
+                        <span class="admin-benutzer-checkbox-box">
+                            <i data-lucide="check"></i>
+                        </span>
+                        <span class="admin-benutzer-checkbox-text">
+                            <strong>Administrator</strong>
+                            <small>
+                                Der Mitarbeiter darf Benutzer verwalten und neue Mitarbeiter anlegen.
+                            </small>
+                        </span>
+                    </label>
+
+                    <p
+                        id="adminBenutzerFehler"
+                        class="passwort-fehler">
+                    </p>
+
+                    <p
+                        id="adminBenutzerErfolg"
+                        class="passwort-erfolg">
+                    </p>
+
+                    <div class="passwort-modal-buttons">
+
+                        <button
+                            type="button"
+                            class="passwort-abbrechen"
+                            onclick="adminBenutzerModalSchliessen()">
+                            Abbrechen
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="passwort-speichern"
+                            id="adminBenutzerAnlegenButton">
+                            <span>
+                                Mitarbeiter anlegen
+                            </span>
+                            <i data-lucide="user-plus"></i>
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 
     <!-- ============================= -->

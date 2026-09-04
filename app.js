@@ -548,17 +548,10 @@ function kalenderPopupOeffnen(jahr, monat, tag, termine) {
             <section class="kalender-popup-geburtstage">
                 <h3>Geburtstage</h3>
                 ${geburtstageAnDiesemTag.map(function(geburtstag) {
-                   const geburtsjahr = Number(geburtstag.birth_year);
-
-const alter =
-    Number.isInteger(geburtsjahr)
-        ? jahr - geburtsjahr
-        : null;
-
-const alterText =
-    Number.isInteger(alter) && alter >= 0
-        ? ` wird ${alter} Jahre alt`
-        : "";
+                    const alterText =
+                        Number.isInteger(geburtstag.age) && geburtstag.age >= 0
+                            ? ` wird ${geburtstag.age} Jahre alt`
+                            : "";
 
                     return `
                         <div class="kalender-popup-geburtstag">
@@ -1805,6 +1798,60 @@ async function benutzerDatenLaden() {
 // ADMIN – MITARBEITER ANLEGEN
 // ========================================
 
+function adminBenutzerModalOeffnen() {
+
+    if (!aktuellerBenutzerIstAdmin) {
+        return;
+    }
+
+    const modal = document.getElementById("adminBenutzerModal");
+
+    if (!modal) {
+        return;
+    }
+
+    adminBenutzerFormularZuruecksetzen();
+
+    modal.style.display = "flex";
+    document.body.classList.add("admin-benutzer-modal-offen");
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+
+    window.setTimeout(function() {
+        document.getElementById("adminBenutzerName")?.focus();
+    }, 50);
+}
+
+
+function adminBenutzerModalSchliessen() {
+
+    const modal = document.getElementById("adminBenutzerModal");
+
+    if (!modal) {
+        return;
+    }
+
+    modal.style.display = "none";
+    document.body.classList.remove("admin-benutzer-modal-offen");
+}
+
+
+function adminBenutzerModalEscape(event) {
+
+    if (event.key !== "Escape") {
+        return;
+    }
+
+    const modal = document.getElementById("adminBenutzerModal");
+
+    if (modal && modal.style.display !== "none") {
+        adminBenutzerModalSchliessen();
+    }
+}
+
+
 function adminBenutzerFormularZuruecksetzen() {
 
     const form = document.getElementById("adminBenutzerForm");
@@ -1833,14 +1880,23 @@ async function adminBenutzerAnlegen(event) {
         return;
     }
 
-    const name =
-        document.getElementById("adminBenutzerName")?.value.trim() || "";
+    const vorname =
+        document.getElementById("adminBenutzerVorname")?.value.trim() || "";
+
+    const nachname =
+        document.getElementById("adminBenutzerNachname")?.value.trim() || "";
 
     const email =
-        document.getElementById("adminBenutzerEmail")?.value.trim() || "";
+        document.getElementById("adminBenutzerEmail")?.value.trim().toLowerCase() || "";
 
     const passwort =
         document.getElementById("adminBenutzerPasswort")?.value || "";
+
+    const passwortWiederholen =
+        document.getElementById("adminBenutzerPasswortWiederholen")?.value || "";
+
+    const istAdmin =
+        document.getElementById("adminBenutzerIstAdmin")?.checked === true;
 
     const fehler =
         document.getElementById("adminBenutzerFehler");
@@ -1854,7 +1910,7 @@ async function adminBenutzerAnlegen(event) {
     if (fehler) fehler.textContent = "";
     if (erfolg) erfolg.textContent = "";
 
-    if (!name || !email || !passwort) {
+    if (!vorname || !nachname || !email || !passwort || !passwortWiederholen) {
         if (fehler) {
             fehler.textContent =
                 "Bitte alle Felder ausfüllen.";
@@ -1870,6 +1926,16 @@ async function adminBenutzerAnlegen(event) {
         return;
     }
 
+    if (passwort !== passwortWiederholen) {
+        if (fehler) {
+            fehler.textContent =
+                "Die Passwörter stimmen nicht überein.";
+        }
+        return;
+    }
+
+    const name = `${vorname} ${nachname}`;
+
     if (button) {
         button.disabled = true;
         button.dataset.originalText = button.textContent;
@@ -1878,35 +1944,60 @@ async function adminBenutzerAnlegen(event) {
 
     try {
 
-        const { data, error } =
-            await supabaseClient.functions.invoke(
-                "admin-create-user",
-                {
-                    body: {
-                        name: name,
-                        email: email,
-                        password: passwort
-                    }
-                }
-            );
+        const {
+    data: { session }
+} = await supabaseClient.auth.getSession();
 
-        if (error) {
-            let meldung =
-                "Der Benutzer konnte nicht angelegt werden.";
+if (!session?.access_token) {
+    throw new Error("Deine Anmeldung ist abgelaufen. Bitte neu anmelden.");
+}
 
-            try {
-                const antwort =
-                    await error.context?.json();
+const response = await fetch(
+    `${SUPABASE_URL}/functions/v1/admin-create-user`,
+    {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${session.access_token}`,
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            first_name: vorname,
+            last_name: nachname,
+            name: name,
+            email: email,
+            password: passwort,
+            is_admin: istAdmin
+        })
+    }
+);
 
-                if (antwort?.error) {
-                    meldung = antwort.error;
-                }
-            } catch (jsonFehler) {
-                // Standardfehlermeldung verwenden.
-            }
+const responseText = await response.text();
 
-            throw new Error(meldung);
-        }
+let responseData = {};
+
+try {
+    responseData = responseText
+        ? JSON.parse(responseText)
+        : {};
+} catch {
+    responseData = {
+        error: responseText
+    };
+}
+
+if (!response.ok) {
+    throw new Error(
+        responseData.error ||
+        responseData.message ||
+        responseData.detail ||
+        `Fehler ${response.status}`
+    );
+}
+
+if (responseData.error) {
+    throw new Error(responseData.error);
+}
 
         if (erfolg) {
             erfolg.textContent =
@@ -1918,6 +2009,10 @@ async function adminBenutzerAnlegen(event) {
 
         if (form) {
             form.reset();
+        }
+
+        if (typeof lucide !== "undefined") {
+            lucide.createIcons();
         }
 
     } catch (error) {
@@ -1941,8 +2036,10 @@ async function adminBenutzerAnlegen(event) {
                 button.dataset.originalText ||
                 "Mitarbeiter anlegen";
         }
+
     }
 }
+
 
 
 // ========================================
@@ -2047,6 +2144,12 @@ window.zeigeSeite =
 window.ausloggen =
     ausloggen;
 
+window.adminBenutzerModalOeffnen =
+    adminBenutzerModalOeffnen;
+
+window.adminBenutzerModalSchliessen =
+    adminBenutzerModalSchliessen;
+
 window.adminBenutzerFormularZuruecksetzen =
     adminBenutzerFormularZuruecksetzen;
 
@@ -2060,6 +2163,7 @@ document.addEventListener(
     function() {
 
         document.addEventListener("keydown", kalenderPopupEscape);
+        document.addEventListener("keydown", adminBenutzerModalEscape);
 
         const loginForm =
             document.getElementById(
