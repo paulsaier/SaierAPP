@@ -10,6 +10,7 @@ let sichtbareGeburtstage = [];
 let kalenderTermine = [];
 
 let aktuellerBenutzerIstAdmin = false;
+let aktuellerMitarbeiterId = null;
 
 
 // ========================================
@@ -239,7 +240,7 @@ async function kalenderTermineLaden() {
     const { data, error } =
         await supabaseClient
             .from("calendar_events")
-            .select("id, title, event_date, description, event_type")
+            .select("id, title, event_date, description, event_type, signup_allowed")
             .order("event_date", { ascending: true });
 
     if (error) {
@@ -250,11 +251,130 @@ async function kalenderTermineLaden() {
     kalenderTermine = data || [];
 
     const liste = document.getElementById("termineListe");
+
     if (liste) {
+
         liste.innerHTML = "";
+
         const bereich = liste.closest(".kalender-termine");
+
         if (bereich) {
-            bereich.style.display = "none";
+            bereich.style.display = "block";
+
+            const ueberschrift =
+                bereich.querySelector(".kalender-bereich-kopf h2");
+
+            if (ueberschrift) {
+                ueberschrift.textContent = "Termine in Kürze";
+            }
+        }
+
+        const heute = new Date();
+        heute.setHours(0, 0, 0, 0);
+
+        const morgen = new Date(heute);
+        morgen.setDate(heute.getDate() + 1);
+
+        const heuteString =
+            kalenderDatumAlsString(
+                heute.getFullYear(),
+                heute.getMonth(),
+                heute.getDate()
+            );
+
+        const morgenString =
+            kalenderDatumAlsString(
+                morgen.getFullYear(),
+                morgen.getMonth(),
+                morgen.getDate()
+            );
+
+        const kommendeTermine =
+            kalenderTermine.filter(function(termin) {
+                return (
+                    termin.event_date === heuteString ||
+                    termin.event_date === morgenString
+                );
+            });
+
+        if (kommendeTermine.length === 0) {
+
+            liste.innerHTML = `
+                <div class="kalender-leer">
+                    <i data-lucide="calendar-x"></i>
+                    <p>Heute und morgen sind keine Termine eingetragen.</p>
+                </div>
+            `;
+
+        } else {
+
+            kommendeTermine.forEach(function(termin) {
+
+                const datum =
+                    new Date(
+                        termin.event_date + "T00:00:00"
+                    );
+
+                const istHeute =
+                    termin.event_date === heuteString;
+
+                const artikel =
+                    document.createElement("article");
+
+                artikel.className =
+                    "kalender-termin";
+
+                artikel.innerHTML = `
+                    <div class="kalender-termin-datum" data-event-date="${termin.event_date}">
+                        <strong>${datum.getDate()}</strong>
+                        <span>
+                            ${datum.toLocaleDateString(
+                                "de-DE",
+                                { month: "short" }
+                            )}
+                        </span>
+                    </div>
+
+                    <div>
+                        <small>
+                            ${istHeute ? "HEUTE" : "MORGEN"}
+                        </small>
+
+                        <h3>
+                            ${escapeHtml(
+                                termin.title || "Termin"
+                            )}
+                        </h3>
+
+                        ${
+                            termin.description
+                                ? `<p>${escapeHtml(termin.description)}</p>`
+                                : ""
+                        }
+                    </div>
+                `;
+
+                const datumKaestchen =
+                    artikel.querySelector(".kalender-termin-datum");
+
+                if (datumKaestchen) {
+                    datumKaestchen.style.cursor = "pointer";
+
+                    datumKaestchen.addEventListener("click", function() {
+                        kalenderTagAngeklickt(
+                            datum.getFullYear(),
+                            datum.getMonth(),
+                            datum.getDate()
+                        );
+                    });
+                }
+
+                liste.appendChild(artikel);
+            });
+        }
+
+        if (typeof lucide !== "undefined") {
+            lucide.createIcons();
         }
     }
 
@@ -514,7 +634,7 @@ function geburtstageNaechsteSiebenTageAnzeigen() {
 // KALENDERTAG ANGEKLICKT
 // ========================================
 
-function kalenderTagAngeklickt(jahr, monat, tag) {
+async function kalenderTagAngeklickt(jahr, monat, tag) {
 
     const datumString = kalenderDatumAlsString(jahr, monat, tag);
 
@@ -522,7 +642,7 @@ function kalenderTagAngeklickt(jahr, monat, tag) {
         return termin.event_date === datumString;
     });
 
-    kalenderPopupOeffnen(jahr, monat, tag, termineAnDiesemTag);
+    await kalenderPopupOeffnen(jahr, monat, tag, termineAnDiesemTag);
 }
 
 
@@ -530,7 +650,306 @@ function kalenderTagAngeklickt(jahr, monat, tag) {
 // KALENDER-POPUP
 // ========================================
 
-function kalenderPopupOeffnen(jahr, monat, tag, termine) {
+async function kalenderAnmeldungenDesBenutzersLaden(termine) {
+
+    const anmeldbareTermine = (termine || []).filter(function(termin) {
+        return termin.signup_allowed === true;
+    });
+
+    if (anmeldbareTermine.length === 0) {
+        return {
+            employeeId: null,
+            angemeldeteEventIds: new Set(),
+            fehler: null
+        };
+    }
+
+    if (typeof supabaseClient === "undefined") {
+        return {
+            employeeId: null,
+            angemeldeteEventIds: new Set(),
+            fehler: "Die Verbindung zur Anmeldung ist nicht verfügbar."
+        };
+    }
+
+    if (!aktuellerMitarbeiterId) {
+        const { data: userData, error: userError } =
+            await supabaseClient.auth.getUser();
+
+        if (userError || !userData || !userData.user) {
+            console.error("Benutzer konnte nicht ermittelt werden:", userError);
+            return {
+                employeeId: null,
+                angemeldeteEventIds: new Set(),
+                fehler: "Dein Benutzerkonto konnte nicht ermittelt werden."
+            };
+        }
+
+        const { data: mitarbeiter, error: mitarbeiterFehler } =
+            await supabaseClient
+                .from("employees")
+                .select("id")
+                .eq("user_id", userData.user.id)
+                .maybeSingle();
+
+        if (mitarbeiterFehler || !mitarbeiter) {
+            console.error("Mitarbeiterprofil konnte nicht ermittelt werden:", mitarbeiterFehler);
+            return {
+                employeeId: null,
+                angemeldeteEventIds: new Set(),
+                fehler: "Dein Mitarbeiterprofil konnte nicht ermittelt werden."
+            };
+        }
+
+        aktuellerMitarbeiterId = mitarbeiter.id;
+    }
+
+    const eventIds = anmeldbareTermine.map(function(termin) {
+        return termin.id;
+    });
+
+    const { data, error } =
+        await supabaseClient
+            .from("calendar_event_signups")
+            .select("event_id")
+            .eq("employee_id", aktuellerMitarbeiterId)
+            .in("event_id", eventIds);
+
+    if (error) {
+        console.error("Anmeldungen konnten nicht geladen werden:", error);
+        return {
+            employeeId: aktuellerMitarbeiterId,
+            angemeldeteEventIds: new Set(),
+            fehler: "Der Anmeldestatus konnte nicht geladen werden."
+        };
+    }
+
+    return {
+        employeeId: aktuellerMitarbeiterId,
+        angemeldeteEventIds: new Set(
+            (data || []).map(function(eintrag) {
+                return eintrag.event_id;
+            })
+        ),
+        fehler: null
+    };
+}
+
+async function kalenderTeilnehmerDesAdminsLaden(termine) {
+    if (!aktuellerBenutzerIstAdmin) {
+        return {};
+    }
+
+    if (typeof supabaseClient === "undefined") {
+        return {};
+    }
+
+    const ergebnis = {};
+
+    for (const termin of (termine || [])) {
+        if (!termin || !termin.id) {
+            continue;
+        }
+
+        const { data, error } =
+            await supabaseClient.rpc(
+                "get_calendar_event_signups",
+                {
+                    p_event_id: termin.id
+                }
+            );
+
+        if (error) {
+            console.error(
+                "Teilnehmer konnten nicht geladen werden:",
+                error
+            );
+
+            ergebnis[termin.id] = `
+                <div class="kalender-admin-teilnehmer">
+                    <p class="kalender-admin-teilnehmer-fehler">
+                        Die Teilnehmer konnten nicht geladen werden.
+                    </p>
+                </div>
+            `;
+
+            continue;
+        }
+
+        const teilnehmer = data || [];
+
+        ergebnis[termin.id] = `
+            <div class="kalender-admin-teilnehmer">
+
+                <div class="kalender-admin-teilnehmer-kopf">
+                    <div>
+                        <span class="kalender-admin-teilnehmer-label">
+                            TEILNEHMER
+                        </span>
+
+                        <strong>
+                            ${teilnehmer.length}
+                        </strong>
+                    </div>
+
+                    <i data-lucide="users"></i>
+                </div>
+
+                ${
+                    teilnehmer.length > 0
+                        ? `
+                            <ul class="kalender-admin-teilnehmer-liste">
+                                ${teilnehmer.map(function(teilnehmer) {
+                                    return `
+                                        <li>
+                                            <i data-lucide="user"></i>
+                                            <span>
+                                                ${escapeHtml(
+                                                    teilnehmer.employee_name || "Mitarbeiter"
+                                                )}
+                                            </span>
+                                        </li>
+                                    `;
+                                }).join("")}
+                            </ul>
+                        `
+                        : `
+                            <p class="kalender-admin-teilnehmer-leer">
+                                Noch keine Mitarbeiter angemeldet.
+                            </p>
+                        `
+                }
+
+            </div>
+        `;
+    }
+
+    return ergebnis;
+}
+
+async function kalenderTerminAnmelden(eventId) {
+
+    if (typeof supabaseClient === "undefined") {
+        return;
+    }
+
+    const button = document.querySelector(
+        '[data-kalender-anmeldung="' + eventId + '"]'
+    );
+
+    if (button) {
+        button.disabled = true;
+        button.textContent = "Wird gespeichert …";
+    }
+
+    if (!aktuellerMitarbeiterId) {
+        const status = await kalenderAnmeldungenDesBenutzersLaden(
+            [{ id: eventId, signup_allowed: true }]
+        );
+
+        if (status.fehler || !status.employeeId) {
+            if (button) {
+                button.disabled = false;
+                button.textContent = "Für diesen Termin anmelden";
+            }
+
+            alert(status.fehler || "Dein Mitarbeiterprofil konnte nicht ermittelt werden.");
+            return;
+        }
+    }
+
+    const { error } =
+        await supabaseClient
+            .from("calendar_event_signups")
+            .insert({
+                event_id: eventId,
+                employee_id: aktuellerMitarbeiterId
+            });
+
+    if (error) {
+        console.error("Anmeldung fehlgeschlagen:", error);
+
+        if (button) {
+            button.disabled = false;
+            button.textContent = "Für diesen Termin anmelden";
+        }
+
+        if (error.code === "23505") {
+            alert("Du bist bereits für diesen Termin angemeldet.");
+        } else {
+            alert("Die Anmeldung konnte nicht gespeichert werden.");
+        }
+
+        return;
+    }
+
+    const termin = kalenderTermine.find(function(eintrag) {
+        return eintrag.id === eventId;
+    });
+
+    if (termin) {
+        const datum = new Date(termin.event_date + "T00:00:00");
+        await kalenderPopupOeffnen(
+            datum.getFullYear(),
+            datum.getMonth(),
+            datum.getDate(),
+            [termin]
+        );
+    }
+}
+
+
+async function kalenderTerminAbmelden(eventId) {
+
+    if (typeof supabaseClient === "undefined" || !aktuellerMitarbeiterId) {
+        return;
+    }
+
+    const button = document.querySelector(
+        '[data-kalender-anmeldung="' + eventId + '"]'
+    );
+
+    if (button) {
+        button.disabled = true;
+        button.textContent = "Wird gespeichert …";
+    }
+
+    const { error } =
+        await supabaseClient
+            .from("calendar_event_signups")
+            .delete()
+            .eq("event_id", eventId)
+            .eq("employee_id", aktuellerMitarbeiterId);
+
+    if (error) {
+        console.error("Abmeldung fehlgeschlagen:", error);
+
+        if (button) {
+            button.disabled = false;
+            button.textContent = "Von diesem Termin abmelden";
+        }
+
+        alert("Die Abmeldung konnte nicht gespeichert werden.");
+        return;
+    }
+
+    const termin = kalenderTermine.find(function(eintrag) {
+        return eintrag.id === eventId;
+    });
+
+    if (termin) {
+        const datum = new Date(termin.event_date + "T00:00:00");
+        await kalenderPopupOeffnen(
+            datum.getFullYear(),
+            datum.getMonth(),
+            datum.getDate(),
+            [termin]
+        );
+    }
+}
+
+
+async function kalenderPopupOeffnen(jahr, monat, tag, termine) {
 
     let popup = document.getElementById("kalenderPopup");
 
@@ -556,6 +975,12 @@ function kalenderPopupOeffnen(jahr, monat, tag, termine) {
             geburtstag.birthday_day === tag
         );
     });
+
+    const anmeldungStatus =
+        await kalenderAnmeldungenDesBenutzersLaden(termine);
+
+        const adminTeilnehmer =
+        await kalenderTeilnehmerDesAdminsLaden(termine);
 
     let inhalt = "";
 
@@ -591,12 +1016,60 @@ function kalenderPopupOeffnen(jahr, monat, tag, termine) {
     // Normale Termine bleiben getrennt von Geburtstagen.
     if (termine && termine.length > 0) {
         inhalt += termine.map(function(termin) {
+            const anmeldungMoeglich = termin.signup_allowed === true;
+            const istAngemeldet = anmeldungStatus.angemeldeteEventIds.has(termin.id);
+
+            let anmeldungHtml = "";
+
+            if (anmeldungMoeglich) {
+                if (anmeldungStatus.fehler) {
+                    anmeldungHtml = `
+                        <div class="kalender-anmeldung-fehler">
+                            ${escapeHtml(anmeldungStatus.fehler)}
+                        </div>
+                    `;
+                } else if (istAngemeldet) {
+                    anmeldungHtml = `
+                        <div class="kalender-anmeldung">
+                            <div class="kalender-anmeldung-status">
+                                <i data-lucide="circle-check"></i>
+                                <span>Du bist für diesen Termin angemeldet.</span>
+                            </div>
+                            <button
+                                type="button"
+                                class="kalender-anmeldung-button kalender-anmeldung-abmelden"
+                                data-kalender-anmeldung="${escapeHtml(termin.id)}"
+                                onclick="kalenderTerminAbmelden('${escapeHtml(termin.id)}')">
+                                Von diesem Termin abmelden
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    anmeldungHtml = `
+                        <div class="kalender-anmeldung">
+                            <button
+                                type="button"
+                                class="kalender-anmeldung-button"
+                                data-kalender-anmeldung="${escapeHtml(termin.id)}"
+                                onclick="kalenderTerminAnmelden('${escapeHtml(termin.id)}')">
+                                Für diesen Termin anmelden
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
             return `
-                <article class="kalender-popup-termin">
-                    <h3>${escapeHtml(termin.title || "Termin")}</h3>
-                    ${termin.description ? `<p>${escapeHtml(termin.description)}</p>` : ""}
-                </article>
-            `;
+    <article class="kalender-popup-termin">
+        <h3>${escapeHtml(termin.title || "Termin")}</h3>
+
+        ${termin.description ? `<p>${escapeHtml(termin.description)}</p>` : ""}
+
+        ${anmeldungHtml}
+
+        ${adminTeilnehmer[termin.id] || ""}
+    </article>
+`;
         }).join("");
     }
 
@@ -2633,6 +3106,12 @@ window.geburtstageNaechsteSiebenTageAnzeigen =
 
 window.kalenderTagAngeklickt =
     kalenderTagAngeklickt;
+
+window.kalenderTerminAnmelden =
+    kalenderTerminAnmelden;
+
+window.kalenderTerminAbmelden =
+    kalenderTerminAbmelden;
 
 window.vorherigerMonat =
     vorherigerMonat;
