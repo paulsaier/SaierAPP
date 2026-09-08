@@ -2676,6 +2676,16 @@ async function benutzerDatenLaden() {
                 : "none";
     }
 
+    const newsVerwaltenButton =
+    document.getElementById("newsVerwaltenButton");
+
+if (newsVerwaltenButton) {
+    newsVerwaltenButton.style.display =
+        aktuellerBenutzerIstAdmin
+            ? "flex"
+            : "none";
+}
+
 
     // ----------------------------------------
     // Name
