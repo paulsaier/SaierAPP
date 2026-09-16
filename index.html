@@ -29,6 +29,10 @@
     <link rel="stylesheet"
           href="style.css">
 
+    <!-- Monteureinteilung – eigenes Styling -->
+    <link rel="stylesheet"
+          href="monteure.css">
+
     <!-- PWA -->
     <link rel="manifest"
           href="manifest.json">
@@ -44,6 +48,9 @@
 
     <!-- Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Excel / SheetJS -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -289,23 +296,165 @@
             </div>
 
 
-            <div class="platzhalter">
+            <div class="monteure-bereich">
 
-                <i data-lucide="hard-hat"></i>
+                <div class="monteure-aktionszeile">
+                    <div>
+                        <span class="kleine-ueberschrift">
+                            EINSATZPLANUNG
+                        </span>
+                        <p class="monteure-hinweis">
+                            Deine aktuelle Einteilung für diese Arbeitswoche.
+                        </p>
+                    </div>
 
-                <h2>
-                    Monteureinteilung
-                </h2>
+                    <button
+                        id="monteureVerwaltenButton"
+                        class="monteure-admin-button"
+                        type="button"
+                        onclick="monteureAdminOeffnen()"
+                        style="display: none;">
+                        <i data-lucide="file-spreadsheet"></i>
+                        <span>Excel einlesen</span>
+                    </button>
+                </div>
 
-                <p>
-                    Hier wird später die aktuelle
-                    Monteureinteilung angezeigt.
-                </p>
+                <div class="monteure-navigation">
+                    <button class="monteure-nav-button" type="button" onclick="monteureVorherigeWoche()" aria-label="Vorherige Arbeitswoche">
+                        <i data-lucide="chevron-left"></i>
+                    </button>
+                    <div class="monteure-zeitraum" id="monteureZeitraum">Wird geladen ...</div>
+                    <button class="monteure-nav-button" type="button" onclick="monteureNaechsteWoche()" aria-label="Nächste Arbeitswoche">
+                        <i data-lucide="chevron-right"></i>
+                    </button>
+                </div>
+
+                <div id="monteureStatus" class="monteure-status">
+                    <i data-lucide="loader-circle"></i>
+                    <span>Monteureinteilung wird geladen ...</span>
+                </div>
+
+                <div id="monteureListe" class="monteure-liste"></div>
 
             </div>
 
         </section>
 
+
+
+        <!-- ============================= -->
+        <!-- MONTEURE – EXCEL-IMPORT -->
+        <!-- ============================= -->
+
+        <div
+            id="monteureImportModal"
+            class="monteure-import-modal"
+            style="display: none;">
+
+            <div
+                class="monteure-import-hintergrund"
+                onclick="monteureAdminSchliessen()">
+            </div>
+
+            <div
+                class="monteure-import-box"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="monteureImportTitel">
+
+                <div class="monteure-import-kopf">
+                    <div>
+                        <span class="kleine-ueberschrift">
+                            ADMINISTRATION
+                        </span>
+                        <h2 id="monteureImportTitel">
+                            Monteureinteilung importieren
+                        </h2>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="monteure-import-schliessen"
+                        onclick="monteureAdminSchliessen()"
+                        aria-label="Fenster schließen">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+
+                <div class="monteure-import-inhalt">
+
+                    <p class="monteure-import-erlaeuterung">
+                        Wähle die aktuelle Excel-Datei für den jeweiligen Bereich aus.
+                        MdE und Gebäudetechnik werden getrennt importiert und überschreiben
+                        jeweils nur ihren eigenen Bereich.
+                    </p>
+
+                    <div class="monteure-import-bereich-grid">
+
+                        <div class="monteure-import-bereich">
+                            <span class="monteure-import-bereich-titel">MdE</span>
+                            <label
+                                for="monteureExcelDateiMde"
+                                class="monteure-upload-feld">
+                                <i data-lucide="upload"></i>
+                                <span>MdE-Excel auswählen</span>
+                                <small id="monteureExcelDateinameMde">
+                                    .xlsx oder .xls
+                                </small>
+                            </label>
+                            <input
+                                type="file"
+                                id="monteureExcelDateiMde"
+                                accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+                                style="display: none;">
+                        </div>
+
+                        <div class="monteure-import-bereich">
+                            <span class="monteure-import-bereich-titel">Gebäudetechnik</span>
+                            <label
+                                for="monteureExcelDateiGebaeudetechnik"
+                                class="monteure-upload-feld">
+                                <i data-lucide="upload"></i>
+                                <span>Gebäudetechnik-Excel auswählen</span>
+                                <small id="monteureExcelDateinameGebaeudetechnik">
+                                    .xlsx oder .xls
+                                </small>
+                            </label>
+                            <input
+                                type="file"
+                                id="monteureExcelDateiGebaeudetechnik"
+                                accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+                                style="display: none;">
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="monteureImportStatus"
+                        class="monteure-import-status"
+                        style="display: none;">
+                    </div>
+
+                    <div
+                        id="monteureImportVorschau"
+                        class="monteure-import-vorschau"
+                        style="display: none;">
+                    </div>
+
+                    <div class="monteure-import-buttons">
+                        <button
+                            type="button"
+                            class="monteure-import-abbrechen"
+                            onclick="monteureAdminSchliessen()">
+                            Abbrechen
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
 
 
         <!-- ============================= -->
@@ -800,6 +949,35 @@
 
                     <span>
                         Neues Passwort festlegen
+                    </span>
+
+                </div>
+
+                <i
+                    data-lucide="chevron-right"
+                    class="benutzer-option-pfeil">
+                </i>
+
+            </button>
+
+            <button
+                    class="benutzer-option"
+                    type="button"
+                    id="pushBenachrichtigungenButton"
+                    onclick="pushBenachrichtigungenAktivieren()">
+
+                <div class="benutzer-option-icon">
+                    <i data-lucide="bell"></i>
+                </div>
+
+                <div class="benutzer-option-text">
+
+                    <strong>
+                        Push-Nachrichten aktivieren
+                    </strong>
+
+                    <span id="pushBenachrichtigungenStatus">
+                        Benachrichtigungen auf diesem Gerät aktivieren
                     </span>
 
                 </div>

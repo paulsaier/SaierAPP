@@ -12,6 +12,9 @@ let kalenderTermine = [];
 let aktuellerBenutzerIstAdmin = false;
 let aktuellerMitarbeiterId = null;
 
+let monteureStartDatum = new Date();
+let monteureDaten = [];
+
 
 // ========================================
 // SEITEN-NAVIGATION
@@ -59,6 +62,13 @@ function zeigeSeite(seitenId, button) {
         kalenderAnzeigen();
 
         kalenderDatenLaden();
+
+    }
+
+
+    if (seitenId === "monteure") {
+
+        monteureEinteilungAnzeigen();
 
     }
 
@@ -2628,7 +2638,7 @@ async function benutzerDatenLaden() {
         await supabaseClient
             .from("employees")
             .select(
-                "name, birthdate, birthday_visible, is_admin"
+                "id, name, birthdate, birthday_visible, is_admin"
             )
             .eq(
                 "user_id",
@@ -2647,6 +2657,13 @@ async function benutzerDatenLaden() {
         return;
 
     }
+
+
+    // ----------------------------------------
+    // Aktuelle Mitarbeiter-ID
+    // ----------------------------------------
+
+    aktuellerMitarbeiterId = mitarbeiter?.id || null;
 
 
     // ----------------------------------------
@@ -2685,6 +2702,17 @@ if (newsVerwaltenButton) {
             ? "flex"
             : "none";
 }
+
+
+    const monteureVerwaltenButton =
+        document.getElementById("monteureVerwaltenButton");
+
+    if (monteureVerwaltenButton) {
+        monteureVerwaltenButton.style.display =
+            aktuellerBenutzerIstAdmin
+                ? "flex"
+                : "none";
+    }
 
 
     // ----------------------------------------
@@ -3072,6 +3100,1290 @@ async function loginStatusPruefen() {
 
 
 // ========================================
+// MONTEUREINTEILUNG
+// ========================================
+
+function monteureDatumAlsString(datum) {
+
+    const jahr = datum.getFullYear();
+    const monat = String(datum.getMonth() + 1).padStart(2, "0");
+    const tag = String(datum.getDate()).padStart(2, "0");
+
+    return jahr + "-" + monat + "-" + tag;
+}
+
+
+function monteureDatumAnzeigen(datum) {
+
+    return datum.toLocaleDateString(
+        "de-DE",
+        {
+            weekday: "long",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        }
+    );
+}
+
+
+function monteureStartAufMontagSetzen() {
+
+    const datum = new Date();
+    datum.setHours(0, 0, 0, 0);
+
+    const wochentag = datum.getDay();
+    const differenz = wochentag === 0 ? -6 : 1 - wochentag;
+
+    datum.setDate(datum.getDate() + differenz);
+
+    monteureStartDatum = datum;
+}
+
+
+function monteureZeitraumAnzeigen() {
+
+    const element =
+        document.getElementById("monteureZeitraum");
+
+    if (!element) {
+        return;
+    }
+
+    const start = new Date(monteureStartDatum);
+    const ende = new Date(monteureStartDatum);
+    ende.setDate(ende.getDate() + 4);
+
+    const startText = start.toLocaleDateString("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    });
+
+    const endeText = ende.toLocaleDateString("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    });
+
+    element.textContent = startText + " – " + endeText;
+}
+
+
+function monteureVorherigeWoche() {
+
+    monteureStartDatum.setDate(
+        monteureStartDatum.getDate() - 7
+    );
+
+    monteureEinteilungAnzeigen();
+}
+
+
+function monteureNaechsteWoche() {
+
+    monteureStartDatum.setDate(
+        monteureStartDatum.getDate() + 7
+    );
+
+    monteureEinteilungAnzeigen();
+}
+
+
+function monteureStatusAnzeigen(text, typ) {
+
+    const status =
+        document.getElementById("monteureStatus");
+
+    if (!status) {
+        return;
+    }
+
+    status.className =
+        "monteure-status" +
+        (typ ? " " + typ : "");
+
+    status.innerHTML = "";
+
+    const icon = document.createElement("i");
+    icon.setAttribute(
+        "data-lucide",
+        typ === "fehler" ? "circle-alert" : "loader-circle"
+    );
+
+    const span = document.createElement("span");
+    span.textContent = text;
+
+    status.appendChild(icon);
+    status.appendChild(span);
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
+
+function monteureStatusVerstecken() {
+
+    const status =
+        document.getElementById("monteureStatus");
+
+    if (status) {
+        status.style.display = "none";
+    }
+}
+
+
+function monteureSichererText(text) {
+
+    return text === null || text === undefined || text === ""
+        ? "–"
+        : String(text);
+}
+
+
+function monteureGruppieren(einsaetze) {
+
+    const gruppen = {};
+
+    (einsaetze || []).forEach(function(einsatz) {
+
+        const schluessel =
+            monteureSichererText(einsatz.projektname) +
+            "|||" +
+            monteureSichererText(einsatz.auto);
+
+        if (!gruppen[schluessel]) {
+            gruppen[schluessel] = {
+                projektname: einsatz.projektname,
+                auto: einsatz.auto,
+                mitarbeiter: []
+            };
+        }
+
+        const name =
+            einsatz.employees?.name ||
+            "Mitarbeiter";
+
+        if (!gruppen[schluessel].mitarbeiter.includes(name)) {
+            gruppen[schluessel].mitarbeiter.push(name);
+        }
+    });
+
+    return Object.values(gruppen);
+}
+
+
+function monteureTagErstellen(datum, einsaetze) {
+
+    const tag = document.createElement("article");
+    tag.className = "monteure-tag";
+
+    if (datum.toDateString() === new Date().toDateString()) {
+        tag.classList.add("heute");
+    }
+
+    const kopf = document.createElement("div");
+    kopf.className = "monteure-tag-kopf";
+
+    const datumBox = document.createElement("div");
+    datumBox.className = "monteure-tag-datum";
+
+    const wochentag = document.createElement("span");
+    wochentag.textContent = datum.toLocaleDateString("de-DE", {
+        weekday: "long"
+    });
+
+    const datumText = document.createElement("strong");
+    datumText.textContent = datum.toLocaleDateString("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    });
+
+    datumBox.appendChild(wochentag);
+    datumBox.appendChild(datumText);
+    kopf.appendChild(datumBox);
+
+    if (datum.toDateString() === new Date().toDateString()) {
+        const heute = document.createElement("span");
+        heute.className = "monteure-heute-label";
+        heute.textContent = "HEUTE";
+        kopf.appendChild(heute);
+    }
+
+    tag.appendChild(kopf);
+
+    const inhalt = document.createElement("div");
+    inhalt.className = "monteure-tag-inhalt";
+
+    if (!einsaetze.length) {
+
+        const leer = document.createElement("div");
+        leer.className = "monteure-leer";
+        leer.innerHTML =
+            '<i data-lucide="calendar-off"></i><span>Für diesen Tag ist keine Einteilung hinterlegt.</span>';
+        inhalt.appendChild(leer);
+        tag.appendChild(inhalt);
+        return tag;
+    }
+
+    const gruppen = monteureGruppieren(einsaetze);
+
+    gruppen.forEach(function(gruppe) {
+
+        const karte = document.createElement("div");
+        karte.className = "monteure-einsatz";
+
+        const projekt = document.createElement("div");
+        projekt.className = "monteure-einsatz-zeile monteure-projekt";
+        projekt.innerHTML = '<i data-lucide="building-2"></i>';
+
+        const projektText = document.createElement("div");
+        projektText.className = "monteure-einsatz-text";
+
+        const projektLabel = document.createElement("span");
+        projektLabel.className = "monteure-label";
+        projektLabel.textContent = "Projekt / Einsatz";
+
+        const projektName = document.createElement("strong");
+        projektName.textContent = monteureSichererText(gruppe.projektname);
+
+        projektText.appendChild(projektLabel);
+        projektText.appendChild(projektName);
+        projekt.appendChild(projektText);
+        karte.appendChild(projekt);
+
+        if (gruppe.auto) {
+
+            const auto = document.createElement("div");
+            auto.className = "monteure-einsatz-zeile";
+            auto.innerHTML = '<i data-lucide="car-front"></i>';
+
+            const autoText = document.createElement("div");
+            autoText.className = "monteure-einsatz-text";
+
+            const autoLabel = document.createElement("span");
+            autoLabel.className = "monteure-label";
+            autoLabel.textContent = "Auto";
+
+            const autoName = document.createElement("strong");
+            autoName.textContent = monteureSichererText(gruppe.auto);
+
+            autoText.appendChild(autoLabel);
+            autoText.appendChild(autoName);
+            auto.appendChild(autoText);
+            karte.appendChild(auto);
+        }
+
+        const mitarbeiter = document.createElement("div");
+        mitarbeiter.className = "monteure-einsatz-zeile monteure-mitarbeiter";
+        mitarbeiter.innerHTML = '<i data-lucide="users"></i>';
+
+        const mitarbeiterText = document.createElement("div");
+        mitarbeiterText.className = "monteure-einsatz-text";
+
+        const mitarbeiterLabel = document.createElement("span");
+        mitarbeiterLabel.className = "monteure-label";
+        mitarbeiterLabel.textContent = "Mitarbeiter";
+
+        const mitarbeiterListe = document.createElement("div");
+        mitarbeiterListe.className = "monteure-mitarbeiter-liste";
+
+        gruppe.mitarbeiter.forEach(function(name) {
+
+            const chip = document.createElement("span");
+            chip.className =
+                name === monteureAktuellerName()
+                    ? "monteure-mitarbeiter-chip aktuell"
+                    : "monteure-mitarbeiter-chip";
+            chip.textContent = name;
+            mitarbeiterListe.appendChild(chip);
+        });
+
+        mitarbeiterText.appendChild(mitarbeiterLabel);
+        mitarbeiterText.appendChild(mitarbeiterListe);
+        mitarbeiter.appendChild(mitarbeiterText);
+        karte.appendChild(mitarbeiter);
+
+        inhalt.appendChild(karte);
+    });
+
+    tag.appendChild(inhalt);
+
+    return tag;
+}
+
+
+let monteureAktuellerNameCache = "";
+
+
+function monteureAktuellerName() {
+
+    return monteureAktuellerNameCache;
+}
+
+
+async function monteureEinteilungAnzeigen() {
+
+    const liste =
+        document.getElementById("monteureListe");
+
+    if (!liste) {
+        return;
+    }
+
+    if (!monteureStartDatum || !(monteureStartDatum instanceof Date)) {
+        monteureStartAufMontagSetzen();
+    }
+
+    monteureZeitraumAnzeigen();
+    liste.innerHTML = "";
+
+    monteureStatusAnzeigen(
+        "Monteureinteilung wird geladen ...",
+        ""
+    );
+
+    if (typeof supabaseClient === "undefined") {
+        monteureStatusAnzeigen(
+            "Die Verbindung zur Monteureinteilung ist nicht verfügbar.",
+            "fehler"
+        );
+        return;
+    }
+
+    // Mitarbeiterprofil bei jedem Aufruf sicher anhand des aktuellen
+    // Supabase-Logins ermitteln. Dadurch kann beim Benutzerwechsel kein
+    // alter Mitarbeiter aus dem vorherigen Login übernommen werden.
+    const {
+        data: userData,
+        error: userError
+    } = await supabaseClient.auth.getUser();
+
+    if (userError || !userData?.user) {
+        console.error("Aktueller Benutzer konnte nicht ermittelt werden:", userError);
+        monteureStatusAnzeigen(
+            "Dein Benutzerkonto konnte nicht ermittelt werden.",
+            "fehler"
+        );
+        return;
+    }
+
+    const {
+        data: mitarbeiter,
+        error: mitarbeiterFehler
+    } = await supabaseClient
+        .from("employees")
+        .select("id, name, is_admin")
+        .eq("user_id", userData.user.id)
+        .maybeSingle();
+
+    if (mitarbeiterFehler || !mitarbeiter) {
+        console.error("Mitarbeiterprofil konnte nicht ermittelt werden:", mitarbeiterFehler);
+        monteureStatusAnzeigen(
+            "Dein Mitarbeiterprofil konnte nicht ermittelt werden.",
+            "fehler"
+        );
+        return;
+    }
+
+    // Aktuellen Benutzer immer frisch setzen.
+    aktuellerMitarbeiterId = mitarbeiter.id;
+    aktuellerBenutzerIstAdmin = mitarbeiter.is_admin === true;
+    monteureAktuellerNameCache = mitarbeiter.name || "";
+
+    const start = new Date(monteureStartDatum);
+    const ende = new Date(monteureStartDatum);
+    ende.setDate(ende.getDate() + 4);
+
+    let data = null;
+    let error = null;
+
+    if (aktuellerBenutzerIstAdmin) {
+
+        // Admins dürfen weiterhin alle Einteilungen des Zeitraums sehen.
+        const ergebnis = await supabaseClient
+            .from("monteureinsaetze")
+            .select(`
+                id,
+                datum,
+                projektname,
+                auto,
+                mitarbeiter_id,
+                employees (
+                    id,
+                    name
+                )
+            `)
+            .gte("datum", monteureDatumAlsString(start))
+            .lte("datum", monteureDatumAlsString(ende))
+            .order("datum", { ascending: true })
+            .order("projektname", { ascending: true });
+
+        data = ergebnis.data;
+        error = ergebnis.error;
+
+    } else {
+
+        // Normale Mitarbeiter bekommen über die SECURITY-DEFINER-Funktion
+        // nur ihre eigenen Einsätze plus die Kollegen aus exakt derselben
+        // Kombination aus Datum, Projekt und Fahrzeug. Die RLS-Regeln der
+        // Tabelle bleiben dabei unangetastet.
+        const ergebnis = await supabaseClient
+            .rpc("monteure_meine_einsaetze_mit_kollegen", {
+                p_startdatum: monteureDatumAlsString(start),
+                p_enddatum: monteureDatumAlsString(ende)
+            });
+
+        data = ergebnis.data;
+        error = ergebnis.error;
+
+        if (Array.isArray(data)) {
+            data = data.map(function(einsatz) {
+                return {
+                    id: einsatz.id,
+                    datum: einsatz.datum,
+                    projektname: einsatz.projektname,
+                    auto: einsatz.auto,
+                    mitarbeiter_id: einsatz.mitarbeiter_id,
+                    employees: {
+                        id: einsatz.mitarbeiter_id,
+                        name: einsatz.mitarbeiter_name
+                    }
+                };
+            });
+        }
+    }
+
+    if (error) {
+        console.error("Monteureinteilung konnte nicht geladen werden:", error);
+        monteureStatusAnzeigen(
+            "Die Monteureinteilung konnte nicht geladen werden: " +
+            (error.message || "Unbekannter Fehler"),
+            "fehler"
+        );
+        return;
+    }
+
+    monteureDaten = data || [];
+
+    // Die RPC-Funktion liefert normalen Mitarbeitern bereits nur ihre
+    // relevanten Einsatzgruppen inklusive Kollegen. Admins erhalten oben
+    // weiterhin den kompletten Zeitraum.
+    const sichtbareEinsaetze = monteureDaten;
+
+    const tage = {};
+
+    sichtbareEinsaetze.forEach(function(einsatz) {
+
+        if (!tage[einsatz.datum]) {
+            tage[einsatz.datum] = [];
+        }
+
+        tage[einsatz.datum].push(einsatz);
+    });
+
+    for (let i = 0; i < 5; i++) {
+
+        const datum = new Date(start);
+        datum.setDate(start.getDate() + i);
+
+        const datumString = monteureDatumAlsString(datum);
+
+        const tag = monteureTagErstellen(
+            datum,
+            tage[datumString] || []
+        );
+
+        liste.appendChild(tag);
+    }
+
+    monteureStatusVerstecken();
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
+// ========================================
+// MONTEURE – EXCEL-IMPORT / VORSCHAU
+// ========================================
+
+let monteureImportMitarbeiter = [];
+let monteureImportDaten = [];
+let monteureImportBereich = "MdE";
+
+
+function monteureAdminOeffnen() {
+
+    if (!aktuellerBenutzerIstAdmin) {
+        return;
+    }
+
+    const modal =
+        document.getElementById("monteureImportModal");
+
+    if (!modal) {
+        return;
+    }
+
+    modal.style.display = "flex";
+
+    const dateien = [
+        document.getElementById("monteureExcelDateiMde"),
+        document.getElementById("monteureExcelDateiGebaeudetechnik")
+    ];
+
+    const dateinamen = [
+        document.getElementById("monteureExcelDateinameMde"),
+        document.getElementById("monteureExcelDateinameGebaeudetechnik")
+    ];
+
+    const status =
+        document.getElementById("monteureImportStatus");
+
+    const vorschau =
+        document.getElementById("monteureImportVorschau");
+
+    dateien.forEach(function(datei) {
+        if (datei) {
+            datei.value = "";
+        }
+    });
+
+    dateinamen.forEach(function(dateiname) {
+        if (dateiname) {
+            dateiname.textContent = ".xlsx oder .xls";
+        }
+    });
+
+    if (status) {
+        status.style.display = "none";
+        status.textContent = "";
+        status.className = "monteure-import-status";
+    }
+
+    if (vorschau) {
+        vorschau.style.display = "none";
+        vorschau.innerHTML = "";
+    }
+
+    monteureImportMitarbeiter = [];
+    monteureImportDaten = [];
+    monteureImportBereich = "MdE";
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
+
+function monteureAdminSchliessen() {
+
+    const modal =
+        document.getElementById("monteureImportModal");
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+function monteureImportStatusAnzeigen(text, typ) {
+
+    const status =
+        document.getElementById("monteureImportStatus");
+
+    if (!status) {
+        return;
+    }
+
+    status.style.display = "block";
+    status.className =
+        "monteure-import-status" +
+        (typ ? " " + typ : "");
+    status.textContent = text;
+}
+
+
+function monteureImportTextNormieren(text) {
+
+    return String(text || "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9äöüß]+/gi, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+
+function monteureImportNameTeile(name) {
+
+    const sauber = monteureImportTextNormieren(name);
+    const teile = sauber.split(" ").filter(Boolean);
+
+    return {
+        komplett: sauber,
+        teile: teile,
+        nachname: teile.length ? teile[teile.length - 1] : "",
+        initial: teile.length ? teile[0].charAt(0) : ""
+    };
+}
+
+
+function monteureImportMitarbeiterFinden(excelName) {
+
+    const excel =
+        monteureImportNameTeile(excelName);
+
+    if (!excel.komplett) {
+        return null;
+    }
+
+    // 1. Exakter Treffer.
+    const exakt =
+        monteureImportMitarbeiter.filter(function(mitarbeiter) {
+            return monteureImportTextNormieren(mitarbeiter.name) === excel.komplett;
+        });
+
+    if (exakt.length === 1) {
+        return exakt[0];
+    }
+
+    // 2. Nachname + erster Buchstabe des Vornamens.
+    const kandidaten =
+        monteureImportMitarbeiter.filter(function(mitarbeiter) {
+
+            const dbName =
+                monteureImportNameTeile(mitarbeiter.name);
+
+            return (
+                dbName.nachname &&
+                excel.nachname &&
+                dbName.nachname === excel.nachname &&
+                dbName.initial === excel.initial
+            );
+        });
+
+    if (kandidaten.length === 1) {
+        return kandidaten[0];
+    }
+
+    // 3. Eindeutiger Nachname als letzte vorsichtige Zuordnung.
+    const nachnameTreffer =
+        monteureImportMitarbeiter.filter(function(mitarbeiter) {
+            const dbName =
+                monteureImportNameTeile(mitarbeiter.name);
+            return (
+                dbName.nachname &&
+                excel.nachname &&
+                dbName.nachname === excel.nachname
+            );
+        });
+
+    if (nachnameTreffer.length === 1) {
+        return nachnameTreffer[0];
+    }
+
+    return null;
+}
+
+
+function monteureImportDatumAusZelle(wert) {
+
+    if (wert instanceof Date && !isNaN(wert.getTime())) {
+        const datum = new Date(wert);
+        datum.setHours(0, 0, 0, 0);
+        return datum;
+    }
+
+    if (typeof wert === "number" && typeof XLSX !== "undefined") {
+        const datum = XLSX.SSF.parse_date_code(wert);
+        if (datum) {
+            return new Date(
+                datum.y,
+                datum.m - 1,
+                datum.d
+            );
+        }
+    }
+
+    const text = String(wert || "").trim();
+
+    if (!text) {
+        return null;
+    }
+
+    const iso = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if (iso) {
+        return new Date(
+            Number(iso[1]),
+            Number(iso[2]) - 1,
+            Number(iso[3])
+        );
+    }
+
+    const deutsch = text.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+    if (deutsch) {
+        return new Date(
+            Number(deutsch[3]),
+            Number(deutsch[2]) - 1,
+            Number(deutsch[1])
+        );
+    }
+
+    return null;
+}
+
+
+function monteureImportDatumGueltig(datum) {
+
+    return (
+        datum instanceof Date &&
+        !isNaN(datum.getTime()) &&
+        datum.getFullYear() >= 2020 &&
+        datum.getFullYear() <= 2100
+    );
+}
+
+
+function monteureImportDatumAlsString(datum) {
+
+    return (
+        datum.getFullYear() + "-" +
+        String(datum.getMonth() + 1).padStart(2, "0") + "-" +
+        String(datum.getDate()).padStart(2, "0")
+    );
+}
+
+
+function monteureImportIstLeereZelle(wert) {
+
+    return (
+        wert === null ||
+        wert === undefined ||
+        String(wert).trim() === ""
+    );
+}
+
+
+function monteureImportIstSonderstatus(text) {
+
+    const wert =
+        monteureImportTextNormieren(text);
+
+    return [
+        "urlaub",
+        "krank",
+        "krankheit",
+        "krank gemeldet",
+        "frei",
+        "feiertag",
+        "fortbildung",
+        "schule",
+        "abwesend"
+    ].includes(wert);
+}
+
+
+function monteureImportExcelVerarbeiten(workbook, bereich) {
+
+    const sheetName =
+        workbook.SheetNames.find(function(name) {
+            return monteureImportTextNormieren(name) === "monteureinteilung";
+        }) || workbook.SheetNames[0];
+
+    if (!sheetName) {
+        throw new Error("Die Excel-Datei enthält kein Arbeitsblatt.");
+    }
+
+    const sheet = workbook.Sheets[sheetName];
+
+    if (!sheet) {
+        throw new Error("Das Arbeitsblatt konnte nicht gelesen werden.");
+    }
+
+    const datenbereich = sheet["!ref"];
+
+    if (!datenbereich) {
+        throw new Error("Das Arbeitsblatt enthält keinen lesbaren Datenbereich.");
+    }
+
+    const range = XLSX.utils.decode_range(datenbereich);
+
+    // Die aktuelle Monteureinteilung hat ihre Datumszeile in Zeile 2.
+    // Die eigentlichen Einsätze beginnen in Spalte E.
+    const DATUMSZEILE = 1;       // Excel-Zeile 2, 0-basiert
+    const ERSTE_DATENZEILE = 4;  // Excel-Zeile 5, 0-basiert
+    const AUTO_SPALTE = 0;       // Spalte A
+    const MITARBEITER_SPALTE = 1;// Spalte B
+    const ERSTE_EINSATZ_SPALTE = 4; // Spalte E
+
+    function zellenwert(zeile, spalte) {
+        const adresse = XLSX.utils.encode_cell({
+            r: zeile,
+            c: spalte
+        });
+        const zelle = sheet[adresse];
+
+        if (!zelle) {
+            return "";
+        }
+
+        if (zelle.v !== undefined && zelle.v !== null) {
+            return zelle.v;
+        }
+
+        return zelle.w || "";
+    }
+
+    function zellenanzeige(zeile, spalte) {
+        const adresse = XLSX.utils.encode_cell({
+            r: zeile,
+            c: spalte
+        });
+        const zelle = sheet[adresse];
+
+        if (!zelle) {
+            return "";
+        }
+
+        if (zelle.w !== undefined && zelle.w !== null) {
+            return String(zelle.w).trim();
+        }
+
+        return zellenwert(zeile, spalte);
+    }
+
+    const datumsSpalten = [];
+
+    for (
+        let spalte = Math.max(range.s.c, ERSTE_EINSATZ_SPALTE);
+        spalte <= range.e.c;
+        spalte++
+    ) {
+        const wert = zellenwert(DATUMSZEILE, spalte);
+        const datum = monteureImportDatumAusZelle(wert);
+
+        if (monteureImportDatumGueltig(datum)) {
+            datumsSpalten.push({
+                spalte: spalte,
+                datum: datum
+            });
+        }
+    }
+
+    if (!datumsSpalten.length) {
+        throw new Error("In Zeile 2 wurden keine gültigen Datumsangaben gefunden.");
+    }
+
+    const ergebnisse = [];
+    const namenOhneZuordnung = new Set();
+    const datenOhneProjekt = new Set();
+
+    for (
+        let zeile = Math.max(range.s.r, ERSTE_DATENZEILE);
+        zeile <= range.e.r;
+        zeile++
+    ) {
+
+        const excelName =
+            String(zellenanzeige(zeile, MITARBEITER_SPALTE) || "").trim();
+
+        const auto =
+            String(zellenanzeige(zeile, AUTO_SPALTE) || "").trim();
+
+        if (!excelName) {
+            continue;
+        }
+
+        const mitarbeiter =
+            monteureImportMitarbeiterFinden(excelName);
+
+        if (!mitarbeiter) {
+            namenOhneZuordnung.add(excelName);
+        }
+
+        datumsSpalten.forEach(function(datumsInfo) {
+
+            const wert =
+                zellenwert(zeile, datumsInfo.spalte);
+
+            if (monteureImportIstLeereZelle(wert)) {
+                return;
+            }
+
+            // Für Projektzellen ist der formatierte Zellwert zuverlässiger
+            // als ein möglicher interner Zahlen-/Datumswert.
+            const projektname =
+                String(
+                    zellenanzeige(zeile, datumsInfo.spalte) || wert || ""
+                ).trim();
+
+            if (!projektname) {
+                datenOhneProjekt.add(
+                    monteureImportDatumAlsString(datumsInfo.datum)
+                );
+                return;
+            }
+
+            if (monteureImportIstSonderstatus(projektname)) {
+                return;
+            }
+
+            if (!mitarbeiter) {
+                return;
+            }
+
+            ergebnisse.push({
+                datum: monteureImportDatumAlsString(datumsInfo.datum),
+                projektname: projektname,
+                auto: auto || null,
+                mitarbeiter_id: mitarbeiter.id,
+                bereich: bereich || "MdE",
+                mitarbeiter_name: mitarbeiter.name,
+                excel_name: excelName
+            });
+        });
+    }
+
+    if (!ergebnisse.length) {
+        throw new Error(
+            "Es konnten keine verwertbaren Monteureinsätze gefunden werden. " +
+            "Bitte prüfe, ob die Mitarbeiter aus Spalte B in SAIER INTERN angelegt sind."
+        );
+    }
+
+    const eindeutige = new Map();
+
+    ergebnisse.forEach(function(einsatz) {
+
+        const schluessel = [
+            einsatz.datum,
+            monteureImportTextNormieren(einsatz.projektname),
+            monteureImportTextNormieren(einsatz.auto || ""),
+            einsatz.mitarbeiter_id
+        ].join("|||");
+
+        if (!eindeutige.has(schluessel)) {
+            eindeutige.set(schluessel, einsatz);
+        }
+    });
+
+    return {
+        sheetName: sheetName,
+        bereich: bereich || "MdE",
+        datumsSpalten: datumsSpalten,
+        einsaetze: Array.from(eindeutige.values()),
+        namenOhneZuordnung: Array.from(namenOhneZuordnung),
+        datenOhneProjekt: Array.from(datenOhneProjekt)
+    };
+}
+
+function monteureImportVorschauAnzeigen(ergebnis, dateiname) {
+
+    const vorschau =
+        document.getElementById("monteureImportVorschau");
+
+    if (!vorschau) {
+        return;
+    }
+
+    vorschau.style.display = "block";
+    vorschau.innerHTML = "";
+
+    const titel = document.createElement("div");
+    titel.className = "monteure-import-vorschau-titel";
+    titel.textContent = "Datei erfolgreich eingelesen · " + (ergebnis.bereich || "MdE");
+    vorschau.appendChild(titel);
+
+    const dateiInfo = document.createElement("p");
+    dateiInfo.className = "monteure-import-vorschau-info";
+    dateiInfo.textContent =
+        dateiname +
+        " · Bereich: " + (ergebnis.bereich || "MdE") +
+        " · Arbeitsblatt: " +
+        ergebnis.sheetName +
+        " · " +
+        ergebnis.datumsSpalten.length +
+        " Tage · " +
+        ergebnis.einsaetze.length +
+        " Einsätze erkannt";
+    vorschau.appendChild(dateiInfo);
+
+    const zeitraum = ergebnis.datumsSpalten.map(function(info) {
+        return info.datum;
+    });
+
+    const minDatum =
+        zeitraum.reduce(function(a, b) {
+            return a < b ? a : b;
+        });
+
+    const maxDatum =
+        zeitraum.reduce(function(a, b) {
+            return a > b ? a : b;
+        });
+
+    const zeitraumInfo = document.createElement("p");
+    zeitraumInfo.className = "monteure-import-vorschau-info";
+    zeitraumInfo.textContent =
+        "Zeitraum: " +
+        minDatum.toLocaleDateString("de-DE") +
+        " – " +
+        maxDatum.toLocaleDateString("de-DE");
+    vorschau.appendChild(zeitraumInfo);
+
+    if (ergebnis.namenOhneZuordnung.length) {
+
+        const warnung = document.createElement("div");
+        warnung.className = "monteure-import-warnung";
+
+        const warnTitel = document.createElement("strong");
+        warnTitel.textContent =
+            ergebnis.namenOhneZuordnung.length +
+            " Mitarbeiter konnten nicht automatisch zugeordnet werden:";
+        warnung.appendChild(warnTitel);
+
+        const liste = document.createElement("ul");
+        ergebnis.namenOhneZuordnung.forEach(function(name) {
+            const li = document.createElement("li");
+            li.textContent = name;
+            liste.appendChild(li);
+        });
+
+        warnung.appendChild(liste);
+        vorschau.appendChild(warnung);
+    }
+
+    const hinweis = document.createElement("div");
+    hinweis.className = "monteure-import-vorschau-hinweis";
+    hinweis.innerHTML =
+        "<strong>Bereit zum Import.</strong> " +
+        "Die erkannten Einsätze können jetzt nach Supabase übernommen werden. " +
+        "Für den ausgewählten Excel-Zeitraum werden bestehende Einsätze nur in diesem Bereich ersetzt.";
+    vorschau.appendChild(hinweis);
+
+    const importButton = document.createElement("button");
+    importButton.type = "button";
+    importButton.className = "monteure-import-speichern";
+    importButton.innerHTML = '<i data-lucide="database"></i><span>Nach Supabase importieren</span>';
+    importButton.addEventListener("click", monteureImportNachSupabase);
+    vorschau.appendChild(importButton);
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
+
+async function monteureImportNachSupabase() {
+
+    if (!aktuellerBenutzerIstAdmin) {
+        return;
+    }
+
+    if (!monteureImportDaten.length) {
+        monteureImportStatusAnzeigen(
+            "Es sind keine Einsätze zum Import vorhanden.",
+            "fehler"
+        );
+        return;
+    }
+
+    const vorschau = document.getElementById("monteureImportVorschau");
+    const buttons = vorschau ? vorschau.querySelectorAll("button") : [];
+    buttons.forEach(function(button) {
+        button.disabled = true;
+    });
+
+    const daten = monteureImportDaten.map(function(einsatz) {
+        return {
+            datum: einsatz.datum,
+            projektname: einsatz.projektname,
+            auto: einsatz.auto || null,
+            mitarbeiter_id: einsatz.mitarbeiter_id,
+            bereich: einsatz.bereich || monteureImportBereich || "MdE"
+        };
+    });
+
+    const datumsListe = daten.map(function(einsatz) {
+        return einsatz.datum;
+    }).sort();
+
+    const startdatum = datumsListe[0];
+    const enddatum = datumsListe[datumsListe.length - 1];
+
+    try {
+        monteureImportStatusAnzeigen(
+            "Einsätze werden sicher nach Supabase übertragen ...",
+            "laden"
+        );
+
+        const { data, error } = await supabaseClient.rpc(
+            "monteure_importieren",
+            {
+                p_startdatum: startdatum,
+                p_enddatum: enddatum,
+                p_bereich: monteureImportBereich || "MdE",
+                p_einsaetze: daten
+            }
+        );
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        const ergebnis = data && data[0] ? data[0] : data;
+        const anzahl = Number(ergebnis?.eingefuegt ?? daten.length);
+
+        monteureImportStatusAnzeigen(
+            anzahl + " Einsätze wurden erfolgreich nach Supabase importiert.",
+            "erfolg"
+        );
+
+        if (vorschau) {
+            const bestaetigung = document.createElement("div");
+            bestaetigung.className = "monteure-import-erfolg-box";
+            bestaetigung.innerHTML =
+                "<strong>Import abgeschlossen.</strong><br>" +
+                "Der Zeitraum " +
+                new Date(startdatum + "T00:00:00").toLocaleDateString("de-DE") +
+                " – " +
+                new Date(enddatum + "T00:00:00").toLocaleDateString("de-DE") +
+                " wurde im Bereich " +
+                (monteureImportBereich || "MdE") +
+                " aktualisiert.";
+            vorschau.appendChild(bestaetigung);
+        }
+
+        await monteureEinteilungAnzeigen();
+
+    } catch (error) {
+        console.error("Monteureinsätze konnten nicht importiert werden:", error);
+
+        monteureImportStatusAnzeigen(
+            "Import fehlgeschlagen: " + (error.message || "Unbekannter Fehler"),
+            "fehler"
+        );
+
+        buttons.forEach(function(button) {
+            button.disabled = false;
+        });
+    }
+}
+
+
+async function monteureExcelDateiVerarbeiten(datei, bereich) {
+
+    if (!aktuellerBenutzerIstAdmin) {
+        return;
+    }
+
+    if (!datei) {
+        return;
+    }
+
+    monteureImportBereich = bereich || "MdE";
+
+    const dateiname =
+        document.getElementById(
+            monteureImportBereich === "Gebäudetechnik"
+                ? "monteureExcelDateinameGebaeudetechnik"
+                : "monteureExcelDateinameMde"
+        );
+
+    if (dateiname) {
+        dateiname.textContent = datei.name;
+    }
+
+    if (typeof XLSX === "undefined") {
+        monteureImportStatusAnzeigen(
+            "Die Excel-Bibliothek konnte nicht geladen werden.",
+            "fehler"
+        );
+        return;
+    }
+
+    monteureImportStatusAnzeigen(
+        "Excel-Datei wird eingelesen ...",
+        "laden"
+    );
+
+    const vorschau =
+        document.getElementById("monteureImportVorschau");
+
+    if (vorschau) {
+        vorschau.style.display = "none";
+        vorschau.innerHTML = "";
+    }
+
+    try {
+
+        const arrayBuffer =
+            await datei.arrayBuffer();
+
+        const workbook =
+            XLSX.read(arrayBuffer, {
+                type: "array",
+                cellDates: true
+            });
+
+        monteureImportStatusAnzeigen(
+            "Mitarbeiter werden abgeglichen und Einsätze werden geprüft ...",
+            "laden"
+        );
+
+        const {
+            data: mitarbeiter,
+            error
+        } = await supabaseClient
+            .from("employees")
+            .select("id, name");
+
+        if (error) {
+            throw new Error(
+                "Mitarbeiter konnten nicht geladen werden: " +
+                error.message
+            );
+        }
+
+        monteureImportMitarbeiter = mitarbeiter || [];
+
+        const ergebnis =
+            monteureImportExcelVerarbeiten(workbook, monteureImportBereich);
+
+        monteureImportDaten = ergebnis.einsaetze;
+
+        monteureImportStatusAnzeigen(
+            "Die Datei wurde erfolgreich geprüft.",
+            ergebnis.namenOhneZuordnung.length ? "warnung" : "erfolg"
+        );
+
+        monteureImportVorschauAnzeigen(
+            ergebnis,
+            datei.name
+        );
+
+    } catch (error) {
+
+        console.error("Excel-Import konnte nicht verarbeitet werden:", error);
+
+        monteureImportDaten = [];
+
+        monteureImportStatusAnzeigen(
+            "Die Excel-Datei konnte nicht verarbeitet werden: " +
+            (error.message || "Unbekannter Fehler"),
+            "fehler"
+        );
+    }
+}
+
+
+// ========================================
 // GLOBALE FUNKTIONEN
 // ========================================
 
@@ -3132,6 +4444,18 @@ window.naechsterMonat =
 window.zeigeSeite =
     zeigeSeite;
 
+window.monteureVorherigeWoche =
+    monteureVorherigeWoche;
+
+window.monteureNaechsteWoche =
+    monteureNaechsteWoche;
+
+window.monteureAdminOeffnen =
+    monteureAdminOeffnen;
+
+window.monteureAdminSchliessen =
+    monteureAdminSchliessen;
+
 window.ausloggen =
     ausloggen;
 
@@ -3156,6 +4480,50 @@ document.addEventListener(
         document.addEventListener("keydown", kalenderPopupEscape);
         document.addEventListener("keydown", adminBenutzerModalEscape);
 
+        const monteureExcelDateiMde =
+            document.getElementById("monteureExcelDateiMde");
+
+        if (monteureExcelDateiMde) {
+            monteureExcelDateiMde.addEventListener(
+                "change",
+                function(event) {
+                    const datei = event.target.files?.[0];
+                    if (datei) {
+                        monteureExcelDateiVerarbeiten(datei, "MdE");
+                    }
+                }
+            );
+        }
+
+        const monteureExcelDateiGebaeudetechnik =
+            document.getElementById("monteureExcelDateiGebaeudetechnik");
+
+        if (monteureExcelDateiGebaeudetechnik) {
+            monteureExcelDateiGebaeudetechnik.addEventListener(
+                "change",
+                function(event) {
+                    const datei = event.target.files?.[0];
+                    if (datei) {
+                        monteureExcelDateiVerarbeiten(datei, "Gebäudetechnik");
+                    }
+                }
+            );
+        }
+
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+                if (event.key === "Escape") {
+                    const modal = document.getElementById("monteureImportModal");
+                    if (modal && modal.style.display !== "none") {
+                        monteureAdminSchliessen();
+                    }
+                }
+            }
+        );
+
+
         const loginForm =
             document.getElementById(
                 "loginForm"
@@ -3171,6 +4539,8 @@ document.addEventListener(
 
         }
 
+
+        monteureStartAufMontagSetzen();
 
         heutigesDatumAnzeigen();
 
@@ -3230,8 +4600,144 @@ document.addEventListener(
             );
         }
 
+        pushBenachrichtigungenStatusAktualisieren();
+
     }
 );
+
+
+// ========================================
+// PUSH-BENACHRICHTIGUNGEN – SCHRITT 2
+// ========================================
+
+async function pushBenachrichtigungenAktivieren() {
+
+    const button =
+        document.getElementById("pushBenachrichtigungenButton");
+
+    const status =
+        document.getElementById("pushBenachrichtigungenStatus");
+
+    if (!window.isSecureContext) {
+        if (status) {
+            status.textContent =
+                "Push-Nachrichten benötigen eine sichere HTTPS-Verbindung.";
+        }
+        return;
+    }
+
+    if (!("Notification" in window)) {
+        if (status) {
+            status.textContent =
+                "Dieser Browser unterstützt keine Benachrichtigungen.";
+        }
+        return;
+    }
+
+    if (button) {
+        button.disabled = true;
+        button.querySelector("strong").textContent =
+            "Wird aktiviert …";
+    }
+
+    try {
+
+        const erlaubnis =
+            await Notification.requestPermission();
+
+        if (erlaubnis === "granted") {
+
+            if (status) {
+                status.textContent =
+                    "Benachrichtigungen sind für diesen Browser erlaubt.";
+            }
+
+            if (button) {
+                button.querySelector("strong").textContent =
+                    "Push-Nachrichten aktiviert";
+            }
+
+            return;
+        }
+
+        if (erlaubnis === "denied") {
+
+            if (status) {
+                status.textContent =
+                    "Benachrichtigungen wurden blockiert. Du kannst die Berechtigung in den Browser-Einstellungen ändern.";
+            }
+
+        } else {
+
+            if (status) {
+                status.textContent =
+                    "Die Berechtigung wurde noch nicht erteilt.";
+            }
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "SAIER INTERN: Push-Berechtigung konnte nicht angefragt werden.",
+            error
+        );
+
+        if (status) {
+            status.textContent =
+                "Die Push-Berechtigung konnte nicht angefragt werden.";
+        }
+
+    } finally {
+
+        if (button && Notification.permission !== "granted") {
+            button.disabled = false;
+            button.querySelector("strong").textContent =
+                "Push-Nachrichten aktivieren";
+        }
+
+    }
+}
+
+
+function pushBenachrichtigungenStatusAktualisieren() {
+
+    const button =
+        document.getElementById("pushBenachrichtigungenButton");
+
+    const status =
+        document.getElementById("pushBenachrichtigungenStatus");
+
+    if (!("Notification" in window)) {
+        if (status) {
+            status.textContent =
+                "Dieser Browser unterstützt keine Benachrichtigungen.";
+        }
+        return;
+    }
+
+    if (Notification.permission === "granted") {
+
+        if (status) {
+            status.textContent =
+                "Benachrichtigungen sind für diesen Browser erlaubt.";
+        }
+
+        if (button) {
+            button.disabled = false;
+            button.querySelector("strong").textContent =
+                "Push-Nachrichten aktiviert";
+        }
+
+    } else if (Notification.permission === "denied") {
+
+        if (status) {
+            status.textContent =
+                "Benachrichtigungen sind aktuell blockiert. Du kannst sie in den Browser-Einstellungen freigeben.";
+        }
+
+    }
+}
 
 
 // ========================================

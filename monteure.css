@@ -1,0 +1,633 @@
+/* ========================================
+   SAIER INTERN – MONTEUREINTEILUNG
+   Eigenständiges Styling
+   ======================================== */
+
+.monteure-bereich {
+    width: 100%;
+}
+
+.monteure-aktionszeile {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.monteure-hinweis {
+    margin: 5px 0 0;
+    color: var(--grau);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.monteure-admin-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid var(--saier-gruen);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--saier-gruen);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.monteure-admin-button:hover {
+    background: var(--saier-gruen);
+    color: #fff;
+}
+
+.monteure-admin-button svg {
+    width: 18px;
+    height: 18px;
+}
+
+.monteure-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #e5e9e2;
+    border-radius: 14px;
+    background: #fff;
+}
+
+.monteure-nav-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid #dfe5dc;
+    border-radius: 11px;
+    background: #f9faf8;
+    color: var(--saier-gruen);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.monteure-nav-button:hover {
+    background: var(--hellgruen);
+}
+
+.monteure-nav-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.monteure-zeitraum {
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.monteure-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 44px;
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: #f7f9f5;
+    color: var(--grau);
+    font-size: 14px;
+}
+
+.monteure-status svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    animation: monteureDrehen 1s linear infinite;
+}
+
+.monteure-status.fehler {
+    background: #fff5f5;
+    color: #9a3a3a;
+}
+
+.monteure-status.fehler svg {
+    animation: none;
+}
+
+@keyframes monteureDrehen {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.monteure-liste {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.monteure-tag {
+    overflow: hidden;
+    border: 1px solid #e4e8e1;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.monteure-tag.heute {
+    border-color: var(--saier-gruen);
+}
+
+.monteure-tag-kopf {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 15px 17px;
+    border-bottom: 1px solid #edf0eb;
+    background: #fafbf9;
+}
+
+.monteure-tag.heute .monteure-tag-kopf {
+    background: var(--hellgruen);
+}
+
+.monteure-tag-datum {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.monteure-tag-datum span {
+    color: var(--grau);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.monteure-tag-datum strong {
+    color: var(--text);
+    font-size: 17px;
+}
+
+.monteure-heute-label {
+    padding: 5px 8px;
+    border-radius: 7px;
+    background: var(--saier-gruen);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .06em;
+}
+
+.monteure-tag-inhalt {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+}
+
+.monteure-einsatz {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 13px;
+    border: 1px solid #e9ece6;
+    border-radius: 13px;
+    background: #fff;
+}
+
+.monteure-einsatz-zeile {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 9px 0;
+}
+
+.monteure-einsatz-zeile + .monteure-einsatz-zeile {
+    border-top: 1px solid #f0f2ee;
+}
+
+.monteure-einsatz-zeile > svg {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    color: var(--saier-gruen);
+    flex-shrink: 0;
+}
+
+.monteure-einsatz-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.monteure-label {
+    color: var(--grau);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+.monteure-einsatz-text strong {
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.monteure-mitarbeiter-liste {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.monteure-mitarbeiter-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 5px 9px;
+    border: 1px solid #dfe5dc;
+    border-radius: 8px;
+    background: #f8faf7;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.monteure-mitarbeiter-chip.aktuell {
+    border-color: var(--saier-gruen);
+    background: var(--hellgruen);
+    font-weight: 700;
+}
+
+.monteure-leer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 55px;
+    padding: 12px;
+    color: var(--grau);
+    font-size: 13px;
+    text-align: center;
+}
+
+.monteure-leer svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+
+    .monteure-aktionszeile {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .monteure-admin-button {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .monteure-navigation {
+        padding: 8px;
+    }
+
+    .monteure-nav-button {
+        width: 40px;
+        height: 40px;
+    }
+
+    .monteure-zeitraum {
+        font-size: 13px;
+    }
+
+    .monteure-tag-kopf {
+        padding: 13px 14px;
+    }
+
+    .monteure-tag-datum strong {
+        font-size: 15px;
+    }
+
+    .monteure-tag-inhalt {
+        padding: 9px;
+    }
+
+    .monteure-einsatz {
+        padding: 10px;
+    }
+}
+
+/* ========================================
+   MONTEURE – EXCEL-IMPORT
+   ======================================== */
+
+.monteure-import-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.monteure-import-hintergrund {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 25, 18, .42);
+}
+
+.monteure-import-box {
+    position: relative;
+    z-index: 1;
+    width: min(680px, 100%);
+    max-height: min(820px, calc(100vh - 40px));
+    overflow: auto;
+    border: 1px solid #e0e6dc;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .18);
+}
+
+.monteure-import-kopf {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 24px 18px;
+    border-bottom: 1px solid #edf0eb;
+}
+
+.monteure-import-kopf h2 {
+    margin: 5px 0 0;
+    color: var(--text);
+    font-size: 22px;
+}
+
+.monteure-import-schliessen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1px solid #dfe5dc;
+    border-radius: 10px;
+    background: #f9faf8;
+    color: var(--grau);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.monteure-import-schliessen:hover {
+    background: var(--hellgruen);
+    color: var(--saier-gruen);
+}
+
+.monteure-import-schliessen svg {
+    width: 18px;
+    height: 18px;
+}
+
+.monteure-import-inhalt {
+    padding: 22px 24px 24px;
+}
+
+.monteure-import-erlaeuterung {
+    margin: 0 0 18px;
+    color: var(--grau);
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.monteure-upload-feld {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 145px;
+    padding: 20px;
+    border: 2px dashed #d7dfd2;
+    border-radius: 14px;
+    background: #fafcf9;
+    color: var(--saier-gruen);
+    cursor: pointer;
+    text-align: center;
+    transition: border-color .15s ease, background .15s ease;
+}
+
+.monteure-upload-feld:hover {
+    border-color: var(--saier-gruen);
+    background: var(--hellgruen);
+}
+
+.monteure-upload-feld svg {
+    width: 28px;
+    height: 28px;
+}
+
+.monteure-upload-feld span {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.monteure-upload-feld small {
+    color: var(--grau);
+    font-size: 12px;
+}
+
+.monteure-import-status {
+    margin-top: 15px;
+    padding: 11px 13px;
+    border-radius: 10px;
+    background: #f7f9f5;
+    color: var(--grau);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.monteure-import-status.erfolg {
+    background: var(--hellgruen);
+    color: #46730b;
+}
+
+.monteure-import-status.warnung {
+    background: #fff9e8;
+    color: #7c6416;
+}
+
+.monteure-import-status.fehler {
+    background: #fff5f5;
+    color: #9a3a3a;
+}
+
+.monteure-import-status.laden {
+    background: #f7f9f5;
+}
+
+.monteure-import-vorschau {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid #e2e8df;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.monteure-import-vorschau-titel {
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.monteure-import-vorschau-info {
+    margin: 6px 0 0;
+    color: var(--grau);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.monteure-import-warnung {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #fff9e8;
+    color: #6e5a17;
+    font-size: 13px;
+}
+
+.monteure-import-warnung strong {
+    display: block;
+    margin-bottom: 7px;
+}
+
+.monteure-import-warnung ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.monteure-import-warnung li + li {
+    margin-top: 3px;
+}
+
+.monteure-import-vorschau-hinweis {
+    margin-top: 14px;
+    padding: 11px 12px;
+    border-radius: 10px;
+    background: #f7f9f5;
+    color: var(--grau);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.monteure-import-vorschau-hinweis strong {
+    color: var(--text);
+}
+
+.monteure-import-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 18px;
+}
+
+.monteure-import-abbrechen {
+    padding: 10px 14px;
+    border: 1px solid #dfe5dc;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--grau);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.monteure-import-abbrechen:hover {
+    background: #f7f9f5;
+    color: var(--text);
+}
+
+@media (max-width: 600px) {
+    .monteure-import-modal {
+        padding: 10px;
+    }
+
+    .monteure-import-box {
+        max-height: calc(100vh - 20px);
+        border-radius: 14px;
+    }
+
+    .monteure-import-kopf,
+    .monteure-import-inhalt {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+.monteure-import-speichern {
+    width: 100%;
+    margin-top: 14px;
+    border: 0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.monteure-import-speichern:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.monteure-import-erfolg-box {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(46, 125, 50, .25);
+    background: rgba(46, 125, 50, .08);
+}
+
+
+.monteure-import-bereich-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.monteure-import-bereich {
+    min-width: 0;
+}
+
+.monteure-import-bereich-titel {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+    .monteure-import-bereich-grid {
+        grid-template-columns: 1fr;
+    }
+}
