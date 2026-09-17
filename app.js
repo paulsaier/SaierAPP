@@ -4617,6 +4617,34 @@ document.addEventListener(
 // PUSH-BENACHRICHTIGUNGEN – SCHRITT 2
 // ========================================
 
+function pushVapidKeyInBytes(base64String) {
+
+    const padding =
+        "=".repeat(
+            (4 - (base64String.length % 4)) % 4
+        );
+
+    const base64 =
+        (
+            base64String +
+            padding
+        )
+        .replace(/-/g, "+")
+        .replace(/_/g, "/");
+
+    const rawData =
+        window.atob(base64);
+
+    return Uint8Array.from(
+        [...rawData].map(
+            function(char) {
+                return char.charCodeAt(0);
+            }
+        )
+    );
+}
+
+
 async function pushBenachrichtigungenAktivieren() {
 
     const button =
@@ -4656,7 +4684,7 @@ async function pushBenachrichtigungenAktivieren() {
 
             if (status) {
                 status.textContent =
-                    "Benachrichtigungen sind erlaubt. Push wird für dieses Gerät eingerichtet …";
+                    "Benachrichtigungen sind für diesen Browser erlaubt.";
             }
 
             if (button) {
@@ -4664,7 +4692,51 @@ async function pushBenachrichtigungenAktivieren() {
                     "Push wird eingerichtet …";
             }
 
-            await pushSubscriptionErstellen();
+            if (!("serviceWorker" in navigator)) {
+                throw new Error(
+                    "Dieser Browser unterstützt keine Service Worker."
+                );
+            }
+
+            const registration =
+                await navigator.serviceWorker.ready;
+
+            if (!registration.pushManager) {
+                throw new Error(
+                    "Dieser Browser unterstützt keine Push-Nachrichten."
+                );
+            }
+
+            let subscription =
+                await registration.pushManager.getSubscription();
+
+            if (!subscription) {
+
+                subscription =
+                    await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey:
+                            pushVapidKeyInBytes(
+                                PUSH_VAPID_PUBLIC_KEY
+                            )
+                    });
+
+            }
+
+            console.log(
+                "SAIER INTERN: Push-Subscription erfolgreich erstellt:",
+                subscription.toJSON()
+            );
+
+            if (status) {
+                status.textContent =
+                    "Push-Nachrichten sind für dieses Gerät eingerichtet.";
+            }
+
+            if (button) {
+                button.querySelector("strong").textContent =
+                    "Push-Nachrichten aktiviert";
+            }
 
             return;
         }
@@ -4705,113 +4777,6 @@ async function pushBenachrichtigungenAktivieren() {
                 "Push-Nachrichten aktivieren";
         }
 
-    }
-}
-
-
-// ========================================
-// PUSH-SUBSCRIPTION – SCHRITT 5
-// ========================================
-
-const SAIER_INTERN_PUSH_PUBLIC_KEY =
-    "BDkzvAxxhYXDqs8GMKbYlHCSn67wpAfruTd1YC1saAIPVvfaInpTUMuAT3JBjIA1hoL72uF-F9uTT5741lCuA-Q";
-
-function pushBase64UrlZuUint8Array(base64Url) {
-
-    const padding = "=".repeat((4 - (base64Url.length % 4)) % 4);
-    const base64 =
-        (base64Url + padding)
-            .replace(/-/g, "+")
-            .replace(/_/g, "/");
-
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-
-    for (let i = 0; i < rawData.length; i++) {
-        outputArray[i] = rawData.charCodeAt(i);
-    }
-
-    return outputArray;
-}
-
-
-async function pushSubscriptionErstellen() {
-
-    const status =
-        document.getElementById("pushBenachrichtigungenStatus");
-
-    const button =
-        document.getElementById("pushBenachrichtigungenButton");
-
-    try {
-
-        if (!("serviceWorker" in navigator)) {
-            throw new Error(
-                "Dieser Browser unterstützt keine Service Worker."
-            );
-        }
-
-        if (!("PushManager" in window)) {
-            throw new Error(
-                "Dieser Browser unterstützt keine Push-Nachrichten."
-            );
-        }
-
-        const registration =
-            await navigator.serviceWorker.ready;
-
-        let subscription =
-            await registration.pushManager.getSubscription();
-
-        if (!subscription) {
-            subscription =
-                await registration.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey:
-                        pushBase64UrlZuUint8Array(
-                            SAIER_INTERN_PUSH_PUBLIC_KEY
-                        )
-                });
-        }
-
-        console.log(
-            "SAIER INTERN: Push-Subscription erfolgreich erstellt.",
-            subscription
-        );
-
-        console.log(
-            "SAIER INTERN: Push-Subscription JSON:",
-            subscription.toJSON()
-        );
-
-        if (status) {
-            status.textContent =
-                "Push-Nachrichten sind für dieses Gerät eingerichtet.";
-        }
-
-        if (button) {
-            button.disabled = false;
-            button.querySelector("strong").textContent =
-                "Push-Nachrichten aktiviert";
-        }
-
-    } catch (error) {
-
-        console.error(
-            "SAIER INTERN: Push-Subscription konnte nicht erstellt werden.",
-            error
-        );
-
-        if (status) {
-            status.textContent =
-                "Push-Nachrichten konnten für dieses Gerät nicht eingerichtet werden.";
-        }
-
-        if (button) {
-            button.disabled = false;
-            button.querySelector("strong").textContent =
-                "Push-Nachrichten aktivieren";
-        }
     }
 }
 
