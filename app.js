@@ -12,6 +12,13 @@ let kalenderTermine = [];
 let aktuellerBenutzerIstAdmin = false;
 let aktuellerMitarbeiterId = null;
 
+// ========================================
+// PUSH-NACHRICHTEN – VAPID PUBLIC KEY
+// ========================================
+
+const PUSH_VAPID_PUBLIC_KEY =
+    "BDkzvAxxhYXDqs8GMKbYlHCSn67wpAfruTd1YC1saAIPVvfaInpTUMuAT3JBjIA1hoL72uF-F9uTT5741lCuA-Q";
+
 let monteureStartDatum = new Date();
 let monteureDaten = [];
 
@@ -4649,13 +4656,15 @@ async function pushBenachrichtigungenAktivieren() {
 
             if (status) {
                 status.textContent =
-                    "Benachrichtigungen sind für diesen Browser erlaubt.";
+                    "Benachrichtigungen sind erlaubt. Push wird für dieses Gerät eingerichtet …";
             }
 
             if (button) {
                 button.querySelector("strong").textContent =
-                    "Push-Nachrichten aktiviert";
+                    "Push wird eingerichtet …";
             }
+
+            await pushSubscriptionErstellen();
 
             return;
         }
@@ -4696,6 +4705,113 @@ async function pushBenachrichtigungenAktivieren() {
                 "Push-Nachrichten aktivieren";
         }
 
+    }
+}
+
+
+// ========================================
+// PUSH-SUBSCRIPTION – SCHRITT 5
+// ========================================
+
+const SAIER_INTERN_PUSH_PUBLIC_KEY =
+    "BDkzvAxxhYXDqs8GMKbYlHCSn67wpAfruTd1YC1saAIPVvfaInpTUMuAT3JBjIA1hoL72uF-F9uTT5741lCuA-Q";
+
+function pushBase64UrlZuUint8Array(base64Url) {
+
+    const padding = "=".repeat((4 - (base64Url.length % 4)) % 4);
+    const base64 =
+        (base64Url + padding)
+            .replace(/-/g, "+")
+            .replace(/_/g, "/");
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; i++) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+
+    return outputArray;
+}
+
+
+async function pushSubscriptionErstellen() {
+
+    const status =
+        document.getElementById("pushBenachrichtigungenStatus");
+
+    const button =
+        document.getElementById("pushBenachrichtigungenButton");
+
+    try {
+
+        if (!("serviceWorker" in navigator)) {
+            throw new Error(
+                "Dieser Browser unterstützt keine Service Worker."
+            );
+        }
+
+        if (!("PushManager" in window)) {
+            throw new Error(
+                "Dieser Browser unterstützt keine Push-Nachrichten."
+            );
+        }
+
+        const registration =
+            await navigator.serviceWorker.ready;
+
+        let subscription =
+            await registration.pushManager.getSubscription();
+
+        if (!subscription) {
+            subscription =
+                await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey:
+                        pushBase64UrlZuUint8Array(
+                            SAIER_INTERN_PUSH_PUBLIC_KEY
+                        )
+                });
+        }
+
+        console.log(
+            "SAIER INTERN: Push-Subscription erfolgreich erstellt.",
+            subscription
+        );
+
+        console.log(
+            "SAIER INTERN: Push-Subscription JSON:",
+            subscription.toJSON()
+        );
+
+        if (status) {
+            status.textContent =
+                "Push-Nachrichten sind für dieses Gerät eingerichtet.";
+        }
+
+        if (button) {
+            button.disabled = false;
+            button.querySelector("strong").textContent =
+                "Push-Nachrichten aktiviert";
+        }
+
+    } catch (error) {
+
+        console.error(
+            "SAIER INTERN: Push-Subscription konnte nicht erstellt werden.",
+            error
+        );
+
+        if (status) {
+            status.textContent =
+                "Push-Nachrichten konnten für dieses Gerät nicht eingerichtet werden.";
+        }
+
+        if (button) {
+            button.disabled = false;
+            button.querySelector("strong").textContent =
+                "Push-Nachrichten aktivieren";
+        }
     }
 }
 
