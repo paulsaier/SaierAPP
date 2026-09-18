@@ -140,14 +140,13 @@ self.addEventListener("push", function(event) {
 
     }
 
-    const titel =
-        daten.titel ||
-        "SAIER INTERN";
+const titel =
+    daten.title ||
+    "SAIER INTERN";
 
-    const nachricht =
-        daten.nachricht ||
-        daten.body ||
-        "Du hast eine neue Nachricht.";
+const nachricht =
+    daten.body ||
+    "Du hast eine neue Nachricht.";
 
     const optionen = {
 

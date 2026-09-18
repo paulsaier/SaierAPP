@@ -1,6 +1,6 @@
 {
-    "name": "SAIER INTERN",
-    "short_name": "SAIER INTERN",
+    "name": "SaierAPP",
+    "short_name": "SaierAPP",
     "description": "Das interne Mitarbeiterportal der SAIER GmbH",
     "start_url": "./",
     "display": "standalone",
