@@ -4723,10 +4723,106 @@ async function pushBenachrichtigungenAktivieren() {
 
             }
 
-            console.log(
-                "SAIER INTERN: Push-Subscription erfolgreich erstellt:",
-                subscription.toJSON()
-            );
+            // ========================================
+            // PUSH-SUBSCRIPTION IN SUPABASE SPEICHERN
+            // ========================================
+
+            if (typeof supabaseClient === "undefined") {
+                throw new Error(
+                    "Die Supabase-Verbindung ist nicht verfügbar."
+                );
+            }
+
+            const {
+                data: userData,
+                error: userError
+            } = await supabaseClient.auth.getUser();
+
+            if (userError || !userData?.user) {
+                throw new Error(
+                    "Der angemeldete Benutzer konnte nicht ermittelt werden."
+                );
+            }
+
+            const pushDaten = subscription.toJSON();
+
+            if (
+                !pushDaten.endpoint ||
+                !pushDaten.keys?.p256dh ||
+                !pushDaten.keys?.auth
+            ) {
+                throw new Error(
+                    "Die Push-Subscription enthält keine vollständigen Daten."
+                );
+            }
+
+            // Prüfen, ob dieses Gerät für diesen Benutzer bereits
+            // gespeichert ist. Falls ja, wird der Eintrag aktualisiert.
+            const {
+                data: vorhandeneSubscription,
+                error: vorhandeneFehler
+            } = await supabaseClient
+                .from("push_subscriptions")
+                .select("id")
+                .eq("user_id", userData.user.id)
+                .eq("endpoint", pushDaten.endpoint)
+                .maybeSingle();
+
+            if (vorhandeneFehler) {
+                throw new Error(
+                    "Die vorhandene Push-Subscription konnte nicht geprüft werden: " +
+                    vorhandeneFehler.message
+                );
+            }
+
+            if (vorhandeneSubscription?.id) {
+
+                const { error: updateFehler } =
+                    await supabaseClient
+                        .from("push_subscriptions")
+                        .update({
+                            p256dh: pushDaten.keys.p256dh,
+                            auth: pushDaten.keys.auth
+                        })
+                        .eq("id", vorhandeneSubscription.id)
+                        .eq("user_id", userData.user.id);
+
+                if (updateFehler) {
+                    throw new Error(
+                        "Die Push-Subscription konnte nicht aktualisiert werden: " +
+                        updateFehler.message
+                    );
+                }
+
+                console.log(
+                    "SAIER INTERN: Bestehende Push-Subscription aktualisiert.",
+                    pushDaten.endpoint
+                );
+
+            } else {
+
+                const { error: insertFehler } =
+                    await supabaseClient
+                        .from("push_subscriptions")
+                        .insert({
+                            user_id: userData.user.id,
+                            endpoint: pushDaten.endpoint,
+                            p256dh: pushDaten.keys.p256dh,
+                            auth: pushDaten.keys.auth
+                        });
+
+                if (insertFehler) {
+                    throw new Error(
+                        "Die Push-Subscription konnte nicht gespeichert werden: " +
+                        insertFehler.message
+                    );
+                }
+
+                console.log(
+                    "SAIER INTERN: Neue Push-Subscription in Supabase gespeichert.",
+                    pushDaten.endpoint
+                );
+            }
 
             if (status) {
                 status.textContent =
