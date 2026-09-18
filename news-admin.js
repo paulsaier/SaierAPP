@@ -1104,6 +1104,8 @@
                     const accessToken =
                         sessionData?.session?.access_token;
 
+                        console.log("NEWS-PUSH TEST – AccessToken vorhanden:", !!accessToken);
+
                     if (!accessToken) {
 
                         console.error(
