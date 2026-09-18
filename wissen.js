@@ -143,9 +143,9 @@
       // WICHTIG: Die Tabelle public.wissen verwendet die Spalte "title".
       let query = client
         .from(DOKUMENTE)
-        .select("id,title,hersteller,beschreibung,inhalt,datei_url,datei_name,autor,erstellt_am,aktualisiert_am,aktiv")
+        .select("id,titel,hersteller,beschreibung,inhalt,datei_url,datei_name,autor,erstellt_am,aktualisiert_am,aktiv")
         .eq("aktiv", true)
-        .order("title", { ascending:true });
+        .order("titel", { ascending:true });
 
       if (filter) {
         query = query.eq("hersteller", filter);
@@ -155,7 +155,7 @@
       if (error) throw error;
 
       if (!data?.length) {
-        list.innerHTML = `<div class="wissen-status">Für diesen Bereich sind noch keine Anleitungen vorhanden.</div>`;
+        list.innerHTML = `<div class="wissen-status">Für diesen Bereich sind noch keine Dateien eingestellt.</div>`;
         return;
       }
 
@@ -172,7 +172,7 @@
             </div>
             <div class="wissen-karte-inhalt">
               <span class="wissen-karte-kategorie">${esc(doc.hersteller || "")}</span>
-              <h2 class="wissen-karte-titel">${esc(doc.title || "Ohne Titel")}</h2>
+              <h2 class="wissen-karte-titel">${esc(doc.titel || "Ohne Titel")}</h2>
               <span class="wissen-karte-datum">${datum(doc.erstellt_am)}</span>
             </div>
           </article>
@@ -300,7 +300,7 @@
       const { error: dbError } = await sb()
         .from(DOKUMENTE)
         .insert({
-          title: titel,
+          titel: titel,
           hersteller,
           datei_url: path,
           datei_name: file.name,
