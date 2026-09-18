@@ -4131,6 +4131,12 @@ body.admin-benutzer-modal-offen {
     white-space: nowrap;
 }
 
+@media (max-width: 600px) {
+    #newsVerwaltenButton {
+        margin-right: 12px;
+    }
+}
+
 #newsVerwaltenButton:hover {
     background: var(--saier-gruen);
     color: white;
