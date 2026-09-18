@@ -1090,6 +1090,75 @@
 
             console.log("News erfolgreich gespeichert.");
 
+                        // ========================================
+            // NEWS-PUSH AUSLÖSEN
+            // ========================================
+
+            if (!aktuelleBearbeitungsId && sollVeroeffentlichtWerden) {
+
+                try {
+
+                    const { data: sessionData } =
+                        await supabaseClient.auth.getSession();
+
+                    const accessToken =
+                        sessionData?.session?.access_token;
+
+                    if (!accessToken) {
+
+                        console.error(
+                            "News wurde gespeichert, aber es konnte kein Anmeldetoken für den Push ermittelt werden."
+                        );
+
+                    }
+                    else {
+
+                        const { data: pushData, error: pushError } =
+                            await supabaseClient.functions.invoke(
+                                "send-news-push",
+                                {
+                                    body: {
+                                        title: titelFeld.value.trim(),
+                                        body: teaserFeld.value.trim(),
+                                        url: window.location.href
+                                    },
+                                    headers: {
+                                        Authorization: `Bearer ${accessToken}`
+                                    }
+                                }
+                            );
+
+                        if (pushError) {
+
+                            console.error(
+                                "News wurde gespeichert, aber der Push konnte nicht ausgelöst werden:",
+                                pushError
+                            );
+
+                        }
+                        else {
+
+                            console.log(
+                                "News-Push erfolgreich ausgelöst:",
+                                pushData
+                            );
+
+                        }
+
+                    }
+
+                }
+                catch (pushError) {
+
+                    console.error(
+                        "Fehler beim Auslösen des News-Pushs:",
+                        pushError
+                    );
+
+                }
+
+            }
+
             if (hinweis) {
                 hinweis.textContent = sollVeroeffentlichtWerden
                     ? "News wurde erfolgreich veröffentlicht."
