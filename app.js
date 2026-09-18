@@ -4746,6 +4746,61 @@ async function pushBenachrichtigungenAktivieren() {
 
             const pushDaten = subscription.toJSON();
 
+            // ========================================
+// GERÄTEINFORMATIONEN ERMITTELN
+// ========================================
+
+const userAgent = navigator.userAgent || "";
+
+let deviceType = "Unbekannt";
+let platform = "Unbekannt";
+let browser = "Unbekannt";
+
+if (/iPhone/i.test(userAgent)) {
+    deviceType = "iPhone";
+} else if (/iPad/i.test(userAgent)) {
+    deviceType = "iPad";
+} else if (/Macintosh/i.test(userAgent)) {
+    deviceType = "Mac";
+} else if (/Android/i.test(userAgent)) {
+    deviceType = "Android";
+} else if (/Windows/i.test(userAgent)) {
+    deviceType = "Windows-PC";
+} else if (/Linux/i.test(userAgent)) {
+    deviceType = "Linux";
+}
+
+if (/iPhone|iPad|Macintosh/i.test(userAgent)) {
+    platform = "Apple";
+} else if (/Android/i.test(userAgent)) {
+    platform = "Android";
+} else if (/Windows/i.test(userAgent)) {
+    platform = "Windows";
+} else if (/Linux/i.test(userAgent)) {
+    platform = "Linux";
+}
+
+if (/CriOS/i.test(userAgent)) {
+    browser = "Chrome";
+} else if (/FxiOS/i.test(userAgent)) {
+    browser = "Firefox";
+} else if (/EdgiOS|Edg\//i.test(userAgent)) {
+    browser = "Edge";
+} else if (/Safari/i.test(userAgent) && !/Chrome|CriOS/i.test(userAgent)) {
+    browser = "Safari";
+} else if (/Chrome/i.test(userAgent)) {
+    browser = "Chrome";
+} else if (/Firefox/i.test(userAgent)) {
+    browser = "Firefox";
+} else {
+    browser = "Unbekannt";
+}
+
+const deviceName =
+    deviceType !== "Unbekannt"
+        ? `${deviceType} – ${browser}`
+        : browser;
+
             if (
                 !pushDaten.endpoint ||
                 !pushDaten.keys?.p256dh ||
@@ -4781,9 +4836,13 @@ async function pushBenachrichtigungenAktivieren() {
                     await supabaseClient
                         .from("push_subscriptions")
                         .update({
-                            p256dh: pushDaten.keys.p256dh,
-                            auth: pushDaten.keys.auth
-                        })
+    p256dh: pushDaten.keys.p256dh,
+    auth: pushDaten.keys.auth,
+    device_name: deviceName,
+    device_type: deviceType,
+    platform: platform,
+    browser: browser
+})
                         .eq("id", vorhandeneSubscription.id)
                         .eq("user_id", userData.user.id);
 
@@ -4805,11 +4864,15 @@ async function pushBenachrichtigungenAktivieren() {
                     await supabaseClient
                         .from("push_subscriptions")
                         .insert({
-                            user_id: userData.user.id,
-                            endpoint: pushDaten.endpoint,
-                            p256dh: pushDaten.keys.p256dh,
-                            auth: pushDaten.keys.auth
-                        });
+    user_id: userData.user.id,
+    endpoint: pushDaten.endpoint,
+    p256dh: pushDaten.keys.p256dh,
+    auth: pushDaten.keys.auth,
+    device_name: deviceName,
+    device_type: deviceType,
+    platform: platform,
+    browser: browser
+});
 
                 if (insertFehler) {
                     throw new Error(
