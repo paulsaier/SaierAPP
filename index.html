@@ -685,163 +685,110 @@
 
 
         <!-- ============================= -->
-        <!-- AUSHÄNGE -->
+        <!-- Wissen -->
         <!-- ============================= -->
 
-        <section id="aushänge"
-                 class="seite">
+        <section id="wissen" class="seite">
 
-            <div class="seiten-kopf">
+    <div class="wissen-kopf">
+        <div class="seiten-kopf">
+            <div class="seiten-icon">
+                <i data-lucide="book-open"></i>
+            </div>
+            <div>
+                <span>SAIER INTERN</span>
+                <h1>Wissen</h1>
+            </div>
+        </div>
 
-                <div class="seiten-icon">
-                    <i data-lucide="clipboard-list"></i>
-                </div>
+        <div id="wissenAdminAktionen" class="wissen-admin-aktionen" style="display:none;">
+            <button id="wissenUploadButton" type="button" onclick="wissenUploadOeffnen()">
+                <i data-lucide="upload"></i>
+                <span>Datei hochladen</span>
+            </button>
+            <button id="wissenKategorienButton" type="button" onclick="wissenKategorienOeffnen()">
+                <i data-lucide="settings"></i>
+                <span>Kategorien verwalten</span>
+            </button>
+        </div>
+    </div>
 
-                <div>
+    <div class="wissen-filter">
+        <label for="wissenKategorieAuswahl">Bereich</label>
+        <select id="wissenKategorieAuswahl">
+            <option value="">Alle Bereiche</option>
+        </select>
+    </div>
 
-                    <span>
-                        SAIER INTERN
-                    </span>
+    <div id="wissenKategorienPanel" class="wissen-panel" hidden>
+        <div class="wissen-panel-kopf">
+            <div>
+                <span class="kleine-ueberschrift">ADMINISTRATION</span>
+                <h2>Kategorien verwalten</h2>
+                <p>Neue Bereiche anlegen oder leere Kategorien löschen.</p>
+            </div>
+            <button type="button" class="wissen-panel-schliessen" onclick="wissenKategorienSchliessen()" aria-label="Schließen">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
 
-                    <h1>
-                        Aushänge
-                    </h1>
+        <form id="wissenKategorieForm" class="wissen-kategorie-form">
+            <input id="wissenNeueKategorie" type="text" maxlength="80" placeholder="Neue Kategorie" required>
+            <button type="submit">
+                <i data-lucide="plus"></i>
+                <span>Erstellen</span>
+            </button>
+        </form>
 
-                </div>
+        <div id="wissenKategorienListe"></div>
+        <div id="wissenKategorienStatus" class="wissen-status"></div>
+    </div>
 
+    <div id="wissenUploadPanel" class="wissen-panel" hidden>
+        <div class="wissen-panel-kopf">
+            <div>
+                <span class="kleine-ueberschrift">ADMINISTRATION</span>
+                <h2>Neue Anleitung hochladen</h2>
+                <p>PDF auswählen, Titel vergeben und dem passenden Bereich zuordnen.</p>
+            </div>
+            <button type="button" class="wissen-panel-schliessen" onclick="wissenUploadSchliessen()" aria-label="Schließen">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <form id="wissenUploadForm" class="wissen-upload-form">
+            <div class="wissen-formfeld">
+                <label for="wissenUploadKategorie">Bereich</label>
+                <select id="wissenUploadKategorie" required>
+                    <option value="">Bitte auswählen</option>
+                </select>
             </div>
 
+            <div class="wissen-formfeld">
+                <label for="wissenUploadTitel">Titel</label>
+                <input id="wissenUploadTitel" type="text" maxlength="160" placeholder="z. B. Wartung Geberit Spülkasten" required>
+            </div>
 
-            <article class="aushang neu">
+            <div class="wissen-formfeld">
+                <label for="wissenUploadDatei">PDF-Datei</label>
+                <input id="wissenUploadDatei" type="file" accept="application/pdf,.pdf" required>
+            </div>
 
-                <div class="aushang-kopf">
-
-                    <div class="aushang-icon">
-                        <i data-lucide="megaphone"></i>
-                    </div>
-
-                    <span class="neu-label">
-                        NEU
-                    </span>
-
-                </div>
-
-
-                <div class="aushang-inhalt">
-
-                    <span class="aushang-datum">
-                        02. September 2026
-                    </span>
-
-                    <h2>
-                        Wichtige Information
-                    </h2>
-
-                    <p>
-                        Hier könnte später der Inhalt des
-                        aktuellen Aushangs stehen.
-                    </p>
-
-                </div>
-
-
-                <button
-                    class="aushang-button"
-                    type="button">
-
-                    Weiterlesen
-
-                    <i data-lucide="arrow-right"></i>
-
+            <div class="wissen-upload-aktionen">
+                <button type="submit" class="wissen-upload-submit">
+                    <i data-lucide="upload"></i>
+                    <span>PDF hochladen</span>
                 </button>
+            </div>
+            <div id="wissenUploadStatus" class="wissen-status"></div>
+        </form>
+    </div>
 
-            </article>
+    <div id="wissenListe" class="wissen-liste">
+        <div class="wissen-status">Wissen wird geladen ...</div>
+    </div>
 
-
-            <article class="aushang">
-
-                <div class="aushang-kopf">
-
-                    <div class="aushang-icon">
-                        <i data-lucide="calendar-days"></i>
-                    </div>
-
-                </div>
-
-
-                <div class="aushang-inhalt">
-
-                    <span class="aushang-datum">
-                        28. August 2026
-                    </span>
-
-                    <h2>
-                        Betriebsveranstaltung
-                    </h2>
-
-                    <p>
-                        Weitere Informationen zu unserer
-                        nächsten Veranstaltung.
-                    </p>
-
-                </div>
-
-
-                <button
-                    class="aushang-button"
-                    type="button">
-
-                    Weiterlesen
-
-                    <i data-lucide="arrow-right"></i>
-
-                </button>
-
-            </article>
-
-
-            <article class="aushang">
-
-                <div class="aushang-kopf">
-
-                    <div class="aushang-icon">
-                        <i data-lucide="info"></i>
-                    </div>
-
-                </div>
-
-
-                <div class="aushang-inhalt">
-
-                    <span class="aushang-datum">
-                        20. August 2026
-                    </span>
-
-                    <h2>
-                        Neue Informationen
-                    </h2>
-
-                    <p>
-                        Hier stehen zukünftig wichtige
-                        Informationen für alle Mitarbeiter.
-                    </p>
-
-                </div>
-
-
-                <button
-                    class="aushang-button"
-                    type="button">
-
-                    Weiterlesen
-
-                    <i data-lucide="arrow-right"></i>
-
-                </button>
-
-            </article>
-
-        </section>
+</section>
 
 <!-- ============================= -->
 <!-- BENUTZER -->
@@ -1448,13 +1395,13 @@
         <button
             class="nav-button"
             type="button"
-            onclick="zeigeSeite('aushänge', this)">
+            onclick="zeigeSeite('wissen', this)">
 
             <i data-lucide="clipboard-list"
                class="nav-icon"></i>
 
             <span>
-                Aushänge
+                Wissen
             </span>
 
         </button>
@@ -1953,6 +1900,7 @@
 <script src="app.js"></script>
 <script src="news.js"></script>
 <script src="news-admin.js"></script>
+<script src="wissen.js"></script>
 
 </body>
 

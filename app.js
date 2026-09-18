@@ -5021,3 +5021,17 @@ if (
     );
 
 }
+/* ========================================
+   WISSEN – Bereich beim Öffnen aktualisieren
+   ======================================== */
+(function () {
+    const alteZeigeSeite = window.zeigeSeite;
+    if (typeof alteZeigeSeite !== "function") return;
+
+    window.zeigeSeite = function (seitenId, button) {
+        alteZeigeSeite(seitenId, button);
+        if (seitenId === "wissen" && typeof wissenLaden === "function") {
+            wissenLaden();
+        }
+    };
+})();
