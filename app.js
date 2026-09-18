@@ -4824,6 +4824,7 @@ async function pushBenachrichtigungenAktivieren() {
                 );
             }
 
+
             if (status) {
                 status.textContent =
                     "Push-Nachrichten sind für dieses Gerät eingerichtet.";
