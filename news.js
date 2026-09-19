@@ -417,6 +417,63 @@
 
 
             /* ====================================
+               MEDIUM ÖFFNEN
+               ==================================== */
+
+            .saier-news-medium-open {
+
+                display: inline-flex;
+
+                align-items: center;
+
+                justify-content: center;
+
+                gap: 7px;
+
+                padding: 9px 12px;
+
+                border: 1px solid #95C11F;
+
+                border-radius: 9px;
+
+                background: #ffffff;
+
+                color: #6f9700;
+
+                font-family: inherit;
+
+                font-size: 13px;
+
+                font-weight: 700;
+
+                cursor: pointer;
+
+                transition:
+                    background 0.18s ease,
+                    color 0.18s ease,
+                    transform 0.18s ease;
+            }
+
+
+            .saier-news-medium-open:hover {
+
+                background: #95C11F;
+
+                color: #ffffff;
+
+                transform: translateY(-1px);
+            }
+
+
+            .saier-news-medium-open svg {
+
+                width: 16px;
+
+                height: 16px;
+            }
+
+
+            /* ====================================
                STATUS
                ==================================== */
 
@@ -1248,17 +1305,18 @@
                     .from("news")
 
                     .select(`
-                        id,
-                        titel,
-                        kurztext,
-                        inhalt,
-                        datum,
-                        autor,
-                        bild_url,
-                        neu,
-                        veröffentlicht,
-                        created_at
-                    `)
+    id,
+    titel,
+    kurztext,
+    inhalt,
+    datum,
+    autor,
+    bild_url,
+    medien_typ,
+    neu,
+    veröffentlicht,
+    created_at
+`)
 
                     .eq(
                         "veröffentlicht",
@@ -1324,8 +1382,27 @@
             }
 
 
+            const newsMitMedien = await Promise.all(
+                (data || []).map(async function (artikel) {
+
+                    if (!artikel.bild_url) {
+                        return artikel;
+                    }
+
+                    const medienUrl =
+                        await newsMedienUrlErmitteln(
+                            artikel.bild_url
+                        );
+
+                    return {
+                        ...artikel,
+                        bild_url: medienUrl
+                    };
+                })
+            );
+
             newsAnzeigen(
-                data || []
+                newsMitMedien
             );
 
         }
@@ -1466,56 +1543,75 @@
                     artikel.bild_url
                 ) {
 
-                    const bild =
-                        document.createElement(
-                            "img"
+                    if (artikel.medien_typ === "pdf") {
+
+                        const pdf =
+                            document.createElement("iframe");
+
+                        pdf.src =
+                            artikel.bild_url +
+                            "#toolbar=0&navpanes=0&scrollbar=0";
+
+                        pdf.title =
+                            artikel.titel ||
+                            "PDF-Vorschau";
+
+                        pdf.loading =
+                            "lazy";
+
+                        pdf.style.width = "100%";
+                        pdf.style.height = "100%";
+                        pdf.style.border = "0";
+                        pdf.style.display = "block";
+                        pdf.style.background = "#ffffff";
+
+                        bildBereich.appendChild(
+                            pdf
                         );
 
+                    } else {
 
-                    bild.src =
-                        artikel.bild_url;
+                        const bild =
+                            document.createElement(
+                                "img"
+                            );
 
+                        bild.src =
+                            artikel.bild_url;
 
-                    bild.alt =
-                        artikel.titel ||
-                        "News";
+                        bild.alt =
+                            artikel.titel ||
+                            "News";
 
+                        bild.loading =
+                            "lazy";
 
-                    bild.loading =
-                        "lazy";
+                        bild.onerror =
+                            function () {
 
+                                bild.remove();
 
-                    bild.onerror =
-                        function () {
+                                bildBereich.innerHTML = `
+                                    <div
+                                        class="
+                                            saier-news-card-no-image
+                                        "
+                                    >
+                                        <i
+                                            data-lucide="newspaper"
+                                        ></i>
+                                    </div>
+                                `;
 
-                            bild.remove();
+                                newsIconsAktualisieren();
 
+                            };
 
-                            bildBereich.innerHTML = `
+                        bildBereich.appendChild(
+                            bild
+                        );
 
-                                <div
-                                    class="
-                                        saier-news-card-no-image
-                                    "
-                                >
-
-                                    <i
-                                        data-lucide="newspaper"
-                                    ></i>
-
-                                </div>
-
-                            `;
-
-
-                            newsIconsAktualisieren();
-
-                        };
-
-
-                    bildBereich.appendChild(
-                        bild
-                    );
+                    }
 
                 }
 
@@ -1545,7 +1641,7 @@
                 // ====================================
 
                 if (
-                    artikel.neu
+                    newsIstNeu(artikel.datum)
                 ) {
 
                     const badge =
@@ -1871,49 +1967,68 @@
             artikel.bild_url
         ) {
 
-            const bild =
-                document.createElement(
-                    "img"
+            if (artikel.medien_typ === "pdf") {
+
+                const pdf =
+                    document.createElement("iframe");
+
+                pdf.src =
+                    artikel.bild_url +
+                    "#toolbar=0&navpanes=0&scrollbar=0";
+
+                pdf.title =
+                    artikel.titel ||
+                    "PDF-Vorschau";
+
+                pdf.style.width = "100%";
+                pdf.style.height = "100%";
+                pdf.style.minHeight = "420px";
+                pdf.style.border = "0";
+                pdf.style.display = "block";
+                pdf.style.background = "#ffffff";
+
+                bildContainer.appendChild(
+                    pdf
                 );
 
+            } else {
 
-            bild.src =
-                artikel.bild_url;
+                const bild =
+                    document.createElement(
+                        "img"
+                    );
 
+                bild.src =
+                    artikel.bild_url;
 
-            bild.alt =
-                artikel.titel ||
-                "News";
+                bild.alt =
+                    artikel.titel ||
+                    "News";
 
+                bild.onerror =
+                    function () {
 
-            bild.onerror =
-                function () {
+                        bildContainer.innerHTML = `
+                            <div
+                                class="
+                                    saier-news-modal-no-image
+                                "
+                            >
+                                <i
+                                    data-lucide="newspaper"
+                                ></i>
+                            </div>
+                        `;
 
-                    bildContainer.innerHTML = `
+                        newsIconsAktualisieren();
 
-                        <div
-                            class="
-                                saier-news-modal-no-image
-                            "
-                        >
+                    };
 
-                            <i
-                                data-lucide="newspaper"
-                            ></i>
+                bildContainer.appendChild(
+                    bild
+                );
 
-                        </div>
-
-                    `;
-
-
-                    newsIconsAktualisieren();
-
-                };
-
-
-            bildContainer.appendChild(
-                bild
-            );
+            }
 
         }
 
@@ -1943,7 +2058,7 @@
         // ====================================
 
         if (
-            artikel.neu
+            newsIstNeu(artikel.datum)
         ) {
 
             const badge =
@@ -2058,13 +2173,65 @@
 
 
         // ====================================
-        // ERSTELLT
+        // MEDIUM IN NEUEM TAB ÖFFNEN
         // ====================================
 
-        bottom.textContent =
+        bottom.innerHTML = "";
+
+        if (artikel.bild_url) {
+
+            const mediumOeffnen =
+                document.createElement("button");
+
+            mediumOeffnen.type = "button";
+            mediumOeffnen.className = "saier-news-medium-open";
+
+            const mediumText =
+                artikel.medien_typ === "pdf"
+                    ? "PDF öffnen"
+                    : "Bild öffnen";
+
+            mediumOeffnen.innerHTML = `
+                ${mediumText}
+                <i data-lucide="external-link"></i>
+            `;
+
+            mediumOeffnen.title =
+                artikel.medien_typ === "pdf"
+                    ? "PDF in neuem Tab öffnen"
+                    : "Bild in neuem Tab öffnen";
+
+            mediumOeffnen.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const neuesFenster =
+                        window.open(
+                            artikel.bild_url,
+                            "_blank"
+                        );
+
+                    if (neuesFenster) {
+                        neuesFenster.opener = null;
+                    }
+                }
+            );
+
+            bottom.appendChild(mediumOeffnen);
+        }
+
+        const hinweis =
+            document.createElement("div");
+
+        hinweis.textContent =
             artikel.created_at
                 ? "Veröffentlicht im SAIER INTERN Newsportal"
                 : "";
+
+        bottom.appendChild(hinweis);
 
 
         // ====================================
@@ -2344,6 +2511,100 @@
     // ========================================
     // LUCIDE ICONS
     // ========================================
+
+    async function newsMedienUrlErmitteln(bildUrl) {
+
+        if (!bildUrl) {
+            return null;
+        }
+
+        // Bereits vollständige URLs unverändert verwenden.
+        if (/^https?:\/\//i.test(String(bildUrl))) {
+            return String(bildUrl);
+        }
+
+        try {
+
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .storage
+                .from("news")
+                .createSignedUrl(
+                    String(bildUrl),
+                    60 * 60 * 24
+                );
+
+            if (error || !data?.signedUrl) {
+                console.error(
+                    "News-Medium konnte nicht geladen werden:",
+                    error
+                );
+                return null;
+            }
+
+            return data.signedUrl;
+
+        } catch (error) {
+
+            console.error(
+                "Fehler beim Erzeugen der News-Medien-URL:",
+                error
+            );
+
+            return null;
+        }
+    }
+
+
+    function newsIstNeu(datum) {
+
+        if (!datum) {
+            return false;
+        }
+
+        // „NEU“ gilt am Veröffentlichungsdatum und an den
+        // beiden folgenden Kalendertagen.
+        const teile = String(datum).slice(0, 10).split("-");
+
+        if (teile.length !== 3) {
+            return false;
+        }
+
+        const jahr = Number(teile[0]);
+        const monat = Number(teile[1]);
+        const tag = Number(teile[2]);
+
+        if (
+            !Number.isInteger(jahr) ||
+            !Number.isInteger(monat) ||
+            !Number.isInteger(tag)
+        ) {
+            return false;
+        }
+
+        const newsDatum =
+            new Date(jahr, monat - 1, tag);
+
+        const heute = new Date();
+
+        const heuteOhneZeit =
+            new Date(
+                heute.getFullYear(),
+                heute.getMonth(),
+                heute.getDate()
+            );
+
+        const differenz =
+            Math.floor(
+                (heuteOhneZeit.getTime() - newsDatum.getTime()) /
+                (1000 * 60 * 60 * 24)
+            );
+
+        return differenz >= 0 && differenz <= 2;
+    }
+
 
     function newsIconsAktualisieren() {
 

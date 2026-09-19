@@ -103,6 +103,7 @@
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="newsAdminModalTitel"
+                style="max-height:90vh; overflow-y:auto; overflow-x:hidden; box-sizing:border-box; -webkit-overflow-scrolling:touch;"
             >
 
                 <div class="passwort-modal-kopf">
@@ -333,7 +334,7 @@
                 await supabaseClient
                     .from("news")
                     .select(
-                        "id,titel,kurztext,inhalt,datum,autor,bild_url,neu,veröffentlicht,created_at"
+                        "id,titel,kurztext,inhalt,datum,autor,bild_url,medien_typ,neu,veröffentlicht,created_at"
                     )
                     .order("datum", { ascending: false })
                     .order("created_at", { ascending: false });
@@ -725,6 +726,33 @@
                     Inhalt
                 </label>
 
+                <div style="margin-bottom:16px;">
+
+                    <label
+                        for="newsMedium"
+                        style="display:block;margin-bottom:6px;font-size:13px;font-weight:600;"
+                    >
+                        Bild oder PDF
+                    </label>
+
+                    <input
+                        id="newsMedium"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,application/pdf"
+                        style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:white;"
+                    >
+
+                    <div
+                        id="newsMedienVorschau"
+                        style="display:none;margin-top:10px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#f5f5f5;"
+                    ></div>
+
+                    <small style="display:block;margin-top:7px;color:var(--grau);">
+                        JPG, PNG, WEBP oder PDF. Eine Anlage pro News.
+                    </small>
+
+                </div>
+
                 <textarea
                     id="newsInhalt"
                     rows="8"
@@ -873,6 +901,47 @@
             document.getElementById("newsTitel").value = news.titel || "";
             document.getElementById("newsTeaser").value = news.kurztext || "";
             document.getElementById("newsInhalt").value = news.inhalt || "";
+        }
+
+        const newsMediumFeld = document.getElementById("newsMedium");
+        const newsMedienVorschau = document.getElementById("newsMedienVorschau");
+
+        function newsMedienVorschauAnzeigen(file) {
+            if (!newsMedienVorschau) return;
+
+            if (!file) {
+                newsMedienVorschau.style.display = "none";
+                newsMedienVorschau.innerHTML = "";
+                return;
+            }
+
+            const url = URL.createObjectURL(file);
+            newsMedienVorschau.style.display = "block";
+
+            if (file.type === "application/pdf") {
+                newsMedienVorschau.innerHTML = `
+                    <iframe src="${url}#toolbar=0&navpanes=0" title="PDF-Vorschau" style="display:block;width:100%;height:360px;border:0;background:white;"></iframe>
+                `;
+            } else {
+                newsMedienVorschau.innerHTML = `
+                    <img src="${url}" alt="Vorschau" style="display:block;width:100%;max-height:360px;object-fit:contain;background:white;">
+                `;
+            }
+        }
+
+        newsMediumFeld?.addEventListener("change", function () {
+            const file = this.files?.[0] || null;
+            newsMedienVorschauAnzeigen(file);
+        });
+
+        if (news?.bild_url) {
+            newsMedienVorschau.style.display = "block";
+            newsMedienVorschau.innerHTML = `
+                <div style="padding:10px 12px;font-size:13px;font-weight:600;background:white;border-bottom:1px solid var(--line);">Aktuelle Anlage</div>
+                ${news.medien_typ === "pdf"
+                    ? `<iframe src="${htmlEscapen(news.bild_url)}#toolbar=0&navpanes=0" title="PDF-Vorschau" style="display:block;width:100%;height:360px;border:0;background:white;"></iframe>`
+                    : `<img src="${htmlEscapen(news.bild_url)}" alt="Aktuelle Anlage" style="display:block;width:100%;max-height:360px;object-fit:contain;background:white;">`}
+            `;
         }
 
         document
@@ -1028,13 +1097,59 @@
 
             const autor = await aktuellenAutorLaden();
 
+            const mediumFeld = document.getElementById("newsMedium");
+            const mediumDatei = mediumFeld?.files?.[0] || null;
+
+            if (mediumDatei) {
+                const erlaubteTypen = [
+                    "image/jpeg",
+                    "image/png",
+                    "image/webp",
+                    "application/pdf"
+                ];
+
+                if (!erlaubteTypen.includes(mediumDatei.type)) {
+                    throw new Error("Bitte nur JPG, PNG, WEBP oder PDF auswählen.");
+                }
+
+                if (mediumDatei.size > 15 * 1024 * 1024) {
+                    throw new Error("Die Datei darf maximal 15 MB groß sein.");
+                }
+            }
+
+            let bildUrl = null;
+            let medienTyp = null;
+
+            if (mediumDatei) {
+                const dateiendung = (mediumDatei.name.split(".").pop() || "bin").toLowerCase();
+                const dateiname = `news/${crypto.randomUUID()}.${dateiendung}`;
+
+                const { error: uploadError } = await supabaseClient
+                    .storage
+                    .from("news")
+                    .upload(dateiname, mediumDatei, {
+                        cacheControl: "3600",
+                        upsert: false,
+                        contentType: mediumDatei.type
+                    });
+
+                if (uploadError) {
+                    throw new Error("Die Datei konnte nicht hochgeladen werden. " + uploadError.message);
+                }
+
+                bildUrl = dateiname;
+                medienTyp = mediumDatei.type === "application/pdf" ? "pdf" : "image";
+            }
+
             const newsDaten = {
                 titel: titelFeld.value.trim(),
                 kurztext: teaserFeld.value.trim(),
                 inhalt: inhaltFeld.value.trim(),
                 datum: datumFeld.value,
                 autor: autor,
-                veröffentlicht: sollVeroeffentlichtWerden
+                veröffentlicht: sollVeroeffentlichtWerden,
+                ...(aktuelleBearbeitungsId ? {} : { neu: true }),
+                ...(mediumDatei ? { bild_url: bildUrl, medien_typ: medienTyp } : {})
             };
 
             let error = null;
@@ -1366,4 +1481,3 @@
 
 
 })();
-s
