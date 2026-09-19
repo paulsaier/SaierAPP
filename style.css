@@ -4133,7 +4133,7 @@ body.admin-benutzer-modal-offen {
 
 .news-admin-buttons {
     margin-left: auto;
-    margin-right: 20px;
+    margin-right: 0px;
 }
 
 #newsVerwaltenButton:hover {
@@ -4476,7 +4476,7 @@ body.admin-benutzer-modal-offen {
 
     #wissenUploadButton,
     #wissenKategorienButton {
-        margin-right: 12px;
+        margin-right: 0px;
     }
 
     .wissen-filter {
