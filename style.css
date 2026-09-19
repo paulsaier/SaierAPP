@@ -4173,6 +4173,7 @@ body.admin-benutzer-modal-offen {
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
+    margin-right: 32px;
 }
 
 #newsVerwaltenButton:hover {
