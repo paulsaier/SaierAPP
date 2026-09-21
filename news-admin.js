@@ -1149,17 +1149,64 @@
                 const dateiendung = (mediumDatei.name.split(".").pop() || "bin").toLowerCase();
                 const dateiname = `news/${newsEindeutigeDateiId()}.${dateiendung}`;
 
+                // Safari/iOS kann beim direkten Upload eines File-Objekts
+                // aus einem lokalen file://-Kontext gelegentlich keinen Request-Body
+                // an Supabase übergeben ("No content provided"). Deshalb wandeln wir
+                // die ausgewählte Datei vor dem Upload ausdrücklich in einen Blob um.
+                let uploadInhalt;
+
+                if (typeof mediumDatei.arrayBuffer === "function") {
+                    const arrayBuffer = await mediumDatei.arrayBuffer();
+
+                    if (!arrayBuffer || arrayBuffer.byteLength === 0) {
+                        throw new Error("Die ausgewählte Datei enthält keinen Inhalt.");
+                    }
+
+                    uploadInhalt = new Blob(
+                        [arrayBuffer],
+                        { type: mediumDatei.type || "application/octet-stream" }
+                    );
+                }
+                else {
+                    uploadInhalt = await new Promise(function (resolve, reject) {
+                        const reader = new FileReader();
+
+                        reader.onload = function () {
+                            if (!reader.result) {
+                                reject(new Error("Die ausgewählte Datei konnte nicht gelesen werden."));
+                                return;
+                            }
+
+                            resolve(
+                                new Blob(
+                                    [reader.result],
+                                    { type: mediumDatei.type || "application/octet-stream" }
+                                )
+                            );
+                        };
+
+                        reader.onerror = function () {
+                            reject(new Error("Die ausgewählte Datei konnte nicht gelesen werden."));
+                        };
+
+                        reader.readAsArrayBuffer(mediumDatei);
+                    });
+                }
+
                 const { error: uploadError } = await supabaseClient
                     .storage
                     .from("news")
-                    .upload(dateiname, mediumDatei, {
+                    .upload(dateiname, uploadInhalt, {
                         cacheControl: "3600",
                         upsert: false,
-                        contentType: mediumDatei.type
+                        contentType: mediumDatei.type || "application/octet-stream"
                     });
 
                 if (uploadError) {
-                    throw new Error("Die Datei konnte nicht hochgeladen werden. " + uploadError.message);
+                    throw new Error(
+                        "Die Datei konnte nicht hochgeladen werden. " +
+                        (uploadError.message || "Unbekannter Upload-Fehler.")
+                    );
                 }
 
                 bildUrl = dateiname;
@@ -1523,4 +1570,3 @@
 
 
 })();
-s
