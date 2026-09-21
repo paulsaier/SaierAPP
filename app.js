@@ -3255,25 +3255,35 @@ function monteureGruppieren(einsaetze) {
 
     (einsaetze || []).forEach(function(einsatz) {
 
-        const schluessel =
-            monteureSichererText(einsatz.projektname) +
-            "|||" +
-            monteureSichererText(einsatz.auto);
+        // Das Projekt ist der einzige Gruppierungsschlüssel.
+        // Fahrzeuge und Mitarbeiter werden innerhalb des Projekts
+        // jeweils gesammelt und dedupliziert.
+        const schluessel = monteureSichererText(einsatz.projektname);
 
         if (!gruppen[schluessel]) {
             gruppen[schluessel] = {
                 projektname: einsatz.projektname,
-                auto: einsatz.auto,
+                autos: [],
                 mitarbeiter: []
             };
+        }
+
+        const gruppe = gruppen[schluessel];
+
+        const auto = einsatz.auto === null || einsatz.auto === undefined
+            ? ""
+            : String(einsatz.auto).trim();
+
+        if (auto && !gruppe.autos.includes(auto)) {
+            gruppe.autos.push(auto);
         }
 
         const name =
             einsatz.employees?.name ||
             "Mitarbeiter";
 
-        if (!gruppen[schluessel].mitarbeiter.includes(name)) {
-            gruppen[schluessel].mitarbeiter.push(name);
+        if (!gruppe.mitarbeiter.includes(name)) {
+            gruppe.mitarbeiter.push(name);
         }
     });
 
@@ -3361,27 +3371,26 @@ function monteureTagErstellen(datum, einsaetze) {
         projekt.appendChild(projektText);
         karte.appendChild(projekt);
 
-        if (gruppe.auto) {
+        const auto = document.createElement("div");
+        auto.className = "monteure-einsatz-zeile";
+        auto.innerHTML = '<i data-lucide="car-front"></i>';
 
-            const auto = document.createElement("div");
-            auto.className = "monteure-einsatz-zeile";
-            auto.innerHTML = '<i data-lucide="car-front"></i>';
+        const autoText = document.createElement("div");
+        autoText.className = "monteure-einsatz-text";
 
-            const autoText = document.createElement("div");
-            autoText.className = "monteure-einsatz-text";
+        const autoLabel = document.createElement("span");
+        autoLabel.className = "monteure-label";
+        autoLabel.textContent = "Autos";
 
-            const autoLabel = document.createElement("span");
-            autoLabel.className = "monteure-label";
-            autoLabel.textContent = "Auto";
+        const autoName = document.createElement("strong");
+        autoName.textContent = gruppe.autos.length
+            ? gruppe.autos.join(" · ")
+            : "Kein Fahrzeug zugeordnet";
 
-            const autoName = document.createElement("strong");
-            autoName.textContent = monteureSichererText(gruppe.auto);
-
-            autoText.appendChild(autoLabel);
-            autoText.appendChild(autoName);
-            auto.appendChild(autoText);
-            karte.appendChild(auto);
-        }
+        autoText.appendChild(autoLabel);
+        autoText.appendChild(autoName);
+        auto.appendChild(autoText);
+        karte.appendChild(auto);
 
         const mitarbeiter = document.createElement("div");
         mitarbeiter.className = "monteure-einsatz-zeile monteure-mitarbeiter";
