@@ -1017,6 +1017,31 @@
 
 
     // ========================================
+    // SICHERE, SAFARI-KOMPATIBLE DATEI-ID
+    // ========================================
+
+    function newsEindeutigeDateiId() {
+
+        // crypto.randomUUID() ist in manchen Safari-/file://-Kontexten
+        // nicht verfügbar. Deshalb gibt es bewusst einen Fallback.
+        if (
+            typeof crypto !== "undefined" &&
+            typeof crypto.randomUUID === "function"
+        ) {
+            return crypto.randomUUID();
+        }
+
+        return (
+            Date.now().toString(36) +
+            "-" +
+            Math.random().toString(36).slice(2, 12) +
+            "-" +
+            Math.random().toString(36).slice(2, 12)
+        );
+    }
+
+
+    // ========================================
     // NEWS SPEICHERN
     // ========================================
 
@@ -1122,7 +1147,7 @@
 
             if (mediumDatei) {
                 const dateiendung = (mediumDatei.name.split(".").pop() || "bin").toLowerCase();
-                const dateiname = `news/${crypto.randomUUID()}.${dateiendung}`;
+                const dateiname = `news/${newsEindeutigeDateiId()}.${dateiendung}`;
 
                 const { error: uploadError } = await supabaseClient
                     .storage
@@ -1283,8 +1308,19 @@
                 hinweis.style.color = "var(--saier-gruen)";
             }
 
-            if (typeof window.newsLaden === "function") {
-                await window.newsLaden();
+            // Das eigentliche Speichern war erfolgreich. Ein Fehler beim
+            // anschließenden Neuladen der News darf die erfolgreiche
+            // Speicherung nicht mehr als Fehler darstellen.
+            try {
+                if (typeof window.newsLaden === "function") {
+                    await window.newsLaden();
+                }
+            }
+            catch (reloadError) {
+                console.error(
+                    "News wurde gespeichert, aber die News-Liste konnte nicht aktualisiert werden:",
+                    reloadError
+                );
             }
 
             setTimeout(function () {
@@ -1300,8 +1336,14 @@
             );
 
             if (hinweis) {
-                hinweis.textContent =
-                    "Beim Speichern ist ein unerwarteter Fehler aufgetreten.";
+                const details =
+                    error?.message ||
+                    error?.error_description ||
+                    String(error || "");
+
+                hinweis.textContent = details
+                    ? `Fehler beim Speichern: ${details}`
+                    : "Beim Speichern ist ein unerwarteter Fehler aufgetreten.";
                 hinweis.style.color = "#b42318";
             }
 
@@ -1481,3 +1523,4 @@
 
 
 })();
+s
