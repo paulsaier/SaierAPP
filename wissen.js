@@ -9,6 +9,8 @@
   const BUCKET = "wissen";
   let admin = false;
   let kategorien = [];
+  let wissenDokumente = [];
+  let wissenSuchbegriff = "";
 
   const sb = () => (typeof supabaseClient !== "undefined" ? supabaseClient : null);
 
@@ -113,6 +115,142 @@
     return data?.signedUrl || "";
   }
 
+  function sucheNormalisieren(value) {
+    return String(value || "")
+      .toLocaleLowerCase("de-DE")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+  }
+
+  function wissenSucheEinrichten() {
+    const filter = document.getElementById("wissenKategorieAuswahl");
+    if (!filter) return null;
+
+    let suche = document.getElementById("wissenSuchfeld");
+    if (suche) {
+      suche.value = wissenSuchbegriff;
+      return suche;
+    }
+
+    const container = document.createElement("div");
+    container.className = "wissen-suche";
+    container.innerHTML = `
+      <div class="wissen-suche-feld">
+        <i data-lucide="search" aria-hidden="true"></i>
+        <input
+          id="wissenSuchfeld"
+          type="search"
+          placeholder="Dokumente durchsuchen …"
+          autocomplete="off"
+          aria-label="Dokumente durchsuchen"
+        >
+        <button type="button" id="wissenSucheLeeren" class="wissen-suche-leeren" aria-label="Suche löschen" title="Suche löschen" hidden>
+          <i data-lucide="x" aria-hidden="true"></i>
+        </button>
+      </div>
+    `;
+
+    filter.parentElement?.appendChild(container);
+    suche = container.querySelector("#wissenSuchfeld");
+    const leeren = container.querySelector("#wissenSucheLeeren");
+
+    const aktualisieren = () => {
+      wissenSuchbegriff = suche.value.trim();
+      if (leeren) leeren.hidden = !wissenSuchbegriff;
+      wissenKartenRendern();
+    };
+
+    suche.addEventListener("input", aktualisieren);
+    leeren?.addEventListener("click", () => {
+      suche.value = "";
+      wissenSuchbegriff = "";
+      leeren.hidden = true;
+      wissenKartenRendern();
+      suche.focus();
+    });
+
+    if (window.lucide) lucide.createIcons();
+    return suche;
+  }
+
+  async function wissenKartenRendern() {
+    const list = document.getElementById("wissenListe");
+    if (!list) return;
+
+    const suche = sucheNormalisieren(wissenSuchbegriff);
+    const daten = wissenDokumente.filter(doc => {
+      if (!suche) return true;
+      return sucheNormalisieren(doc.titel || "Ohne Titel").includes(suche);
+    });
+
+    if (!daten.length) {
+      list.innerHTML = wissenSuchbegriff
+        ? `<div class="wissen-status">Keine Dokumente für „${esc(wissenSuchbegriff)}“ gefunden.</div>`
+        : `<div class="wissen-status">Für diesen Bereich sind noch keine Dateien eingestellt.</div>`;
+      return;
+    }
+
+    const cards = daten.map(doc => {
+      const url = doc._wissenUrl || "";
+      if (!url) return "";
+
+      return `
+        <article class="wissen-karte" data-url="${esc(url)}">
+          <div class="wissen-vorschau">
+            <iframe src="${esc(url)}#toolbar=0&navpanes=0&scrollbar=0" title="PDF-Vorschau"></iframe>
+          </div>
+          <div class="wissen-karte-inhalt">
+            <span class="wissen-karte-kategorie">${esc(doc.hersteller || "")}</span>
+            <h2 class="wissen-karte-titel">${esc(doc.titel || "Ohne Titel")}</h2>
+            <span class="wissen-karte-datum">${datum(doc.erstellt_am)}</span>
+            ${admin ? `
+              <div class="wissen-datei-aktionen">
+                <button type="button" class="wissen-datei-bearbeiten"
+                        data-id="${esc(doc.id)}"
+                        data-title="${esc(doc.titel || "Ohne Titel")}">
+                  <i data-lucide="pencil"></i>
+                  <span>Bearbeiten</span>
+                </button>
+                <button type="button" class="wissen-datei-loeschen"
+                        data-id="${esc(doc.id)}"
+                        data-title="${esc(doc.titel || "Ohne Titel")}"
+                        data-path="${esc(doc.datei_url || "")}">
+                  <i data-lucide="trash-2"></i>
+                  <span>Löschen</span>
+                </button>
+              </div>
+            ` : ""}
+          </div>
+        </article>
+      `;
+    }).filter(Boolean);
+
+    list.innerHTML = cards.join("") || `<div class="wissen-status">Keine PDF-Dokumente gefunden.</div>`;
+
+    list.querySelectorAll(".wissen-karte").forEach(card => {
+      card.addEventListener("click", (event) => {
+        if (event.target.closest(".wissen-datei-bearbeiten, .wissen-datei-loeschen")) return;
+        window.open(card.dataset.url, "_blank", "noopener,noreferrer");
+      });
+    });
+
+    list.querySelectorAll(".wissen-datei-bearbeiten").forEach(button => {
+      button.addEventListener("click", async (event) => {
+        event.stopPropagation();
+        await wissenDateiBearbeiten(button.dataset.id, button.dataset.title);
+      });
+    });
+
+    list.querySelectorAll(".wissen-datei-loeschen").forEach(button => {
+      button.addEventListener("click", async (event) => {
+        event.stopPropagation();
+        await wissenDateiLoeschen(button.dataset.id, button.dataset.title, button.dataset.path);
+      });
+    });
+
+    if (window.lucide) lucide.createIcons();
+  }
+
   async function wissenLaden() {
     const list = document.getElementById("wissenListe");
     const client = sb();
@@ -154,77 +292,19 @@
       const { data, error } = await query;
       if (error) throw error;
 
-      if (!data?.length) {
-        list.innerHTML = `<div class="wissen-status">Für diesen Bereich sind noch keine Dateien eingestellt.</div>`;
-        return;
+      wissenDokumente = [];
+
+      if (data?.length) {
+        for (const doc of data) {
+          const url = await dateiUrlErmitteln(doc);
+          if (!url) continue;
+          doc._wissenUrl = url;
+          wissenDokumente.push(doc);
+        }
       }
 
-      const cards = [];
-
-      for (const doc of data) {
-        const url = await dateiUrlErmitteln(doc);
-        if (!url) continue;
-
-        cards.push(`
-          <article class="wissen-karte" data-url="${esc(url)}">
-            <div class="wissen-vorschau">
-              <iframe src="${esc(url)}#toolbar=0&navpanes=0&scrollbar=0" title="PDF-Vorschau"></iframe>
-            </div>
-            <div class="wissen-karte-inhalt">
-              <span class="wissen-karte-kategorie">${esc(doc.hersteller || "")}</span>
-              <h2 class="wissen-karte-titel">${esc(doc.titel || "Ohne Titel")}</h2>
-              <span class="wissen-karte-datum">${datum(doc.erstellt_am)}</span>
-              ${admin ? `
-                <div class="wissen-datei-aktionen">
-                  <button type="button" class="wissen-datei-bearbeiten"
-                          data-id="${esc(doc.id)}"
-                          data-title="${esc(doc.titel || "Ohne Titel")}">
-                    <i data-lucide="pencil"></i>
-                    <span>Bearbeiten</span>
-                  </button>
-                  <button type="button" class="wissen-datei-loeschen"
-                          data-id="${esc(doc.id)}"
-                          data-title="${esc(doc.titel || "Ohne Titel")}"
-                          data-path="${esc(doc.datei_url || "")}">
-                    <i data-lucide="trash-2"></i>
-                    <span>Löschen</span>
-                  </button>
-                </div>
-              ` : ""}
-            </div>
-          </article>
-        `);
-      }
-
-      list.innerHTML = cards.join("") ||
-        `<div class="wissen-status">Keine PDF-Dokumente gefunden.</div>`;
-
-      list.querySelectorAll(".wissen-karte").forEach(card => {
-        card.addEventListener("click", (event) => {
-          if (event.target.closest(".wissen-datei-loeschen")) return;
-          window.open(card.dataset.url, "_blank", "noopener,noreferrer");
-        });
-      });
-
-      list.querySelectorAll(".wissen-datei-bearbeiten").forEach(button => {
-        button.addEventListener("click", async (event) => {
-          event.stopPropagation();
-          await wissenDateiBearbeiten(button.dataset.id, button.dataset.title);
-        });
-      });
-
-      list.querySelectorAll(".wissen-datei-loeschen").forEach(button => {
-        button.addEventListener("click", async (event) => {
-          event.stopPropagation();
-          await wissenDateiLoeschen(
-            button.dataset.id,
-            button.dataset.title,
-            button.dataset.path
-          );
-        });
-      });
-
-      if (window.lucide) lucide.createIcons();
+      wissenSucheEinrichten();
+      await wissenKartenRendern();
     } catch (e) {
       console.error("Wissen:", e);
       list.innerHTML = `

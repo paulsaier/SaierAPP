@@ -4245,6 +4245,98 @@ body.admin-benutzer-modal-offen {
 
 .wissen-filter select {
     min-width: 240px;
+    border-color: var(--saier-gruen);
+    box-shadow: 0 0 0 3px rgba(152, 204, 20, .08);
+    color: #202522;
+    cursor: pointer;
+    outline: 0;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.wissen-filter select:focus {
+    border-color: var(--saier-gruen);
+    box-shadow: 0 0 0 3px rgba(152, 204, 20, .12);
+}
+
+.wissen-suche {
+    flex: 1;
+    min-width: 260px;
+}
+
+.wissen-suche-feld {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 42px;
+    box-sizing: border-box;
+    border: 1px solid #d9dfdc;
+    border-radius: 10px;
+    background: #fff;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.wissen-suche-feld:focus-within {
+    border-color: var(--saier-gruen);
+    box-shadow: 0 0 0 3px rgba(152, 204, 20, .12);
+}
+
+.wissen-suche-feld > svg {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin-left: 12px;
+    color: #7a847f;
+    pointer-events: none;
+}
+
+.wissen-suche-feld input {
+    width: 100%;
+    min-width: 0;
+    min-height: 40px;
+    box-sizing: border-box;
+    padding: 8px 42px 8px 10px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #202522;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.wissen-suche-feld input::placeholder {
+    color: #8a938f;
+}
+
+.wissen-suche-feld input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.wissen-suche-leeren {
+    position: absolute;
+    right: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #7a847f;
+    cursor: pointer;
+}
+
+.wissen-suche-leeren:hover {
+    background: #f0f3f1;
+    color: #303733;
+}
+
+.wissen-suche-leeren svg {
+    width: 16px;
+    height: 16px;
 }
 
 .wissen-panel {
@@ -4450,13 +4542,29 @@ body.admin-benutzer-modal-offen {
     }
 
     .wissen-filter {
-        align-items: flex-start;
+        align-items: stretch;
         flex-direction: column;
+        gap: 8px;
     }
 
-    .wissen-filter select {
+    .wissen-filter label {
+        margin-top: 2px;
+    }
+
+    .wissen-filter select,
+    .wissen-suche {
         width: 100%;
         min-width: 0;
+    }
+
+    .wissen-suche-feld {
+        min-height: 46px;
+        border-radius: 12px;
+    }
+
+    .wissen-suche-feld input {
+        min-height: 44px;
+        font-size: 15px;
     }
 
     .wissen-kategorie-form {
