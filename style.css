@@ -4894,3 +4894,71 @@ body.admin-benutzer-modal-offen {
         grid-template-columns: 1fr;
     }
 }
+
+/* ========================================
+   WISSEN – Datei-Aktionen
+   ======================================== */
+.wissen-datei-aktionen {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.wissen-datei-bearbeiten,
+.wissen-datei-loeschen {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+
+.wissen-datei-bearbeiten {
+    border: 1px solid rgba(66, 105, 167, .25);
+    background: rgba(66, 105, 167, .08);
+    color: var(--saier-blau);
+}
+
+.wissen-datei-bearbeiten:hover {
+    background: rgba(66, 105, 167, .14);
+    border-color: rgba(66, 105, 167, .38);
+    transform: translateY(-1px);
+}
+
+.wissen-datei-loeschen {
+    border: 1px solid rgba(149, 193, 31, .35);
+    background: rgba(149, 193, 31, .10);
+    color: var(--saier-gruen);
+}
+
+.wissen-datei-loeschen:hover {
+    background: rgba(149, 193, 31, .18);
+    border-color: rgba(149, 193, 31, .55);
+    transform: translateY(-1px);
+}
+
+.wissen-datei-bearbeiten svg,
+.wissen-datei-loeschen svg {
+    width: 15px;
+    height: 15px;
+}
+
+@media (max-width: 600px) {
+    .wissen-datei-aktionen {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .wissen-datei-bearbeiten,
+    .wissen-datei-loeschen {
+        width: 100%;
+    }
+}

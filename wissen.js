@@ -174,6 +174,23 @@
               <span class="wissen-karte-kategorie">${esc(doc.hersteller || "")}</span>
               <h2 class="wissen-karte-titel">${esc(doc.titel || "Ohne Titel")}</h2>
               <span class="wissen-karte-datum">${datum(doc.erstellt_am)}</span>
+              ${admin ? `
+                <div class="wissen-datei-aktionen">
+                  <button type="button" class="wissen-datei-bearbeiten"
+                          data-id="${esc(doc.id)}"
+                          data-title="${esc(doc.titel || "Ohne Titel")}">
+                    <i data-lucide="pencil"></i>
+                    <span>Bearbeiten</span>
+                  </button>
+                  <button type="button" class="wissen-datei-loeschen"
+                          data-id="${esc(doc.id)}"
+                          data-title="${esc(doc.titel || "Ohne Titel")}"
+                          data-path="${esc(doc.datei_url || "")}">
+                    <i data-lucide="trash-2"></i>
+                    <span>Löschen</span>
+                  </button>
+                </div>
+              ` : ""}
             </div>
           </article>
         `);
@@ -183,8 +200,27 @@
         `<div class="wissen-status">Keine PDF-Dokumente gefunden.</div>`;
 
       list.querySelectorAll(".wissen-karte").forEach(card => {
-        card.addEventListener("click", () => {
+        card.addEventListener("click", (event) => {
+          if (event.target.closest(".wissen-datei-loeschen")) return;
           window.open(card.dataset.url, "_blank", "noopener,noreferrer");
+        });
+      });
+
+      list.querySelectorAll(".wissen-datei-bearbeiten").forEach(button => {
+        button.addEventListener("click", async (event) => {
+          event.stopPropagation();
+          await wissenDateiBearbeiten(button.dataset.id, button.dataset.title);
+        });
+      });
+
+      list.querySelectorAll(".wissen-datei-loeschen").forEach(button => {
+        button.addEventListener("click", async (event) => {
+          event.stopPropagation();
+          await wissenDateiLoeschen(
+            button.dataset.id,
+            button.dataset.title,
+            button.dataset.path
+          );
         });
       });
 
@@ -196,6 +232,77 @@
           Die Wissensdaten konnten nicht geladen werden.<br>
           <small>${esc(e?.message || "Unbekannter Fehler")}</small>
         </div>`;
+    }
+  }
+
+  async function wissenDateiBearbeiten(id, titel) {
+    if (!admin) return;
+
+    const neuerTitel = prompt("Name der Datei bearbeiten:", titel || "");
+    if (neuerTitel === null) return;
+
+    const bereinigt = neuerTitel.trim();
+    if (!bereinigt) {
+      alert("Der Dateiname darf nicht leer sein.");
+      return;
+    }
+
+    if (bereinigt === (titel || "").trim()) return;
+
+    try {
+      const client = sb();
+      if (!client) throw new Error("Supabase ist nicht verfügbar.");
+
+      const { error } = await client
+        .from(DOKUMENTE)
+        .update({ titel: bereinigt })
+        .eq("id", id);
+
+      if (error) throw error;
+
+      await wissenLaden();
+    } catch (error) {
+      console.error("Wissen Datei bearbeiten:", error);
+      alert(`Der Dateiname konnte nicht geändert werden.\n\n${error?.message || "Unbekannter Fehler"}`);
+    }
+  }
+
+  async function wissenDateiLoeschen(id, titel, path) {
+    if (!admin) return;
+
+    const bestaetigt = confirm(
+      `Datei "${titel || "Ohne Titel"}" wirklich löschen?\n\n` +
+      "Die PDF wird aus dem Speicher und aus der Wissensdatenbank entfernt. Dieser Vorgang kann nicht rückgängig gemacht werden."
+    );
+
+    if (!bestaetigt) return;
+
+    try {
+      const client = sb();
+      if (!client) throw new Error("Supabase ist nicht verfügbar.");
+
+      // Zuerst die PDF aus dem privaten Storage entfernen.
+      if (path && !/^https?:\/\//i.test(path)) {
+        const { error: storageError } = await client
+          .storage
+          .from(BUCKET)
+          .remove([path]);
+
+        if (storageError) throw storageError;
+      }
+
+      // Danach den Datensatz aus der Wissensdatenbank entfernen.
+      const { error: dbError } = await client
+        .from(DOKUMENTE)
+        .delete()
+        .eq("id", id);
+
+      if (dbError) throw dbError;
+
+      await wissenLaden();
+    } catch (error) {
+      console.error("Wissen Datei löschen:", error);
+      alert(`Die Datei konnte nicht gelöscht werden.\n\n${error?.message || "Unbekannter Fehler"}`);
     }
   }
 
@@ -255,6 +362,157 @@
     await kategorienVerwaltenLaden();
   }
 
+  // Lädt externe Bibliotheken erst dann, wenn tatsächlich eine große PDF
+  // verarbeitet werden muss. Dadurch bleibt die normale Wissensansicht leicht.
+  async function wissenScriptLaden(src, vorhanden) {
+    if (vorhanden()) return;
+
+    await new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error(`Bibliothek konnte nicht geladen werden: ${src}`));
+      document.head.appendChild(script);
+    });
+  }
+
+  async function wissenPdfKomprimieren(file, status) {
+    const MAX_UPLOAD_BYTES = 19 * 1024 * 1024;
+
+    if (file.size <= MAX_UPLOAD_BYTES) {
+      return file;
+    }
+
+    status.textContent = `PDF ist ${ (file.size / 1024 / 1024).toFixed(1) } MB groß. PDF wird automatisch verkleinert ...`;
+
+    await wissenScriptLaden(
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+      () => typeof window.pdfjsLib !== "undefined"
+    );
+
+    await wissenScriptLaden(
+      "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+      () => typeof window.jspdf?.jsPDF !== "undefined"
+    );
+
+    const pdfjsLib = window.pdfjsLib;
+    const jsPDF = window.jspdf.jsPDF;
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+    const arrayBuffer = await file.arrayBuffer();
+    const originalPdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+    // Wir versuchen mehrere Qualitätsstufen. So bleiben normale PDFs möglichst
+    // lesbar, während sehr große/scannte PDFs stärker verkleinert werden können.
+    const stufen = [
+      { scale: 1.25, quality: 0.68 },
+      { scale: 1.05, quality: 0.56 },
+      { scale: 0.90, quality: 0.46 },
+      { scale: 0.75, quality: 0.36 },
+      { scale: 0.62, quality: 0.28 },
+      { scale: 0.50, quality: 0.22 }
+    ];
+
+    let bestBlob = null;
+
+    for (let stufeIndex = 0; stufeIndex < stufen.length; stufeIndex++) {
+      const { scale, quality } = stufen[stufeIndex];
+
+      status.textContent = `PDF wird optimiert ... Stufe ${stufeIndex + 1}/${stufen.length}`;
+
+      const ersteSeite = await originalPdf.getPage(1);
+      const ersteViewport = ersteSeite.getViewport({ scale: 1 });
+      const pdf = new jsPDF({
+        unit: "pt",
+        format: [ersteViewport.width, ersteViewport.height],
+        orientation: ersteViewport.width > ersteViewport.height ? "landscape" : "portrait",
+        compress: true
+      });
+
+      for (let pageNumber = 1; pageNumber <= originalPdf.numPages; pageNumber++) {
+        const page = await originalPdf.getPage(pageNumber);
+        const viewport = page.getViewport({ scale: 1 });
+        const renderViewport = page.getViewport({ scale });
+
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d", { alpha: false });
+        canvas.width = Math.max(1, Math.ceil(renderViewport.width));
+        canvas.height = Math.max(1, Math.ceil(renderViewport.height));
+
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        await page.render({
+          canvasContext: context,
+          viewport: renderViewport
+        }).promise;
+
+        if (pageNumber > 1) {
+          pdf.addPage(
+            [viewport.width, viewport.height],
+            viewport.width > viewport.height ? "landscape" : "portrait"
+          );
+        }
+
+        // Das Canvas explizit als JPEG mit der jeweiligen Qualitätsstufe
+        // erzeugen. Dadurch wird die quality-Einstellung tatsächlich wirksam.
+        const jpegData = canvas.toDataURL("image/jpeg", quality);
+
+        pdf.addImage(
+          jpegData,
+          "JPEG",
+          0,
+          0,
+          viewport.width,
+          viewport.height,
+          undefined,
+          "FAST",
+          0
+        );
+
+        // Canvas sofort freigeben, damit große PDFs nicht unnötig viel RAM belegen.
+        canvas.width = 1;
+        canvas.height = 1;
+
+        if (pageNumber === originalPdf.numPages || pageNumber % 5 === 0) {
+          const prozent = Math.round((pageNumber / originalPdf.numPages) * 100);
+          status.textContent = `PDF wird optimiert ... ${prozent}%`;
+          await new Promise(requestAnimationFrame);
+        }
+      }
+
+      bestBlob = pdf.output("blob");
+
+      if (bestBlob.size <= MAX_UPLOAD_BYTES) {
+        break;
+      }
+    }
+
+    if (!bestBlob || bestBlob.size >= file.size) {
+      // Falls die Optimierung keinen Vorteil bringt, lieber die Originaldatei
+      // nicht hochladen und das Supabase-Limit verständlich erklären.
+      throw new Error(
+        `Die PDF konnte nicht unter 19 MB verkleinert werden (Ergebnis: ${bestBlob ? (bestBlob.size / 1024 / 1024).toFixed(1) : "unbekannt"} MB). Bitte die PDF extern komprimieren.`
+      );
+    }
+
+    if (bestBlob.size > MAX_UPLOAD_BYTES) {
+      throw new Error(
+        `Die PDF ist nach der Optimierung noch ${ (bestBlob.size / 1024 / 1024).toFixed(1) } MB groß. Das Upload-Limit beträgt 20 MB.`
+      );
+    }
+
+    const neuerName = file.name.replace(/\.pdf$/i, "") + "_optimiert.pdf";
+    status.textContent = `PDF optimiert: ${(file.size / 1024 / 1024).toFixed(1)} MB → ${(bestBlob.size / 1024 / 1024).toFixed(1)} MB. Upload läuft ...`;
+
+    return new File([bestBlob], neuerName, {
+      type: "application/pdf",
+      lastModified: Date.now()
+    });
+  }
+
   async function upload(e) {
     e.preventDefault();
 
@@ -273,21 +531,25 @@
       return;
     }
 
-    status.textContent = "PDF wird hochgeladen ...";
+    status.textContent = "PDF wird vorbereitet ...";
 
     try {
       const { data: { user } = {} } = await sb().auth.getUser();
       if (!user) throw new Error("Du bist nicht angemeldet.");
 
-      const safe = file.name
+      const uploadFile = await wissenPdfKomprimieren(file, status);
+
+      const safe = uploadFile.name
         .replace(/[^a-zA-Z0-9._-]/g, "_")
         .replace(/_+/g, "_");
       const path = `${hersteller.replace(/[^a-zA-Z0-9_-]/g, "_")}/${crypto.randomUUID()}_${safe}`;
 
+      status.textContent = "PDF wird zu Supabase hochgeladen ...";
+
       const { error: uploadError } = await sb()
         .storage
         .from(BUCKET)
-        .upload(path, file, {
+        .upload(path, uploadFile, {
           contentType: "application/pdf",
           upsert: false
         });
