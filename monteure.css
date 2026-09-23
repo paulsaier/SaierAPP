@@ -631,3 +631,25 @@
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ========================================
+   SCHULE – besondere Kennzeichnung
+   ======================================== */
+
+.monteure-einsatz.monteure-schule .monteure-projekt {
+    margin: -13px -13px 0;
+    padding: 11px 13px;
+    border-radius: 12px 12px 0 0;
+    background: var(--saier-gruen);
+}
+
+.monteure-einsatz.monteure-schule .monteure-projekt > svg {
+    color: #fff;
+}
+
+.monteure-einsatz.monteure-schule .monteure-projekt .monteure-label,
+.monteure-einsatz.monteure-schule .monteure-projekt strong {
+    color: #fff;
+}
+

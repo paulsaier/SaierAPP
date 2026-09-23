@@ -3368,10 +3368,27 @@ function monteureTagErstellen(datum, einsaetze) {
 
     const gruppen = monteureGruppieren(einsaetze);
 
+    gruppen.sort(function(a, b) {
+        const aIstSchule =
+            monteureSichererText(a.projektname).trim().toLowerCase() === "schule";
+
+        const bIstSchule =
+            monteureSichererText(b.projektname).trim().toLowerCase() === "schule";
+
+        if (aIstSchule && !bIstSchule) return -1;
+        if (!aIstSchule && bIstSchule) return 1;
+
+        return 0;
+    });
+
     gruppen.forEach(function(gruppe) {
 
+        const istSchule =
+            monteureSichererText(gruppe.projektname).trim().toLowerCase() === "schule";
+
         const karte = document.createElement("div");
-        karte.className = "monteure-einsatz";
+        karte.className =
+            "monteure-einsatz" + (istSchule ? " monteure-schule" : "");
 
         const projekt = document.createElement("div");
         projekt.className = "monteure-einsatz-zeile monteure-projekt";
@@ -3392,26 +3409,28 @@ function monteureTagErstellen(datum, einsaetze) {
         projekt.appendChild(projektText);
         karte.appendChild(projekt);
 
-        const auto = document.createElement("div");
-        auto.className = "monteure-einsatz-zeile";
-        auto.innerHTML = '<i data-lucide="car-front"></i>';
+        if (!istSchule) {
+            const auto = document.createElement("div");
+            auto.className = "monteure-einsatz-zeile";
+            auto.innerHTML = '<i data-lucide="car-front"></i>';
 
-        const autoText = document.createElement("div");
-        autoText.className = "monteure-einsatz-text";
+            const autoText = document.createElement("div");
+            autoText.className = "monteure-einsatz-text";
 
-        const autoLabel = document.createElement("span");
-        autoLabel.className = "monteure-label";
-        autoLabel.textContent = "Autos";
+            const autoLabel = document.createElement("span");
+            autoLabel.className = "monteure-label";
+            autoLabel.textContent = "Autos";
 
-        const autoName = document.createElement("strong");
-        autoName.textContent = gruppe.autos.length
-            ? gruppe.autos.join(" · ")
-            : "Kein Fahrzeug zugeordnet";
+            const autoName = document.createElement("strong");
+            autoName.textContent = gruppe.autos.length
+                ? gruppe.autos.join(" · ")
+                : "Kein Fahrzeug zugeordnet";
 
-        autoText.appendChild(autoLabel);
-        autoText.appendChild(autoName);
-        auto.appendChild(autoText);
-        karte.appendChild(auto);
+            autoText.appendChild(autoLabel);
+            autoText.appendChild(autoName);
+            auto.appendChild(autoText);
+            karte.appendChild(auto);
+        }
 
         const mitarbeiter = document.createElement("div");
         mitarbeiter.className = "monteure-einsatz-zeile monteure-mitarbeiter";
@@ -3651,6 +3670,14 @@ async function monteureEinteilungAnzeigen() {
 // ========================================
 
 let monteureImportMitarbeiter = [];
+
+// Die beiden Excel-Bereiche werden getrennt gehalten.
+// So kann das Einlesen von MdE und Gebäudetechnik niemals
+// die jeweils andere Importdatei überschreiben.
+let monteureImportDatenNachBereich = {
+    MdE: [],
+    "Gebäudetechnik": []
+};
 let monteureImportDaten = [];
 let monteureImportBereich = "MdE";
 
@@ -3710,6 +3737,10 @@ function monteureAdminOeffnen() {
     }
 
     monteureImportMitarbeiter = [];
+    monteureImportDatenNachBereich = {
+        MdE: [],
+        "Gebäudetechnik": []
+    };
     monteureImportDaten = [];
     monteureImportBereich = "MdE";
 
@@ -4225,7 +4256,15 @@ async function monteureImportNachSupabase() {
         return;
     }
 
-    if (!monteureImportDaten.length) {
+    // Immer die Daten des aktuell ausgewählten Bereichs verwenden.
+    // Die Daten von MdE und Gebäudetechnik werden getrennt gehalten.
+    const importBereich = monteureImportBereich || "MdE";
+    const importDaten =
+        monteureImportDatenNachBereich[importBereich] ||
+        monteureImportDaten ||
+        [];
+
+    if (!importDaten.length) {
         monteureImportStatusAnzeigen(
             "Es sind keine Einsätze zum Import vorhanden.",
             "fehler"
@@ -4239,13 +4278,15 @@ async function monteureImportNachSupabase() {
         button.disabled = true;
     });
 
-    const daten = monteureImportDaten.map(function(einsatz) {
+    const daten = importDaten.map(function(einsatz) {
         return {
             datum: einsatz.datum,
             projektname: einsatz.projektname,
             auto: einsatz.auto || null,
             mitarbeiter_id: einsatz.mitarbeiter_id,
-            bereich: einsatz.bereich || monteureImportBereich || "MdE"
+            // Der Bereich kommt immer aus dem aktiven Import und nicht aus
+            // einem eventuell noch alten globalen Zustand.
+            bereich: importBereich
         };
     });
 
@@ -4267,7 +4308,7 @@ async function monteureImportNachSupabase() {
             {
                 p_startdatum: startdatum,
                 p_enddatum: enddatum,
-                p_bereich: monteureImportBereich || "MdE",
+                p_bereich: importBereich,
                 p_einsaetze: daten
             }
         );
@@ -4294,7 +4335,7 @@ async function monteureImportNachSupabase() {
                 " – " +
                 new Date(enddatum + "T00:00:00").toLocaleDateString("de-DE") +
                 " wurde im Bereich " +
-                (monteureImportBereich || "MdE") +
+                importBereich +
                 " aktualisiert.";
             vorschau.appendChild(bestaetigung);
         }
@@ -4395,6 +4436,10 @@ async function monteureExcelDateiVerarbeiten(datei, bereich) {
         const ergebnis =
             monteureImportExcelVerarbeiten(workbook, monteureImportBereich);
 
+        // Den gerade eingelesenen Bereich separat speichern.
+        // Dadurch bleiben MdE und Gebäudetechnik unabhängig voneinander.
+        monteureImportDatenNachBereich[monteureImportBereich] =
+            ergebnis.einsaetze;
         monteureImportDaten = ergebnis.einsaetze;
 
         monteureImportStatusAnzeigen(
@@ -4411,6 +4456,7 @@ async function monteureExcelDateiVerarbeiten(datei, bereich) {
 
         console.error("Excel-Import konnte nicht verarbeitet werden:", error);
 
+        monteureImportDatenNachBereich[monteureImportBereich] = [];
         monteureImportDaten = [];
 
         monteureImportStatusAnzeigen(
