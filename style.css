@@ -3338,7 +3338,7 @@ background 0.2s ease,
 
     inset: 0;
 
-    z-index: 5000;
+    z-index: 99999;
 
     display: flex;
 
@@ -3355,6 +3355,8 @@ background 0.2s ease,
     position: absolute;
 
     inset: 0;
+
+    z-index: 0;
 
     background: rgba(20, 24, 18, 0.42);
 
@@ -4468,5 +4470,427 @@ body.admin-benutzer-modal-offen {
 
     .wissen-vorschau {
         height: 230px;
+    }
+}
+
+/* ========================================
+   BENUTZERVERWALTUNG – FORMULAR / ROLLEN
+   Einheitliche SAIER-Optik für Inputs und Selects
+======================================== */
+
+#adminBenutzerModal .passwort-feld select,
+#adminBenutzerBearbeitenModal .admin-form-feld select,
+#adminBenutzerBearbeitenModal .passwort-feld select {
+    width: 100%;
+    min-height: 48px;
+    box-sizing: border-box;
+    padding: 0 42px 0 14px;
+    border: 1px solid var(--linie);
+    border-radius: 10px;
+    background: var(--weiss);
+    color: var(--text);
+    font-family: "Fira Sans", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    outline: none;
+    appearance: auto;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+#adminBenutzerModal .passwort-feld select:focus,
+#adminBenutzerBearbeitenModal .admin-form-feld select:focus,
+#adminBenutzerBearbeitenModal .passwort-feld select:focus {
+    border-color: var(--saier-gruen);
+    box-shadow: 0 0 0 3px rgba(149, 193, 31, 0.14);
+}
+
+#adminBenutzerModal .passwort-feld select:hover,
+#adminBenutzerBearbeitenModal .admin-form-feld select:hover,
+#adminBenutzerBearbeitenModal .passwort-feld select:hover {
+    border-color: var(--saier-gruen);
+}
+
+#adminBenutzerModal .passwort-modal-inhalt,
+#adminBenutzerBearbeitenModal .passwort-modal-inhalt {
+    max-height: 72vh;
+    overflow-y: auto;
+}
+
+.admin-benutzer-bereich-box {
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px solid var(--linie);
+    border-radius: 14px;
+    background: #f8f9f6;
+}
+
+.admin-benutzer-bereich-box-titel {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.admin-benutzer-bereich-box-titel svg {
+    width: 19px;
+    height: 19px;
+    color: var(--saier-gruen);
+}
+
+.admin-benutzer-hinweis {
+    margin: 8px 0 0;
+    color: var(--grau);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.admin-benutzer-rolle-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: var(--hellgruen);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.admin-benutzer-aktionen {
+    flex-wrap: wrap;
+}
+
+.admin-benutzer-aktionen .button {
+    min-width: 0;
+}
+
+@media (max-width: 600px) {
+    #adminBenutzerModal .passwort-feld select,
+    #adminBenutzerBearbeitenModal .admin-form-feld select,
+    #adminBenutzerBearbeitenModal .passwort-feld select {
+        min-height: 46px;
+        font-size: 15px;
+    }
+
+    .admin-benutzer-aktionen {
+        flex-direction: column;
+    }
+
+    .admin-benutzer-aktionen .button {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   SAIER INTERN – BENUTZERVERWALTUNG
+   Einheitliche Oberfläche passend zu den bestehenden Modals
+   ========================================================= */
+
+#adminBenutzerListeModal .admin-benutzer-modal-box,
+#adminBenutzerBearbeitenModal .admin-benutzer-modal-box,
+#adminBenutzerLoeschModal .admin-benutzer-modal-box {
+    max-width: 560px;
+}
+
+#adminBenutzerListeModal .passwort-modal-inhalt,
+#adminBenutzerBearbeitenModal .passwort-modal-inhalt,
+#adminBenutzerLoeschModal .passwort-modal-inhalt {
+    max-height: 76vh;
+    overflow-y: auto;
+}
+
+.admin-benutzer-listen-status {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    margin: 0 0 14px;
+    padding: 10px 13px;
+    border: 1px solid var(--linie);
+    border-radius: 11px;
+    background: #fafbf8;
+    color: var(--grau);
+    font-size: 14px;
+}
+
+.admin-benutzer-liste {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 45vh;
+    overflow-y: auto;
+    padding: 2px 4px 4px 0;
+}
+
+.admin-benutzer-karte {
+    padding: 15px;
+    border: 1px solid var(--linie);
+    border-radius: 15px;
+    background: var(--weiss);
+    box-shadow: 0 2px 9px rgba(0,0,0,.035);
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+.admin-benutzer-karte:hover {
+    border-color: #d6dfc5;
+    box-shadow: 0 5px 16px rgba(0,0,0,.055);
+}
+
+.admin-benutzer-karte-kopf {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.admin-benutzer-karte-person {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 12px;
+}
+
+.admin-benutzer-karte-avatar {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hellgruen);
+    color: var(--saier-gruen);
+}
+
+.admin-benutzer-karte-avatar svg {
+    width: 20px;
+    height: 20px;
+}
+
+.admin-benutzer-karte-daten {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.admin-benutzer-karte-daten strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 16px;
+    font-weight: 650;
+    color: var(--text);
+}
+
+.admin-benutzer-karte-daten span {
+    overflow-wrap: anywhere;
+    font-size: 13px;
+    color: var(--grau);
+}
+
+.admin-benutzer-rolle-badge {
+    flex: 0 0 auto;
+    min-height: 28px;
+    padding: 0 10px;
+    border: 1px solid #dfe8d0;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hellgruen);
+    color: #526b28;
+    font-size: 12px;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.admin-benutzer-karte-meta {
+    display: flex;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #f0f1ee;
+    color: var(--grau);
+    font-size: 12px;
+}
+
+.admin-benutzer-karte-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-benutzer-karte-meta svg {
+    width: 15px;
+    height: 15px;
+    color: var(--saier-gruen);
+}
+
+.admin-benutzer-aktionen {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-top: 12px;
+}
+
+.admin-benutzer-aktion {
+    min-height: 42px;
+    border: 1px solid var(--linie);
+    border-radius: 10px;
+    background: var(--weiss);
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+
+.admin-benutzer-aktion svg {
+    width: 17px;
+    height: 17px;
+}
+
+.admin-benutzer-aktion-bearbeiten:hover {
+    background: var(--hellgruen);
+    border-color: var(--saier-gruen);
+}
+
+.admin-benutzer-aktion-loeschen:hover {
+    background: #fff6f6;
+    border-color: #dfaaaa;
+    color: #a12c2c;
+}
+
+.admin-benutzer-listen-footer .passwort-abbrechen,
+.admin-benutzer-listen-footer .passwort-speichern {
+    min-height: 48px;
+}
+
+.admin-benutzer-listen-footer .passwort-abbrechen {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.admin-benutzer-listen-footer .passwort-abbrechen svg {
+    width: 18px;
+    height: 18px;
+}
+
+.admin-benutzer-bearbeiten-inhalt .passwort-feld {
+    margin-bottom: 16px;
+}
+
+.admin-benutzer-bearbeiten-inhalt .passwort-feld input,
+.admin-benutzer-bearbeiten-inhalt .passwort-feld select {
+    background: #fafbf9;
+}
+
+.admin-benutzer-bearbeiten-inhalt .passwort-feld input:focus,
+.admin-benutzer-bearbeiten-inhalt .passwort-feld select:focus {
+    background: var(--weiss);
+}
+
+.admin-benutzer-rollenfeld {
+    margin-top: 18px;
+}
+
+.admin-benutzer-checkbox {
+    margin: 4px 0 18px;
+    padding: 13px 14px;
+    border: 1px solid var(--linie);
+    border-radius: 12px;
+    background: #fafbf8;
+}
+
+.admin-benutzer-checkbox:hover {
+    border-color: #d7dfca;
+}
+
+.admin-benutzer-checkbox-text strong {
+    font-size: 14px;
+}
+
+.admin-benutzer-checkbox-text small {
+    font-size: 12px;
+}
+
+.admin-benutzer-bereich-box {
+    margin-top: 20px;
+    padding: 17px;
+    border: 1px solid #e0e6d6;
+    border-radius: 15px;
+    background: #f7f9f2;
+}
+
+.admin-benutzer-bereich-box-titel {
+    margin-bottom: 5px;
+}
+
+.admin-benutzer-hinweis-obentext {
+    margin: 0 0 15px;
+}
+
+.admin-benutzer-bereich-box .passwort-feld:last-child {
+    margin-bottom: 0;
+}
+
+.admin-benutzer-loesch-text {
+    margin: 0 !important;
+    padding: 15px 16px;
+    border: 1px solid #ead7d7;
+    border-radius: 12px;
+    background: #fff9f9;
+    color: #4b3333 !important;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+}
+
+.admin-benutzer-loesch-button {
+    background: #b42323 !important;
+}
+
+.admin-benutzer-loesch-button:hover {
+    background: #9d1d1d !important;
+    filter: none !important;
+}
+
+.admin-benutzer-loesch-icon {
+    color: #b42323;
+}
+
+@media (max-width: 600px) {
+    #adminBenutzerListeModal .passwort-modal-inhalt,
+    #adminBenutzerBearbeitenModal .passwort-modal-inhalt,
+    #adminBenutzerLoeschModal .passwort-modal-inhalt {
+        max-height: 82vh;
+    }
+
+    .admin-benutzer-liste {
+        max-height: 40vh;
+    }
+
+    .admin-benutzer-karte-kopf {
+        align-items: flex-start;
+    }
+
+    .admin-benutzer-rolle-badge {
+        font-size: 11px;
+        padding: 0 8px;
+    }
+
+    .admin-benutzer-aktionen {
+        grid-template-columns: 1fr;
     }
 }

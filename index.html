@@ -1241,20 +1241,25 @@
                             required>
                     </div>
 
-                    <label class="admin-benutzer-checkbox">
-                        <input
-                            type="checkbox"
-                            id="adminBenutzerIstAdmin">
-                        <span class="admin-benutzer-checkbox-box">
-                            <i data-lucide="check"></i>
-                        </span>
-                        <span class="admin-benutzer-checkbox-text">
-                            <strong>Administrator</strong>
-                            <small>
-                                Der Mitarbeiter darf Benutzer verwalten und neue Mitarbeiter anlegen.
-                            </small>
-                        </span>
-                    </label>
+                    <div class="passwort-feld">
+    <label for="adminBenutzerRolle">
+        Rolle
+    </label>
+
+    <select
+        id="adminBenutzerRolle"
+        required>
+        <option value="monteur" selected>
+            Monteur
+        </option>
+        <option value="bauleiter">
+            Bauleiter
+        </option>
+        <option value="admin">
+            Administrator
+        </option>
+    </select>
+</div>
 
                     <p
                         id="adminBenutzerFehler"

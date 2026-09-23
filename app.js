@@ -11,6 +11,8 @@ let kalenderTermine = [];
 
 let aktuellerBenutzerIstAdmin = false;
 let aktuellerMitarbeiterId = null;
+let aktuellerBenutzerIstBauleiter = false;
+let aktuellerBenutzerDarfMonteureVollstaendigSehen = false;
 
 // ========================================
 // PUSH-NACHRICHTEN – VAPID PUBLIC KEY
@@ -2645,7 +2647,7 @@ async function benutzerDatenLaden() {
         await supabaseClient
             .from("employees")
             .select(
-                "id, name, birthdate, birthday_visible, is_admin"
+                "id, name, birthdate, birthday_visible, is_admin, rolle"
             )
             .eq(
                 "user_id",
@@ -2680,14 +2682,23 @@ async function benutzerDatenLaden() {
     aktuellerBenutzerIstAdmin =
         mitarbeiter?.is_admin === true;
 
+    aktuellerBenutzerIstBauleiter =
+        mitarbeiter?.rolle === "bauleiter";
+
+    aktuellerBenutzerDarfMonteureVollstaendigSehen =
+        aktuellerBenutzerIstAdmin || aktuellerBenutzerIstBauleiter;
+
     const rolleElement =
         document.getElementById("benutzerRolle");
 
     if (rolleElement) {
-        rolleElement.textContent =
-            aktuellerBenutzerIstAdmin
-                ? "Administrator"
-                : "Mitarbeiter";
+        if (aktuellerBenutzerIstAdmin) {
+            rolleElement.textContent = "Administrator";
+        } else if (aktuellerBenutzerIstBauleiter) {
+            rolleElement.textContent = "Bauleiter";
+        } else {
+            rolleElement.textContent = "Monteur";
+        }
     }
 
     const adminBereich =
@@ -2815,9 +2826,16 @@ function adminBenutzerModalOeffnen() {
         return;
     }
 
+    // Modal aus seinem bisherigen Container lösen
+    // und direkt unter <body> hängen.
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+
     adminBenutzerFormularZuruecksetzen();
 
     modal.style.display = "flex";
+
     document.body.classList.add("admin-benutzer-modal-offen");
 
     if (typeof lucide !== "undefined") {
@@ -2900,8 +2918,10 @@ async function adminBenutzerAnlegen(event) {
     const passwortWiederholen =
         document.getElementById("adminBenutzerPasswortWiederholen")?.value || "";
 
-    const istAdmin =
-        document.getElementById("adminBenutzerIstAdmin")?.checked === true;
+    const rolle =
+        document.getElementById("adminBenutzerRolle")?.value || "monteur";
+
+    const istAdmin = rolle === "admin";
 
     const fehler =
         document.getElementById("adminBenutzerFehler");
@@ -2972,7 +2992,8 @@ const response = await fetch(
             name: name,
             email: email,
             password: passwort,
-            is_admin: istAdmin
+            is_admin: istAdmin,
+            rolle: rolle
         })
     }
 );
@@ -3491,7 +3512,7 @@ async function monteureEinteilungAnzeigen() {
         error: mitarbeiterFehler
     } = await supabaseClient
         .from("employees")
-        .select("id, name, is_admin")
+        .select("id, name, is_admin, rolle")
         .eq("user_id", userData.user.id)
         .maybeSingle();
 
@@ -3507,6 +3528,9 @@ async function monteureEinteilungAnzeigen() {
     // Aktuellen Benutzer immer frisch setzen.
     aktuellerMitarbeiterId = mitarbeiter.id;
     aktuellerBenutzerIstAdmin = mitarbeiter.is_admin === true;
+    aktuellerBenutzerIstBauleiter = mitarbeiter.rolle === "bauleiter";
+    aktuellerBenutzerDarfMonteureVollstaendigSehen =
+        aktuellerBenutzerIstAdmin || aktuellerBenutzerIstBauleiter;
     monteureAktuellerNameCache = mitarbeiter.name || "";
 
     const start = new Date(monteureStartDatum);
@@ -3516,7 +3540,7 @@ async function monteureEinteilungAnzeigen() {
     let data = null;
     let error = null;
 
-    if (aktuellerBenutzerIstAdmin) {
+    if (aktuellerBenutzerDarfMonteureVollstaendigSehen) {
 
         // Admins dürfen weiterhin alle Einteilungen des Zeitraums sehen.
         const ergebnis = await supabaseClient
@@ -3899,7 +3923,6 @@ function monteureImportIstSonderstatus(text) {
         "frei",
         "feiertag",
         "fortbildung",
-        "schule",
         "abwesend"
     ].includes(wert);
 }

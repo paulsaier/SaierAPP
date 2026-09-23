@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SAIERAPP – Wissen</title>
+  <link rel="stylesheet" href="wissen.css">
+</head>
+<body>
+<main class="wissen-page">
+  <header class="wissen-top">
+    <div>
+      <div class="kicker">SAIERAPP</div>
+      <h1>Wissen</h1>
+      <p>Anleitungen und interne Informationen</p>
+    </div>
+    <button id="openUpload" class="button primary hidden" type="button">+ Datei hochladen</button>
+  </header>
+
+  <section id="uploadPanel" class="upload-panel hidden">
+    <div class="panel-title">
+      <div>
+        <h2>Datei hochladen</h2>
+        <p>Nur Administratoren können neue Dokumente einstellen.</p>
+      </div>
+      <button id="closeUpload" class="close-button" type="button" aria-label="Schließen">×</button>
+    </div>
+
+    <form id="uploadForm">
+      <label>Bereich
+        <select id="uploadManufacturer" required>
+          <option value="">Bitte auswählen</option>
+          <option value="Geberit">Geberit</option>
+          <option value="Saier Intern">Saier Intern</option>
+          <option value="Viessmann">Viessmann</option>
+        </select>
+      </label>
+
+      <label>Titel
+        <input id="uploadTitle" type="text" maxlength="200"
+               placeholder="z. B. Wartung Geberit Sigma" required>
+      </label>
+
+      <label>PDF-Datei
+        <input id="uploadFile" type="file" accept="application/pdf,.pdf" required>
+      </label>
+
+      <button id="uploadSubmit" class="button primary" type="submit">PDF hochladen</button>
+      <div id="uploadMessage" class="form-message" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <section class="filter">
+    <label for="manufacturerFilter">Bereich</label>
+    <select id="manufacturerFilter">
+      <option value="">Alle Bereiche</option>
+      <option value="Geberit">Geberit</option>
+      <option value="Saier Intern">Saier Intern</option>
+      <option value="Viessmann">Viessmann</option>
+    </select>
+  </section>
+
+  <div id="pageMessage" class="page-message">Wissen wird geladen …</div>
+  <section id="wissenGrid" class="wissen-grid" aria-live="polite"></section>
+</main>
+
+<!-- Die bestehende SaierAPP stellt supabaseClient bereit. -->
+<script src="wissen.js"></script>
+</body>
+</html>

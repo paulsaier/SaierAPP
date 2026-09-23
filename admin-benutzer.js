@@ -173,11 +173,30 @@
                             <span class="admin-benutzer-checkbox-text">Geburtstag für Kollegen anzeigen</span>
                         </label>
 
-                        <label class="admin-benutzer-checkbox" style="margin-top:12px;">
-                            <input type="checkbox" id="adminBearbeitenIstAdmin">
-                            <span class="admin-benutzer-checkbox-box"></span>
-                            <span class="admin-benutzer-checkbox-text">Administrator</span>
-                        </label>
+                        <div class="admin-form-feld" style="margin-top:16px;">
+                            <label for="adminBearbeitenRolle">Rolle</label>
+                            <select id="adminBearbeitenRolle" required>
+                                <option value="monteur">Monteur</option>
+                                <option value="bauleiter">Bauleiter</option>
+                                <option value="admin">Administrator</option>
+                            </select>
+                        </div>
+
+                        <div class="admin-benutzer-bereich-box">
+                            <div class="admin-benutzer-bereich-box-titel">
+                                <i data-lucide="key-round"></i>
+                                Passwort setzen
+                            </div>
+                            <div class="admin-form-feld">
+                                <label for="adminBearbeitenPasswort">Neues Passwort</label>
+                                <input type="password" id="adminBearbeitenPasswort" autocomplete="new-password" minlength="8" placeholder="Leer lassen, wenn unverändert">
+                            </div>
+                            <div class="admin-form-feld" style="margin-top:12px;">
+                                <label for="adminBearbeitenPasswortWiederholen">Passwort wiederholen</label>
+                                <input type="password" id="adminBearbeitenPasswortWiederholen" autocomplete="new-password" minlength="8" placeholder="Neues Passwort wiederholen">
+                            </div>
+                            <p class="admin-benutzer-hinweis">Nur ausfüllen, wenn du das Passwort des Mitarbeiters neu setzen möchtest.</p>
+                        </div>
 
                         <div id="adminBearbeitenFehler" style="display:none; margin-top:16px;"></div>
                         <div id="adminBearbeitenErfolg" style="display:none; margin-top:16px;"></div>
@@ -233,7 +252,18 @@
         }
 
         document.getElementById("adminBearbeitenGeburtstagSichtbar").checked = !!benutzer.birthday_visible;
-        document.getElementById("adminBearbeitenIstAdmin").checked = !!benutzer.is_admin;
+
+        const rollenFeld = document.getElementById("adminBearbeitenRolle");
+        if (rollenFeld) {
+            rollenFeld.value = benutzer.is_admin === true
+                ? "admin"
+                : (benutzer.rolle === "bauleiter" ? "bauleiter" : "monteur");
+        }
+
+        const passwortFeld = document.getElementById("adminBearbeitenPasswort");
+        const passwortWiederholenFeld = document.getElementById("adminBearbeitenPasswortWiederholen");
+        if (passwortFeld) passwortFeld.value = "";
+        if (passwortWiederholenFeld) passwortWiederholenFeld.value = "";
 
         document.getElementById("adminBearbeitenFehler").style.display = "none";
         document.getElementById("adminBearbeitenErfolg").style.display = "none";
@@ -262,7 +292,10 @@
         const email = document.getElementById("adminBearbeitenEmail").value.trim();
         const birthdate = document.getElementById("adminBearbeitenGeburtstag").value || null;
         const birthdayVisible = document.getElementById("adminBearbeitenGeburtstagSichtbar").checked;
-        const isAdmin = document.getElementById("adminBearbeitenIstAdmin").checked;
+        const rolle = document.getElementById("adminBearbeitenRolle").value || "monteur";
+        const newPassword = document.getElementById("adminBearbeitenPasswort").value || "";
+        const newPasswordConfirmation = document.getElementById("adminBearbeitenPasswortWiederholen").value || "";
+        const isAdmin = rolle === "admin";
 
         fehlerBox.style.display = "none";
         erfolgBox.style.display = "none";
@@ -277,6 +310,19 @@
             fehlerBox.textContent = "Wenn der Geburtstag sichtbar sein soll, muss ein Geburtsdatum angegeben werden.";
             fehlerBox.style.display = "block";
             return;
+        }
+
+        if (newPassword || newPasswordConfirmation) {
+            if (newPassword.length < 8) {
+                fehlerBox.textContent = "Das neue Passwort muss mindestens 8 Zeichen lang sein.";
+                fehlerBox.style.display = "block";
+                return;
+            }
+            if (newPassword !== newPasswordConfirmation) {
+                fehlerBox.textContent = "Die neuen Passwörter stimmen nicht überein.";
+                fehlerBox.style.display = "block";
+                return;
+            }
         }
 
         button.disabled = true;
@@ -301,7 +347,9 @@
                     email,
                     birthdate,
                     birthday_visible: birthdayVisible,
-                    is_admin: isAdmin
+                    is_admin: isAdmin,
+                    rolle,
+                    new_password: newPassword || null
                 })
             });
 
@@ -468,7 +516,9 @@
                     box-sizing:border-box;
                 `;
 
-                const rolle = benutzer.is_admin ? "Administrator" : "Mitarbeiter";
+                const rolle = benutzer.is_admin
+                    ? "Administrator"
+                    : (benutzer.rolle === "bauleiter" ? "Bauleiter" : "Monteur");
                 const geburtstag = benutzer.birthday_visible ? "sichtbar" : "nicht sichtbar";
 
                 karte.innerHTML = `
@@ -477,7 +527,7 @@
                             <strong style="display:block; font-size:16px;">${escapeHtml(benutzer.name || "Ohne Namen")}</strong>
                             <span style="display:block; margin-top:4px; color:var(--grau); font-size:14px; overflow-wrap:anywhere;">${escapeHtml(benutzer.email || "Keine E-Mail-Adresse")}</span>
                         </div>
-                        <span style="white-space:nowrap; font-size:13px; color:var(--grau);">${escapeHtml(rolle)}</span>
+                        <span class="admin-benutzer-rolle-badge">${escapeHtml(rolle)}</span>
                     </div>
                     <div style="margin-top:10px; font-size:13px; color:var(--grau);">
                         Geburtstag: ${escapeHtml(geburtstag)}
