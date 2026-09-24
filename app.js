@@ -5,6 +5,8 @@
 
 let kalenderDatum = new Date();
 
+let kalenderAnsicht = "kalender";
+
 let sichtbareGeburtstage = [];
 
 let kalenderTermine = [];
@@ -269,137 +271,233 @@ async function kalenderTermineLaden() {
 
     kalenderTermine = data || [];
 
-    const liste = document.getElementById("termineListe");
+    kalenderAnstehendeTermineAnzeigen();
+    kalenderAnzeigen();
+}
 
-    if (liste) {
 
-        liste.innerHTML = "";
+// ========================================
+// KALENDERANSICHT UMSCHALTEN
+// ========================================
 
-        const bereich = liste.closest(".kalender-termine");
+function kalenderAnsichtSetzen(ansicht) {
 
-        if (bereich) {
-            bereich.style.display = "block";
+    kalenderAnsicht =
+        ansicht === "termine"
+            ? "termine"
+            : "kalender";
 
-            const ueberschrift =
-                bereich.querySelector(".kalender-bereich-kopf h2");
+    const kalenderButton =
+        document.getElementById("kalenderAnsichtKalender");
 
-            if (ueberschrift) {
-                ueberschrift.textContent = "Termine in Kürze";
-            }
-        }
+    const termineButton =
+        document.getElementById("kalenderAnsichtTermine");
 
-        const heute = new Date();
-        heute.setHours(0, 0, 0, 0);
+    const kalenderPanel =
+        document.getElementById("kalenderAnsichtKalenderPanel");
 
-        const morgen = new Date(heute);
-        morgen.setDate(heute.getDate() + 1);
+    const terminePanel =
+        document.getElementById("kalenderAnsichtTerminePanel");
 
-        const heuteString =
-            kalenderDatumAlsString(
-                heute.getFullYear(),
-                heute.getMonth(),
-                heute.getDate()
-            );
+    const kalenderAktiv =
+        kalenderAnsicht === "kalender";
 
-        const morgenString =
-            kalenderDatumAlsString(
-                morgen.getFullYear(),
-                morgen.getMonth(),
-                morgen.getDate()
-            );
+    if (kalenderButton) {
+        kalenderButton.classList.toggle("aktiv", kalenderAktiv);
+        kalenderButton.setAttribute(
+            "aria-selected",
+            kalenderAktiv ? "true" : "false"
+        );
+    }
 
-        const kommendeTermine =
-            kalenderTermine.filter(function(termin) {
+    if (termineButton) {
+        termineButton.classList.toggle("aktiv", !kalenderAktiv);
+        termineButton.setAttribute(
+            "aria-selected",
+            kalenderAktiv ? "false" : "true"
+        );
+    }
+
+    if (kalenderPanel) {
+        kalenderPanel.hidden = !kalenderAktiv;
+    }
+
+    if (terminePanel) {
+        terminePanel.hidden = kalenderAktiv;
+    }
+
+    if (kalenderAktiv) {
+        kalenderAnzeigen();
+    } else {
+        kalenderAnstehendeTermineAnzeigen();
+    }
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
+
+// ========================================
+// ANSTEHENDE TERMINE – CHRONOLOGISCH
+// ========================================
+
+function kalenderAnstehendeTermineAnzeigen() {
+
+    const liste =
+        document.getElementById("termineListe");
+
+    if (!liste) {
+        return;
+    }
+
+    const heute = new Date();
+    heute.setHours(0, 0, 0, 0);
+
+    const heuteString =
+        kalenderDatumAlsString(
+            heute.getFullYear(),
+            heute.getMonth(),
+            heute.getDate()
+        );
+
+    const morgen = new Date(heute);
+    morgen.setDate(heute.getDate() + 1);
+
+    const morgenString =
+        kalenderDatumAlsString(
+            morgen.getFullYear(),
+            morgen.getMonth(),
+            morgen.getDate()
+        );
+
+    const kommendeTermine =
+        kalenderTermine
+            .filter(function(termin) {
                 return (
-                    termin.event_date === heuteString ||
-                    termin.event_date === morgenString
+                    termin &&
+                    termin.event_date &&
+                    termin.event_date >= heuteString
+                );
+            })
+            .sort(function(a, b) {
+                return String(a.event_date).localeCompare(
+                    String(b.event_date)
                 );
             });
 
-        if (kommendeTermine.length === 0) {
+    liste.innerHTML = "";
 
-            liste.innerHTML = `
-                <div class="kalender-leer">
-                    <i data-lucide="calendar-x"></i>
-                    <p>Heute und morgen sind keine Termine eingetragen.</p>
-                </div>
-            `;
-
-        } else {
-
-            kommendeTermine.forEach(function(termin) {
-
-                const datum =
-                    new Date(
-                        termin.event_date + "T00:00:00"
-                    );
-
-                const istHeute =
-                    termin.event_date === heuteString;
-
-                const artikel =
-                    document.createElement("article");
-
-                artikel.className =
-                    "kalender-termin";
-
-                artikel.innerHTML = `
-                    <div class="kalender-termin-datum" data-event-date="${termin.event_date}">
-                        <strong>${datum.getDate()}</strong>
-                        <span>
-                            ${datum.toLocaleDateString(
-                                "de-DE",
-                                { month: "short" }
-                            )}
-                        </span>
-                    </div>
-
-                    <div>
-                        <small>
-                            ${istHeute ? "HEUTE" : "MORGEN"}
-                        </small>
-
-                        <h3>
-                            ${escapeHtml(
-                                termin.title || "Termin"
-                            )}
-                        </h3>
-
-                        ${
-                            termin.description
-                                ? `<p>${escapeHtml(termin.description)}</p>`
-                                : ""
-                        }
-                    </div>
-                `;
-
-                const datumKaestchen =
-                    artikel.querySelector(".kalender-termin-datum");
-
-                if (datumKaestchen) {
-                    datumKaestchen.style.cursor = "pointer";
-
-                    datumKaestchen.addEventListener("click", function() {
-                        kalenderTagAngeklickt(
-                            datum.getFullYear(),
-                            datum.getMonth(),
-                            datum.getDate()
-                        );
-                    });
-                }
-
-                liste.appendChild(artikel);
-            });
-        }
+    if (kommendeTermine.length === 0) {
+        liste.innerHTML = `
+            <div class="kalender-leer">
+                <i data-lucide="calendar-x"></i>
+                <p>Aktuell stehen keine weiteren Termine an.</p>
+            </div>
+        `;
 
         if (typeof lucide !== "undefined") {
             lucide.createIcons();
         }
+
+        return;
     }
 
-    kalenderAnzeigen();
+    kommendeTermine.forEach(function(termin) {
+
+        const datum =
+            new Date(
+                termin.event_date + "T00:00:00"
+            );
+
+        const istHeute =
+            termin.event_date === heuteString;
+
+        const istMorgen =
+            termin.event_date === morgenString;
+
+        const relativeText =
+            istHeute
+                ? "HEUTE"
+                : istMorgen
+                    ? "MORGEN"
+                    : datum.toLocaleDateString(
+                        "de-DE",
+                        { weekday: "long" }
+                    );
+
+        const artikel =
+            document.createElement("article");
+
+        artikel.className =
+            "kalender-termin kalender-termin-liste";
+
+        artikel.tabIndex = 0;
+        artikel.setAttribute("role", "button");
+        artikel.setAttribute(
+            "aria-label",
+            "Termin öffnen: " + (termin.title || "Termin")
+        );
+
+        artikel.innerHTML = `
+            <div class="kalender-termin-datum">
+                <strong>${datum.getDate()}</strong>
+                <span>
+                    ${datum.toLocaleDateString(
+                        "de-DE",
+                        { month: "short" }
+                    )}
+                </span>
+            </div>
+
+            <div class="kalender-termin-inhalt">
+                <span class="kalender-termin-relative">
+                    ${relativeText}
+                </span>
+
+                <h3>
+                    ${escapeHtml(termin.title || "Termin")}
+                </h3>
+
+                ${
+                    termin.description
+                        ? `<p>${escapeHtml(termin.description)}</p>`
+                        : ""
+                }
+            </div>
+
+            <i data-lucide="chevron-right"
+               class="kalender-termin-pfeil"></i>
+        `;
+
+        function oeffnen() {
+            kalenderTagAngeklickt(
+                datum.getFullYear(),
+                datum.getMonth(),
+                datum.getDate()
+            );
+        }
+
+        artikel.addEventListener("click", oeffnen);
+
+        artikel.addEventListener("keydown", function(event) {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                oeffnen();
+            }
+        });
+
+        liste.appendChild(artikel);
+    });
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
 }
 
+window.kalenderAnsichtSetzen = kalenderAnsichtSetzen;
+window.kalenderAnstehendeTermineAnzeigen =
+    kalenderAnstehendeTermineAnzeigen;
 
 // ========================================
 // GEBURTSTAGE AUS SUPABASE
@@ -3383,12 +3481,15 @@ function monteureTagErstellen(datum, einsaetze) {
 
     gruppen.forEach(function(gruppe) {
 
+        const karte = document.createElement("div");
+        karte.className = "monteure-einsatz";
+
         const istSchule =
             monteureSichererText(gruppe.projektname).trim().toLowerCase() === "schule";
 
-        const karte = document.createElement("div");
-        karte.className =
-            "monteure-einsatz" + (istSchule ? " monteure-schule" : "");
+        if (istSchule) {
+            karte.classList.add("monteure-schule");
+        }
 
         const projekt = document.createElement("div");
         projekt.className = "monteure-einsatz-zeile monteure-projekt";
@@ -3670,14 +3771,6 @@ async function monteureEinteilungAnzeigen() {
 // ========================================
 
 let monteureImportMitarbeiter = [];
-
-// Die beiden Excel-Bereiche werden getrennt gehalten.
-// So kann das Einlesen von MdE und Gebäudetechnik niemals
-// die jeweils andere Importdatei überschreiben.
-let monteureImportDatenNachBereich = {
-    MdE: [],
-    "Gebäudetechnik": []
-};
 let monteureImportDaten = [];
 let monteureImportBereich = "MdE";
 
@@ -3737,10 +3830,6 @@ function monteureAdminOeffnen() {
     }
 
     monteureImportMitarbeiter = [];
-    monteureImportDatenNachBereich = {
-        MdE: [],
-        "Gebäudetechnik": []
-    };
     monteureImportDaten = [];
     monteureImportBereich = "MdE";
 
@@ -4256,15 +4345,7 @@ async function monteureImportNachSupabase() {
         return;
     }
 
-    // Immer die Daten des aktuell ausgewählten Bereichs verwenden.
-    // Die Daten von MdE und Gebäudetechnik werden getrennt gehalten.
-    const importBereich = monteureImportBereich || "MdE";
-    const importDaten =
-        monteureImportDatenNachBereich[importBereich] ||
-        monteureImportDaten ||
-        [];
-
-    if (!importDaten.length) {
+    if (!monteureImportDaten.length) {
         monteureImportStatusAnzeigen(
             "Es sind keine Einsätze zum Import vorhanden.",
             "fehler"
@@ -4278,15 +4359,13 @@ async function monteureImportNachSupabase() {
         button.disabled = true;
     });
 
-    const daten = importDaten.map(function(einsatz) {
+    const daten = monteureImportDaten.map(function(einsatz) {
         return {
             datum: einsatz.datum,
             projektname: einsatz.projektname,
             auto: einsatz.auto || null,
             mitarbeiter_id: einsatz.mitarbeiter_id,
-            // Der Bereich kommt immer aus dem aktiven Import und nicht aus
-            // einem eventuell noch alten globalen Zustand.
-            bereich: importBereich
+            bereich: einsatz.bereich || monteureImportBereich || "MdE"
         };
     });
 
@@ -4308,7 +4387,7 @@ async function monteureImportNachSupabase() {
             {
                 p_startdatum: startdatum,
                 p_enddatum: enddatum,
-                p_bereich: importBereich,
+                p_bereich: monteureImportBereich || "MdE",
                 p_einsaetze: daten
             }
         );
@@ -4335,7 +4414,7 @@ async function monteureImportNachSupabase() {
                 " – " +
                 new Date(enddatum + "T00:00:00").toLocaleDateString("de-DE") +
                 " wurde im Bereich " +
-                importBereich +
+                (monteureImportBereich || "MdE") +
                 " aktualisiert.";
             vorschau.appendChild(bestaetigung);
         }
@@ -4436,10 +4515,6 @@ async function monteureExcelDateiVerarbeiten(datei, bereich) {
         const ergebnis =
             monteureImportExcelVerarbeiten(workbook, monteureImportBereich);
 
-        // Den gerade eingelesenen Bereich separat speichern.
-        // Dadurch bleiben MdE und Gebäudetechnik unabhängig voneinander.
-        monteureImportDatenNachBereich[monteureImportBereich] =
-            ergebnis.einsaetze;
         monteureImportDaten = ergebnis.einsaetze;
 
         monteureImportStatusAnzeigen(
@@ -4456,7 +4531,6 @@ async function monteureExcelDateiVerarbeiten(datei, bereich) {
 
         console.error("Excel-Import konnte nicht verarbeitet werden:", error);
 
-        monteureImportDatenNachBereich[monteureImportBereich] = [];
         monteureImportDaten = [];
 
         monteureImportStatusAnzeigen(
@@ -4630,6 +4704,7 @@ document.addEventListener(
         heutigesDatumAnzeigen();
 
         kalenderAnzeigen();
+        kalenderAnsichtSetzen("kalender");
 
 
         if (

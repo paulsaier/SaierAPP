@@ -5070,3 +5070,194 @@ body.admin-benutzer-modal-offen {
         width: 100%;
     }
 }
+
+
+/* ========================================
+   KALENDER – ANSICHTSSCHALTER
+======================================== */
+
+.kalender-ansicht-schalter {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    padding: 4px;
+    margin-bottom: 16px;
+    background: #E9ECE5;
+    border: 1px solid var(--linie);
+    border-radius: 15px;
+}
+
+.kalender-ansicht-button {
+    min-height: 46px;
+    border: none;
+    border-radius: 11px;
+    background: transparent;
+    color: var(--grau);
+    font-family: "Fira Sans", Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background .18s ease, color .18s ease, box-shadow .18s ease;
+}
+
+.kalender-ansicht-button svg {
+    width: 18px;
+    height: 18px;
+}
+
+.kalender-ansicht-button:hover {
+    color: var(--text);
+}
+
+.kalender-ansicht-button.aktiv {
+    background: var(--weiss);
+    color: var(--text);
+    box-shadow: 0 2px 7px rgba(0, 0, 0, .08);
+}
+
+.kalender-ansicht-panel[hidden] {
+    display: none !important;
+}
+
+
+/* ========================================
+   KALENDER – IPHONE-ÄHNLICHE TAGE
+======================================== */
+
+.kalender-tag {
+    cursor: pointer;
+    transition: background .15s ease;
+}
+
+.kalender-tag:not(.leer):hover {
+    background: #F7F9F3;
+}
+
+.kalender-punkt {
+    bottom: 8px;
+    width: 6px;
+    height: 6px;
+    background: var(--saier-blau);
+}
+
+.kalender-tag.heute > .kalender-punkt {
+    background: var(--weiss);
+}
+
+.kalender-geburtstage-bereich {
+    margin-top: 18px;
+}
+
+
+/* ========================================
+   KALENDER – TERMINE-LISTE
+======================================== */
+
+.kalender-termin-liste {
+    min-height: 78px;
+    cursor: pointer;
+    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+.kalender-termin-liste:hover {
+    border-color: rgba(149, 193, 31, .45);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .05);
+    transform: translateY(-1px);
+}
+
+.kalender-termin-liste:active {
+    transform: scale(.995);
+}
+
+.kalender-termin-liste:focus-visible {
+    outline: 3px solid rgba(149, 193, 31, .28);
+    outline-offset: 2px;
+}
+
+.kalender-termin-inhalt {
+    min-width: 0;
+    flex: 1;
+}
+
+.kalender-termin-relative {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--saier-gruen);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.kalender-termin-pfeil {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+    color: #A5A9A0;
+}
+
+
+/* ========================================
+   KALENDER – MOBILE
+======================================== */
+
+@media (max-width: 600px) {
+
+    .kalender-ansicht-schalter {
+        margin-bottom: 12px;
+        border-radius: 13px;
+    }
+
+    .kalender-ansicht-button {
+        min-height: 44px;
+        font-size: 14px;
+    }
+
+    .kalender-ansicht-button svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .kalender-tag {
+        min-height: 58px;
+    }
+
+    .kalender-punkt {
+        bottom: 6px;
+        width: 5px;
+        height: 5px;
+    }
+
+    .kalender-termin-liste {
+        gap: 12px;
+        padding: 13px;
+        min-height: 72px;
+    }
+
+    .kalender-termin-liste .kalender-termin-datum {
+        width: 50px;
+        height: 50px;
+        border-radius: 13px;
+    }
+
+    .kalender-termin-liste .kalender-termin-datum strong {
+        font-size: 18px;
+    }
+
+    .kalender-termin-liste .kalender-termin-inhalt h3 {
+        font-size: 15px;
+    }
+
+    .kalender-termin-liste .kalender-termin-inhalt p {
+        font-size: 12px;
+    }
+
+    .kalender-termin-pfeil {
+        width: 18px;
+        height: 18px;
+    }
+}

@@ -465,154 +465,136 @@
                  class="seite">
 
             <div class="seiten-kopf">
-
                 <div class="seiten-icon">
                     <i data-lucide="calendar-days"></i>
                 </div>
-
                 <div>
-
-                    <span>
-                        SAIER INTERN
-                    </span>
-
-                    <h1>
-                        Kalender
-                    </h1>
-
+                    <span>SAIER INTERN</span>
+                    <h1>Kalender</h1>
                 </div>
-
             </div>
 
-
-            <div class="kalender-navigation">
+            <div class="kalender-ansicht-schalter"
+                 role="tablist"
+                 aria-label="Kalenderansicht">
 
                 <button
-                    class="kalender-pfeil"
+                    id="kalenderAnsichtKalender"
                     type="button"
-                    onclick="vorherigerMonat()"
-                    aria-label="Vorheriger Monat">
+                    class="kalender-ansicht-button aktiv"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="kalenderAnsichtKalenderPanel"
+                    onclick="kalenderAnsichtSetzen('kalender')">
 
-                    <i data-lucide="chevron-left"></i>
-
+                    <i data-lucide="calendar-days"></i>
+                    <span>Kalender</span>
                 </button>
 
-
-                <div
-                    class="kalender-monat"
-                    id="kalenderMonat">
-
-                    September 2026
-
-                </div>
-
-
                 <button
-                    class="kalender-pfeil"
+                    id="kalenderAnsichtTermine"
                     type="button"
-                    onclick="naechsterMonat()"
-                    aria-label="Nächster Monat">
+                    class="kalender-ansicht-button"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="kalenderAnsichtTerminePanel"
+                    onclick="kalenderAnsichtSetzen('termine')">
 
-                    <i data-lucide="chevron-right"></i>
-
+                    <i data-lucide="list"></i>
+                    <span>Termine</span>
                 </button>
 
             </div>
 
+            <div
+                id="kalenderAnsichtKalenderPanel"
+                class="kalender-ansicht-panel"
+                role="tabpanel">
 
-            <div class="kalender">
+                <div class="kalender-navigation">
 
-                <div class="kalender-wochentage">
+                    <button class="kalender-pfeil"
+                            type="button"
+                            onclick="vorherigerMonat()"
+                            aria-label="Vorheriger Monat">
+                        <i data-lucide="chevron-left"></i>
+                    </button>
 
-                    <span>Mo</span>
-                    <span>Di</span>
-                    <span>Mi</span>
-                    <span>Do</span>
-                    <span>Fr</span>
-                    <span>Sa</span>
-                    <span>So</span>
-
-                </div>
-
-
-                <div
-                    class="kalender-tage"
-                    id="kalenderTage">
-
-                </div>
-
-            </div>
-
-
-            <div class="kalender-termine">
-
-                <div class="kalender-bereich-kopf">
-
-                    <div>
-
-                        <span class="kleine-ueberschrift">
-                            TERMINE
-                        </span>
-
-                        <h2>
-                            Anstehende Termine
-                        </h2>
-
+                    <div class="kalender-monat" id="kalenderMonat">
+                        September 2026
                     </div>
 
-                    <i data-lucide="calendar-check"></i>
+                    <button class="kalender-pfeil"
+                            type="button"
+                            onclick="naechsterMonat()"
+                            aria-label="Nächster Monat">
+                        <i data-lucide="chevron-right"></i>
+                    </button>
 
                 </div>
 
-
-                <div id="termineListe">
-
-                    <div class="kalender-leer">
-
-                        <i data-lucide="calendar-x"></i>
-
-                        <p>
-                            Aktuell sind keine Termine eingetragen.
-                        </p>
-
+                <div class="kalender">
+                    <div class="kalender-wochentage">
+                        <span>Mo</span>
+                        <span>Di</span>
+                        <span>Mi</span>
+                        <span>Do</span>
+                        <span>Fr</span>
+                        <span>Sa</span>
+                        <span>So</span>
                     </div>
 
-                </div>
-
-            </div>
-
-
-            <div class="kalender-termine">
-
-                <div class="kalender-bereich-kopf">
-
-                    <div>
-
-                        <span class="kleine-ueberschrift">
-                            GEBURTSTAGE
-                        </span>
-
-                        <h2>
-                            Geburtstage
-                        </h2>
-
+                    <div class="kalender-tage"
+                         id="kalenderTage">
                     </div>
-
-                    <i data-lucide="cake"></i>
-
                 </div>
 
+                <div class="kalender-termine kalender-geburtstage-bereich">
 
-                <div id="geburtstageListe">
-
-                    <div class="kalender-leer">
-
+                    <div class="kalender-bereich-kopf">
+                        <div>
+                            <span class="kleine-ueberschrift">
+                                GEBURTSTAGE
+                            </span>
+                            <h2>Nächste 7 Tage</h2>
+                        </div>
                         <i data-lucide="cake"></i>
+                    </div>
 
-                        <p>
-                            Noch keine sichtbaren Geburtstage.
-                        </p>
+                    <div id="geburtstageListe">
+                        <div class="kalender-leer">
+                            <i data-lucide="cake"></i>
+                            <p>Noch keine sichtbaren Geburtstage.</p>
+                        </div>
+                    </div>
 
+                </div>
+
+            </div>
+
+            <div
+                id="kalenderAnsichtTerminePanel"
+                class="kalender-ansicht-panel"
+                role="tabpanel"
+                hidden>
+
+                <div class="kalender-termine kalender-termine-alle">
+
+                    <div class="kalender-bereich-kopf">
+                        <div>
+                            <span class="kleine-ueberschrift">
+                                TERMINE
+                            </span>
+                            <h2>Anstehende Termine</h2>
+                        </div>
+                        <i data-lucide="calendar-check"></i>
+                    </div>
+
+                    <div id="termineListe">
+                        <div class="kalender-leer">
+                            <i data-lucide="calendar-x"></i>
+                            <p>Termine werden geladen ...</p>
+                        </div>
                     </div>
 
                 </div>
@@ -620,7 +602,6 @@
             </div>
 
         </section>
-
 
 
         <!-- ============================= -->

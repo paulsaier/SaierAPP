@@ -90,6 +90,22 @@
     }
   }
 
+  async function storageSignedUrl(path, label = "Datei") {
+    if (!path) return "";
+
+    const { data, error } = await sb()
+      .storage
+      .from(BUCKET)
+      .createSignedUrl(path, 3600);
+
+    if (error) {
+      console.warn(`Wissen: ${label} konnte nicht geladen werden:`, error.message);
+      return "";
+    }
+
+    return data?.signedUrl || "";
+  }
+
   async function dateiUrlErmitteln(doc) {
     // Die aktuelle Tabelle besitzt datei_url, nicht storage_path.
     // Beim Upload speichern wir dort den Storage-Pfad. Falls dort bereits
@@ -101,18 +117,7 @@
     }
 
     if (!gespeichert) return "";
-
-    const { data, error } = await sb()
-      .storage
-      .from(BUCKET)
-      .createSignedUrl(gespeichert, 3600);
-
-    if (error) {
-      console.warn("Wissen: PDF konnte nicht geöffnet werden:", error.message);
-      return "";
-    }
-
-    return data?.signedUrl || "";
+    return storageSignedUrl(gespeichert, "PDF");
   }
 
   function sucheNormalisieren(value) {
@@ -190,14 +195,19 @@
       return;
     }
 
-    const cards = daten.map(doc => {
+    const cards = daten.map((doc) => {
       const url = doc._wissenUrl || "";
       if (!url) return "";
 
       return `
         <article class="wissen-karte" data-url="${esc(url)}">
           <div class="wissen-vorschau">
-            <iframe src="${esc(url)}#toolbar=0&navpanes=0&scrollbar=0" title="PDF-Vorschau"></iframe>
+            <iframe
+              class="wissen-vorschau-iframe"
+              title="PDF-Vorschau: ${esc(doc.titel || "Ohne Titel")}"
+              loading="lazy"
+              data-pdf-src="${esc(url)}#toolbar=0&navpanes=0&scrollbar=0"
+            ></iframe>
           </div>
           <div class="wissen-karte-inhalt">
             <span class="wissen-karte-kategorie">${esc(doc.hersteller || "")}</span>
@@ -227,9 +237,25 @@
 
     list.innerHTML = cards.join("") || `<div class="wissen-status">Keine PDF-Dokumente gefunden.</div>`;
 
+    const iframes = list.querySelectorAll(".wissen-vorschau-iframe[data-pdf-src]");
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const iframe = entry.target;
+          if (!iframe.src) iframe.src = iframe.dataset.pdfSrc;
+          iframe.removeAttribute("data-pdf-src");
+          obs.unobserve(iframe);
+        });
+      }, { rootMargin: "350px 0px" });
+      iframes.forEach(iframe => observer.observe(iframe));
+    } else {
+      iframes.forEach(iframe => { iframe.src = iframe.dataset.pdfSrc; });
+    }
+
     list.querySelectorAll(".wissen-karte").forEach(card => {
       card.addEventListener("click", (event) => {
-        if (event.target.closest(".wissen-datei-bearbeiten, .wissen-datei-loeschen")) return;
+        if (event.target.closest(".wissen-datei-bearbeiten, .wissen-datei-loeschen, .wissen-vorschau-iframe")) return;
         window.open(card.dataset.url, "_blank", "noopener,noreferrer");
       });
     });
@@ -305,6 +331,7 @@
 
       wissenSucheEinrichten();
       await wissenKartenRendern();
+
     } catch (e) {
       console.error("Wissen:", e);
       list.innerHTML = `
@@ -361,7 +388,7 @@
       const client = sb();
       if (!client) throw new Error("Supabase ist nicht verfügbar.");
 
-      // Zuerst die PDF aus dem privaten Storage entfernen.
+      // PDF aus dem privaten Storage entfernen.
       if (path && !/^https?:\/\//i.test(path)) {
         const { error: storageError } = await client
           .storage
